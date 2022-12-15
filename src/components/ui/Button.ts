@@ -1,5 +1,6 @@
 import styled from 'styled-components/native';
 import { Pressable, TouchableOpacity } from 'react-native';
+import { horizontalScale, verticalScale } from '../../util/scale';
 
 const SignupButton = styled(TouchableOpacity)`
   display: flex;
@@ -7,20 +8,18 @@ const SignupButton = styled(TouchableOpacity)`
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  /* padding: 13px 10px; */
-  /* gap: 10px; */
   position: absolute;
-  width: 342px;
-  height: 49px;
-  left: 24px;
-  top: 617px;
+  width: ${horizontalScale(342)};
+  height: ${verticalScale(49)};
+  left: ${horizontalScale(19)};
+  top: ${verticalScale(617)};
   background: #101010;
   border: 1px solid #1f1e1e;
   border-radius: 6px;
 `;
 
 const LoginButton = styled(SignupButton)`
-  top: 680px;
+  top: ${verticalScale(350)};
 `;
 
 // Login and Verify

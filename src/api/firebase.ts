@@ -3,19 +3,30 @@ import { initializeApp } from 'firebase/app';
 import { getAnalytics } from 'firebase/analytics';
 import { getAuth } from 'firebase/auth';
 
+import {
+  API_KEY,
+  AUTH_DOMAIN,
+  PROJECT_ID,
+  STORAGE_BUCKET,
+  MESSAGING_SENDER_ID,
+  APP_ID,
+  MEASUREMENT_ID,
+  // @ts-ignore
+} from '@env';
+
 const firebaseConfig = {
-  apiKey: 'AIzaSyDcQFkBJlC2heKc0U7lr9qphBNxPK2w5N4',
-  authDomain: 'reminisce-alpha.firebaseapp.com',
-  projectId: 'reminisce-alpha',
-  storageBucket: 'reminisce-alpha.appspot.com',
-  messagingSenderId: '794117636434',
-  appId: '1:794117636434:web:ae07bf342bf5b8aa287a8b',
-  measurementId: 'G-R6B074V8LD',
+  apiKey: API_KEY,
+  authDomain: AUTH_DOMAIN,
+  projectId: PROJECT_ID,
+  storageBucket: STORAGE_BUCKET,
+  messagingSenderId: MESSAGING_SENDER_ID,
+  appId: APP_ID,
+  measurementId: MEASUREMENT_ID,
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+// const analytics = getAnalytics(app);
 const auth = getAuth(app);
 
 export { auth };
