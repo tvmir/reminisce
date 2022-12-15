@@ -1,23 +1,32 @@
-import { StatusBar } from "expo-status-bar";
-import { Text, View } from "react-native";
-import styled from "styled-components/native";
-import { EditProfileButton } from "./components/ui/Button";
+import { ThemeProvider } from 'styled-components/native';
+import { theme } from './components/ui/Theme';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import Login from './screens/Login';
+import Feed from './screens/Feed';
 
-const Container = styled(View)`
-  flex: 1;
-  background-color: #050505;
-  align-items: center;
-  justify-content: center;
-`;
+const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
-    <Container>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-      <EditProfileButton>
-        <Text style={{ color: "white" }}>Hello</Text>
-      </EditProfileButton>
-    </Container>
+    <ThemeProvider theme={theme}>
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen
+            options={{ headerShown: false, animationTypeForReplace: 'pop' }}
+            name="Login"
+            component={Login}
+          />
+          <Stack.Screen
+            options={{
+              headerShown: false,
+              headerBackTitleVisible: false,
+            }}
+            name="Feed"
+            component={Feed}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </ThemeProvider>
   );
 }

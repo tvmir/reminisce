@@ -1,14 +1,14 @@
-import styled from "styled-components/native";
-import { Pressable } from "react-native";
+import styled from 'styled-components/native';
+import { Pressable, TouchableOpacity } from 'react-native';
 
-const SignupButton = styled(Pressable)`
+const SignupButton = styled(TouchableOpacity)`
   display: flex;
   box-sizing: border-box;
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  padding: 13px 10px;
-  gap: 10px;
+  /* padding: 13px 10px; */
+  /* gap: 10px; */
   position: absolute;
   width: 342px;
   height: 49px;
@@ -17,6 +17,10 @@ const SignupButton = styled(Pressable)`
   background: #101010;
   border: 1px solid #1f1e1e;
   border-radius: 6px;
+`;
+
+const LoginButton = styled(SignupButton)`
+  top: 680px;
 `;
 
 // Login and Verify
@@ -37,4 +41,4 @@ const EditProfileButton = styled(Pressable)`
   border-radius: 30px;
 `;
 
-export { SignupButton, EditProfileButton };
+export { SignupButton, EditProfileButton, LoginButton };
