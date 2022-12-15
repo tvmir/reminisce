@@ -9,6 +9,7 @@ import { KeyboardAvoidingView, Text, TextInput, View } from 'react-native';
 import styled from 'styled-components/native';
 import { auth } from '../api/firebase';
 import { LoginButton, SignupButton } from '../components/ui/Button';
+import { horizontalScale, moderateScale, verticalScale } from '../util/scale';
 
 export default function Login() {
   const [email, setEmail] = useState<string>('');
@@ -50,7 +51,7 @@ export default function Login() {
   };
 
   return (
-    <Container behavior="padding">
+    <Wrapper behavior="padding">
       <Header>Login</Header>
       <InputContainer>
         <Input
@@ -79,11 +80,18 @@ export default function Login() {
       <LoginButton onPress={handleLogin} activeOpacity={0.8}>
         <ButtonText>Login</ButtonText>
       </LoginButton>
-    </Container>
+    </Wrapper>
   );
 }
 
 // Styles
+const Wrapper = styled(KeyboardAvoidingView)`
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  background-color: ${(p) => p.theme.colors.background};
+`;
+
 const ButtonText = styled(Text)`
   /* font-family: 'system font'; */
   font-style: normal;
@@ -95,10 +103,10 @@ const ButtonText = styled(Text)`
 
 const Header = styled(Text)`
   position: absolute;
-  width: 76px;
-  height: 42px;
-  left: 21px;
-  top: 110px;
+  width: ${horizontalScale(76)};
+  height: ${verticalScale(42)};
+  left: ${horizontalScale(21)};
+  top: ${verticalScale(110)};
   /* font-family: 'Poppins'; */
   font-style: normal;
   font-weight: 600;
@@ -107,15 +115,17 @@ const Header = styled(Text)`
 
   color: ${(p) => p.theme.colors.primary};
 `;
-const Container = styled(KeyboardAvoidingView)`
-  flex: 1;
-  justify-content: center;
-  align-items: center;
-  background-color: ${(p) => p.theme.colors.background};
-`;
 
 const InputContainer = styled(View)`
-  width: 80%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  padding: 0px 6px 0px 0px;
+  position: absolute;
+  height: ${horizontalScale(157)};
+  width: ${verticalScale(342)};
+  left: ${horizontalScale(19)};
+  top: ${verticalScale(180)};
 `;
 
 const Input = styled(TextInput)`
@@ -123,12 +133,10 @@ const Input = styled(TextInput)`
   flex-direction: row;
   align-items: center;
   padding: 15px 15px;
-  margin-top: 20px;
-
+  margin-top: ${verticalScale(20)};
   width: 100%;
-
   background: #050505;
   border: 1px solid #1d1d1d;
-  border-radius: 4px;
+  border-radius: ${moderateScale(4)};
   color: white;
 `;
