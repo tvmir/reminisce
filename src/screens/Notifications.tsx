@@ -2,10 +2,10 @@ import { Text, View } from 'react-native';
 import React from 'react';
 import styled from 'styled-components/native';
 
-export default function Feed() {
+export default function Notifications() {
   return (
     <Wrapper>
-      <Text>Feed</Text>
+      <Text>Notifications</Text>
     </Wrapper>
   );
 }

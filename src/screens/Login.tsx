@@ -22,7 +22,7 @@ export default function Login() {
     const unsub = onAuthStateChanged(auth, (user) => {
       if (user) {
         // @ts-ignore
-        navigation.navigate('Feed');
+        navigation.navigate('Main');
       }
     });
     return unsub;
