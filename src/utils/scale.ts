@@ -5,6 +5,8 @@ const { width, height } = Dimensions.get('window');
 const guidelineBaseWidth = 375;
 const guidelineBaseHeight = 812;
 
+// These 3 functions are used to make our app UI responsive across all
+// screen sizes without worrying about tweaking the dimensions
 const horizontalScale = (size: number) => (width / guidelineBaseWidth) * size;
 const verticalScale = (size: number) => (height / guidelineBaseHeight) * size;
 const moderateScale = (size: number, factor = 0.5) =>
