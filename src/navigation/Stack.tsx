@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from '../screens/Login';
-import Feed from '../screens/Feed';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../api/firebase';
 import { View, Text } from 'react-native';
 import { Provider } from 'react-redux';
 import { store } from '../../src/context/store/index';
+import Map from '../screens/Map';
+import Main from '../screens/Main';
 
 const Stack = createNativeStackNavigator();
 
@@ -56,8 +57,17 @@ export default function MainStackNavigator() {
                 headerShown: false,
                 headerBackTitleVisible: false,
               }}
-              name="Feed"
-              component={Feed}
+              name="Main"
+              component={Main}
+            />
+            <Stack.Screen
+              options={{
+                headerShown: true,
+                headerBackTitleVisible: false,
+                headerBackVisible: true,
+              }}
+              name="Map"
+              component={Map}
             />
           </Stack.Navigator>
         </Provider>
