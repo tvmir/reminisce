@@ -7,9 +7,10 @@ import {
 import { useEffect, useState } from 'react';
 import { KeyboardAvoidingView, Text, TextInput, View } from 'react-native';
 import styled from 'styled-components/native';
-import { auth } from '../api/firebase';
-import { LoginButton, SignupButton } from '../components/ui/Button';
-import { horizontalScale, moderateScale, verticalScale } from '../util/scale';
+import { auth, db } from '../api/firebase';
+import { LoginButton, SignupButton } from '../ui/shared/Button';
+import { horizontalScale, moderateScale, verticalScale } from '../utils/scale';
+import { doc, setDoc } from 'firebase/firestore';
 
 export default function Login() {
   const [email, setEmail] = useState<string>('');
@@ -30,8 +31,13 @@ export default function Login() {
   // Handling signup and login functionalities
   const handleSignup = () => {
     createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
+      .then(async (userCredential) => {
         const user = userCredential.user;
+        // Adding user details to our Firestore database
+        // TODO: Add more params (name, username, etc.) and move this to a separate screen
+        await setDoc(doc(db, 'users', user.uid), {
+          email: user.email,
+        });
         console.log('Signing up with', user.email);
       })
       .catch((err) => {
@@ -103,16 +109,15 @@ const ButtonText = styled(Text)`
 
 const Header = styled(Text)`
   position: absolute;
-  width: ${horizontalScale(76)};
-  height: ${verticalScale(42)};
-  left: ${horizontalScale(21)};
-  top: ${verticalScale(110)};
+  width: ${horizontalScale(76)}px;
+  height: ${verticalScale(42)}px;
+  left: ${horizontalScale(21)}px;
+  top: ${verticalScale(110)}px;
   /* font-family: 'Poppins'; */
   font-style: normal;
   font-weight: 600;
   font-size: 28px;
   line-height: 42px;
-
   color: ${(p) => p.theme.colors.primary};
 `;
 
@@ -122,10 +127,10 @@ const InputContainer = styled(View)`
   align-items: flex-end;
   padding: 0px 6px 0px 0px;
   position: absolute;
-  height: ${horizontalScale(157)};
-  width: ${verticalScale(342)};
-  left: ${horizontalScale(19)};
-  top: ${verticalScale(180)};
+  height: ${horizontalScale(157)}px;
+  width: ${verticalScale(342)}px;
+  left: ${horizontalScale(19)}px;
+  top: ${verticalScale(180)}px;
 `;
 
 const Input = styled(TextInput)`
@@ -133,10 +138,10 @@ const Input = styled(TextInput)`
   flex-direction: row;
   align-items: center;
   padding: 15px 15px;
-  margin-top: ${verticalScale(20)};
+  margin-top: ${verticalScale(20)}px;
   width: 100%;
   background: #050505;
   border: 1px solid #1d1d1d;
-  border-radius: ${moderateScale(4)};
+  border-radius: ${moderateScale(4)}px;
   color: white;
 `;
