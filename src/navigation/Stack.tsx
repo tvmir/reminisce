@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Login from '../screens/Login';
+import Login from '../screens/Auth/Login';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../api/firebase';
 import { View, Text } from 'react-native';
 import { Provider } from 'react-redux';
 import { store } from '../../src/context/store/index';
-import Map from '../screens/Map';
-import Main from '../screens/Main';
+import Home from '../screens/Main/Home';
+import Map from '../screens/Main/Map';
+import Add from '../screens/Scrapbook/Add';
+import { RootStackParamList } from '../utils/types';
+import { theme } from '../ui/shared/Theme';
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function MainStackNavigator() {
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
@@ -57,8 +60,8 @@ export default function MainStackNavigator() {
                 headerShown: false,
                 headerBackTitleVisible: false,
               }}
-              name="Main"
-              component={Main}
+              name="Home"
+              component={Home}
             />
             <Stack.Screen
               options={{
@@ -68,6 +71,23 @@ export default function MainStackNavigator() {
               }}
               name="Map"
               component={Map}
+            />
+            <Stack.Screen
+              options={{
+                headerStyle: {
+                  backgroundColor: theme.colors.background,
+                },
+                headerTitleStyle: {
+                  fontWeight: 'bold',
+                },
+                headerShown: true,
+                headerBackTitle: 'Cancel',
+                headerTitle: 'New Scrapbook',
+                // headerBackVisible: false,
+                // headerBackButtonMenuEnabled: true,
+              }}
+              name="AddScrapbook"
+              component={Add}
             />
           </Stack.Navigator>
         </Provider>

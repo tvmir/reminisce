@@ -7,9 +7,13 @@ import {
 import { useEffect, useState } from 'react';
 import { KeyboardAvoidingView, Text, TextInput, View } from 'react-native';
 import styled from 'styled-components/native';
-import { auth, db } from '../api/firebase';
-import { LoginButton, SignupButton } from '../ui/shared/Button';
-import { horizontalScale, moderateScale, verticalScale } from '../utils/scale';
+import { auth, db } from '../../api/firebase';
+import { LoginButton, SignupButton } from '../../ui/shared/Button';
+import {
+  horizontalScale,
+  moderateScale,
+  verticalScale,
+} from '../../utils/scale';
 import { doc, setDoc } from 'firebase/firestore';
 
 export default function Login() {
@@ -22,7 +26,7 @@ export default function Login() {
     const unsub = onAuthStateChanged(auth, (user) => {
       if (user) {
         // @ts-ignore
-        navigation.navigate('Main');
+        navigation.navigate('Home');
       }
     });
     return unsub;
