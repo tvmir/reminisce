@@ -11,6 +11,8 @@ import Map from '../screens/Main/Map';
 import Add from '../screens/Scrapbook/Add';
 import { RootStackParamList } from '../utils/types';
 import { theme } from '../ui/shared/Theme';
+import CameraScrapbook from '../screens/Scrapbook/Camera';
+import PhoneLibrary from '../screens/Scrapbook/PhoneLibrary';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -81,13 +83,27 @@ export default function MainStackNavigator() {
                   fontWeight: 'bold',
                 },
                 headerShown: true,
-                headerBackTitle: 'Cancel',
+                headerBackTitle: '',
                 headerTitle: 'New Scrapbook',
                 // headerBackVisible: false,
                 // headerBackButtonMenuEnabled: true,
               }}
               name="AddScrapbook"
               component={Add}
+            />
+            <Stack.Screen
+              options={{
+                headerShown: false,
+              }}
+              name="Camera"
+              component={CameraScrapbook}
+            />
+            <Stack.Screen
+              options={{
+                headerShown: false,
+              }}
+              name="PhoneLibrary"
+              component={PhoneLibrary}
             />
           </Stack.Navigator>
         </Provider>

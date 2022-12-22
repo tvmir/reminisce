@@ -2,6 +2,7 @@ import { DefaultTheme, Theme } from '@react-navigation/native';
 
 const theme: Theme = {
   ...DefaultTheme,
+  dark: true,
   colors: {
     primary: '#EDEDED',
     background: '#050505',
