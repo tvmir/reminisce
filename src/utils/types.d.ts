@@ -6,6 +6,8 @@ export type RootStackParamList = {
   Home: undefined;
   Map: undefined;
   AddScrapbook: undefined;
+  Camera: undefined;
+  PhoneLibrary: undefined;
 };
 
 export type BottomTabParamList = {

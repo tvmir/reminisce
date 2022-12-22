@@ -1,27 +1,27 @@
-import { SafeAreaView, Text } from 'react-native';
 import React, { useEffect } from 'react';
 import styled from 'styled-components/native';
-import { auth } from '../../api/firebase';
-import { StackActions, useNavigation } from '@react-navigation/core';
 import { bindActionCreators } from 'redux';
 import { fetchUser } from '../../context/actions';
 import { connect } from 'react-redux';
 import { AppDispatch } from '../../context/store';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Profile from './Profile';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Feather from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Search from './Search';
 import Notifications from './Notifications';
 import Feed from './Feed';
 import { theme } from '../../ui/shared/Theme';
-import { BottomTabParamList } from '../../utils/types';
+import { BottomTabParamList, RootStackParamList } from '../../utils/types';
+import { Text, TouchableOpacity, View } from 'react-native';
+import { horizontalScale, verticalScale } from '../../utils/scale';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 
 interface UserProps {
   currentUser: any;
   fetchUser: () => void;
+  navigation: NativeStackNavigationProp<RootStackParamList, 'AddScrapbook'>;
 }
 
 const FillInComponent = () => {
@@ -30,48 +30,57 @@ const FillInComponent = () => {
 
 const Tab = createBottomTabNavigator<BottomTabParamList>();
 
-function Home({ currentUser, fetchUser }: UserProps) {
-  const navigation = useNavigation();
-
-  const handleLogout = () => {
-    auth
-      .signOut()
-      .then(() => {
-        navigation.dispatch(StackActions.replace('Login'));
-      })
-      .catch((err) => {
-        console.log(err.code, err.message);
-      });
-  };
-
+function Home({ currentUser, fetchUser, navigation }: UserProps) {
   useEffect(() => {
     fetchUser();
   }, []);
-
   console.log(currentUser);
 
   return (
-    // <Wrapper>
-    //   <Text>Email: {currentUser?.email} is logged in</Text>
-    //   <SignupButton onPress={handleLogout}>
-    //     <ButtonText>Logout</ButtonText>
-    //   </SignupButton>
-    // </Wrapper>
     <Tab.Navigator
       initialRouteName="Feed"
       screenOptions={{
+        // headerShown: true,
         tabBarStyle: {
-          borderTopWidth: 0,
           elevation: 0,
-          shadowOpacity: 0,
+          borderTopColor: theme.colors.background,
+          backgroundColor: theme.colors.background,
         },
+        tabBarActiveTintColor: '#fff',
+        tabBarInactiveTintColor: '#fff',
+        tabBarShowLabel: false,
       }}
     >
       <Tab.Screen
         name="Feed"
         component={Feed}
         options={{
-          headerShown: false,
+          headerShown: true,
+          headerTitle: '',
+          headerStyle: {
+            backgroundColor: theme.colors.background,
+            elevation: 0,
+            shadowOpacity: 0,
+            borderBottomWidth: 0,
+          },
+          headerLeft: () => <TextLogo>reminisce</TextLogo>,
+          headerRight: () => (
+            <>
+              <AddBtn
+                onPress={() => navigation.navigate('AddScrapbook')}
+                activeOpacity={0.8}
+              >
+                <AntDesign name="pluscircleo" size={25} color="white" />
+              </AddBtn>
+              <MessageBtn activeOpacity={0.8}>
+                <Ionicons
+                  name="ios-chatbubble-outline"
+                  size={27}
+                  color="white"
+                />
+              </MessageBtn>
+            </>
+          ),
           tabBarIcon: ({ focused, color }) => (
             <Ionicons
               name={focused ? 'ios-home' : 'ios-home-outline'}
@@ -79,12 +88,6 @@ function Home({ currentUser, fetchUser }: UserProps) {
               size={26}
             />
           ),
-          tabBarShowLabel: false,
-          tabBarStyle: {
-            backgroundColor: theme.colors.background,
-          },
-          tabBarActiveTintColor: '#fff',
-          tabBarInactiveTintColor: '#fff',
         }}
       />
       <Tab.Screen
@@ -95,12 +98,6 @@ function Home({ currentUser, fetchUser }: UserProps) {
           tabBarIcon: ({ color }) => (
             <Feather name="search" color={color} size={26} />
           ),
-          tabBarShowLabel: false,
-          tabBarStyle: {
-            backgroundColor: theme.colors.background,
-          },
-          tabBarActiveTintColor: '#fff',
-          tabBarInactiveTintColor: '#fff',
         }}
       />
       <Tab.Screen
@@ -121,12 +118,6 @@ function Home({ currentUser, fetchUser }: UserProps) {
               size={26}
             />
           ),
-          tabBarShowLabel: false,
-          tabBarStyle: {
-            backgroundColor: theme.colors.background,
-          },
-          tabBarActiveTintColor: '#fff',
-          tabBarInactiveTintColor: '#fff',
         }}
       />
       <Tab.Screen
@@ -141,12 +132,6 @@ function Home({ currentUser, fetchUser }: UserProps) {
               size={26}
             />
           ),
-          tabBarShowLabel: false,
-          tabBarStyle: {
-            backgroundColor: theme.colors.background,
-          },
-          tabBarActiveTintColor: '#fff',
-          tabBarInactiveTintColor: '#fff',
         }}
       />
       <Tab.Screen
@@ -154,22 +139,20 @@ function Home({ currentUser, fetchUser }: UserProps) {
         component={Profile}
         options={{
           headerShown: false,
-          tabBarIcon: ({ color }) => (
-            <FontAwesome name="user-circle" color={color} size={26} />
+          tabBarIcon: ({ focused, color }) => (
+            <Ionicons
+              name={focused ? 'ios-person' : 'ios-person-outline'}
+              color={color}
+              size={26}
+            />
           ),
-          tabBarShowLabel: false,
-          tabBarStyle: {
-            backgroundColor: theme.colors.background,
-          },
-          tabBarActiveTintColor: '#fff',
-          tabBarInactiveTintColor: '#fff',
         }}
       />
     </Tab.Navigator>
   );
 }
 
-const mapStateToProps = (state: any) => ({
+export const mapStateToProps = (state: any) => ({
   currentUser: state.userState.currentUser,
 });
 
@@ -178,16 +161,22 @@ const mapDispatchProps = (dispatch: AppDispatch) =>
 
 export default connect(mapStateToProps, mapDispatchProps)(Home);
 
-const Wrapper = styled(SafeAreaView)`
-  flex: 1;
-  justify-content: center;
-  align-items: center;
+// Styles
+const TextLogo = styled(Text)`
+  font-family: 'Montserrat';
+  font-size: 27px;
+  top: ${verticalScale(3)}px;
+  left: ${horizontalScale(12)}px;
+  letter-spacing: 0.02em;
+  color: #ffffff;
 `;
 
-const ButtonText = styled(Text)`
-  font-style: normal;
-  font-weight: 600;
-  font-size: 15px;
-  line-height: 22px;
-  color: ${(p) => p.theme.colors.primary};
+const AddBtn = styled(TouchableOpacity)`
+  right: ${horizontalScale(12)}px;
+  top: ${verticalScale(16)}px;
+`;
+
+const MessageBtn = styled(TouchableOpacity)`
+  right: ${horizontalScale(55)}px;
+  bottom: ${verticalScale(10)}px;
 `;

@@ -71,6 +71,7 @@ export default function Login() {
           autoCapitalize="none"
           autoCorrect={false}
           value={email}
+          keyboardAppearance="dark"
           onChangeText={(text) => setEmail(text)}
         />
 
@@ -78,6 +79,7 @@ export default function Login() {
           placeholder="Password"
           placeholderTextColor="#edededb2"
           value={password}
+          keyboardAppearance="dark"
           onChangeText={(text) => setPassword(text)}
           secureTextEntry
         />
