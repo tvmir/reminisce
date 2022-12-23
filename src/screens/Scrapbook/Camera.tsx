@@ -3,32 +3,18 @@ import styled from 'styled-components/native';
 import { Camera, CameraType } from 'expo-camera';
 import { useState, useRef } from 'react';
 import { Button, Text, TouchableOpacity, View, Image } from 'react-native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../utils/types';
 
-export default function CameraScrapbook() {
+interface SaveImgProps {
+  navigation: NativeStackNavigationProp<RootStackParamList, 'PostScrapbook'>;
+}
+
+export default function CameraScrapbook({ navigation }: SaveImgProps) {
   const [type, setType] = useState<CameraType>(CameraType.back);
   const [image, setImage] = useState<string | null>(null);
   const cameraRef = useRef<Camera>(null);
   const [permission, requestPermission] = Camera.useCameraPermissions();
-
-  if (!permission) {
-    return <View />;
-  }
-
-  if (!permission.granted) {
-    // Camera permissions are not granted yet
-    return (
-      <Wrapper>
-        <Text style={{ justifyContent: 'center', textAlign: 'center' }}>
-          We need your permission to show the camera
-        </Text>
-        <Button onPress={requestPermission} title="grant permission" />
-        {/* <Button
-          onPress={requestLibraryPermission}
-          title="grant lib permission"
-        /> */}
-      </Wrapper>
-    );
-  }
 
   // Toggling the front and back camera
   const toggleCameraType = () => {
@@ -49,19 +35,39 @@ export default function CameraScrapbook() {
   };
 
   return (
-    <Wrapper>
-      <CameraContainer ref={cameraRef} type={type} ratio={'1:1'}>
-        <ButtonContainer>
-          <Btn onPress={toggleCameraType}>
-            <BtnText>Flip</BtnText>
-          </Btn>
-          <Btn2 onPress={takePicture}>
-            <BtnText>Pic</BtnText>
-          </Btn2>
-        </ButtonContainer>
-      </CameraContainer>
-      {image && <Image source={{ uri: image }} style={{ flex: 1 }} />}
-    </Wrapper>
+    <>
+      {!permission ? (
+        <View />
+      ) : !permission.granted ? (
+        <Wrapper>
+          <Text style={{ justifyContent: 'center', textAlign: 'center' }}>
+            We need your permission to show the camera
+          </Text>
+          <Button onPress={requestPermission} title="grant permission" />
+        </Wrapper>
+      ) : (
+        <Wrapper>
+          <CameraContainer ref={cameraRef} type={type} ratio={'1:1'}>
+            <ButtonContainer>
+              <Btn onPress={toggleCameraType}>
+                <BtnText>Flip</BtnText>
+              </Btn>
+              <Btn2 onPress={takePicture}>
+                <BtnText>Pic</BtnText>
+              </Btn2>
+              <Btn3
+                onPress={() =>
+                  navigation.navigate('PostScrapbook', { image } as any)
+                }
+              >
+                <BtnText>Save</BtnText>
+              </Btn3>
+            </ButtonContainer>
+          </CameraContainer>
+          {image && <Image source={{ uri: image }} style={{ flex: 1 }} />}
+        </Wrapper>
+      )}
+    </>
   );
 }
 
@@ -72,7 +78,7 @@ const Wrapper = styled(View)`
 `;
 
 const CameraContainer = styled(Camera)`
-  padding-top: 150px;
+  padding-top: 250px;
 `;
 
 const ButtonContainer = styled(View)`

@@ -3,12 +3,18 @@ import { Text, TouchableOpacity, View } from 'react-native';
 import styled from 'styled-components/native';
 import { horizontalScale, verticalScale } from '../../utils/scale';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { RootStackParamList } from '../../utils/types';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 interface AddProps {
-  navigation: any;
+  navigation: NativeStackNavigationProp<
+    RootStackParamList,
+    'Camera',
+    'PhoneLibrary'
+  >;
 }
 
-export default function Add({ navigation }: AddProps) {
+export default function AddScrapbook({ navigation }: AddProps) {
   return (
     <Wrapper>
       <Header>Start a Scrapbook</Header>
@@ -31,6 +37,7 @@ export default function Add({ navigation }: AddProps) {
   );
 }
 
+// Styles
 const Wrapper = styled(View)`
   position: absolute;
   width: ${horizontalScale(229)}px;
