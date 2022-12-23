@@ -9,8 +9,10 @@
 - [ ] Introduce a "For You" screen (if we decide to go this route)
 
 ### In Progress
-- [ ] Add a "scrapbooks" collection inside the database for storing description, tags, location, and images
+
 - [ ] Customize the camera and library screens to fit the app's theme
 
 ### Done
 - [x] Add camera and phone library support for scrapbook creation
+- [x] Add a "scrapbooks" collection inside the database for storing the scrapbook's description, tags, location, and images
+- [x] Store the images taken from the camera to the database under the "user_scrapbooks" collection, which associates each scrapbook by the users' id

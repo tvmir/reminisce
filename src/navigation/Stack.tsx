@@ -8,11 +8,12 @@ import { Provider } from 'react-redux';
 import { store } from '../../src/context/store/index';
 import Home from '../screens/Main/Home';
 import Map from '../screens/Main/Map';
-import Add from '../screens/Scrapbook/Add';
 import { RootStackParamList } from '../utils/types';
 import { theme } from '../ui/shared/Theme';
 import CameraScrapbook from '../screens/Scrapbook/Camera';
 import PhoneLibrary from '../screens/Scrapbook/PhoneLibrary';
+import PostScrapbook from '../screens/Scrapbook/PostScrapbook';
+import AddScrapbook from '../screens/Scrapbook/AddScrapbook';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -85,11 +86,9 @@ export default function MainStackNavigator() {
                 headerShown: true,
                 headerBackTitle: '',
                 headerTitle: 'New Scrapbook',
-                // headerBackVisible: false,
-                // headerBackButtonMenuEnabled: true,
               }}
               name="AddScrapbook"
-              component={Add}
+              component={AddScrapbook}
             />
             <Stack.Screen
               options={{
@@ -97,6 +96,7 @@ export default function MainStackNavigator() {
               }}
               name="Camera"
               component={CameraScrapbook}
+              // navigationKey="Camera"
             />
             <Stack.Screen
               options={{
@@ -104,6 +104,15 @@ export default function MainStackNavigator() {
               }}
               name="PhoneLibrary"
               component={PhoneLibrary}
+            />
+            <Stack.Screen
+              options={{
+                headerShown: true,
+                headerTitle: 'Post',
+              }}
+              name="PostScrapbook"
+              // @ts-ignore TODO: Fix this
+              component={PostScrapbook}
             />
           </Stack.Navigator>
         </Provider>

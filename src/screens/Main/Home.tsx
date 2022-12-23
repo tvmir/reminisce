@@ -17,6 +17,7 @@ import { Text, TouchableOpacity, View } from 'react-native';
 import { horizontalScale, verticalScale } from '../../utils/scale';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 interface UserProps {
   currentUser: any;
@@ -111,12 +112,8 @@ function Home({ currentUser, fetchUser, navigation }: UserProps) {
         })}
         options={{
           headerShown: false,
-          tabBarIcon: ({ focused, color }) => (
-            <Ionicons
-              name={focused ? 'ios-map' : 'ios-map-outline'}
-              color={color}
-              size={26}
-            />
+          tabBarIcon: ({ color }) => (
+            <Feather name={'map-pin'} color={color} size={25} />
           ),
         }}
       />

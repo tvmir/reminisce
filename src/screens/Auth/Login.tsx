@@ -5,7 +5,14 @@ import {
   signInWithEmailAndPassword,
 } from 'firebase/auth';
 import { useEffect, useState } from 'react';
-import { KeyboardAvoidingView, Text, TextInput, View } from 'react-native';
+import {
+  Keyboard,
+  KeyboardAvoidingView,
+  Text,
+  TextInput,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native';
 import styled from 'styled-components/native';
 import { auth, db } from '../../api/firebase';
 import { LoginButton, SignupButton } from '../../ui/shared/Button';
@@ -61,38 +68,40 @@ export default function Login() {
   };
 
   return (
-    <Wrapper behavior="padding">
-      <Header>Login</Header>
-      <InputContainer>
-        <Input
-          placeholder="Email"
-          placeholderTextColor="#edededb2"
-          keyboardType="email-address"
-          autoCapitalize="none"
-          autoCorrect={false}
-          value={email}
-          keyboardAppearance="dark"
-          onChangeText={(text) => setEmail(text)}
-        />
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <Wrapper behavior="padding">
+        <Header>Login</Header>
+        <InputContainer>
+          <Input
+            placeholder="Email"
+            placeholderTextColor="#edededb2"
+            keyboardType="email-address"
+            autoCapitalize="none"
+            autoCorrect={false}
+            value={email}
+            keyboardAppearance="dark"
+            onChangeText={(text) => setEmail(text)}
+          />
 
-        <Input
-          placeholder="Password"
-          placeholderTextColor="#edededb2"
-          value={password}
-          keyboardAppearance="dark"
-          onChangeText={(text) => setPassword(text)}
-          secureTextEntry
-        />
-      </InputContainer>
+          <Input
+            placeholder="Password"
+            placeholderTextColor="#edededb2"
+            value={password}
+            keyboardAppearance="dark"
+            onChangeText={(text) => setPassword(text)}
+            secureTextEntry
+          />
+        </InputContainer>
 
-      <SignupButton onPress={handleSignup} activeOpacity={0.8}>
-        <ButtonText>Sign Up</ButtonText>
-      </SignupButton>
+        <SignupButton onPress={handleSignup} activeOpacity={0.8}>
+          <ButtonText>Sign Up</ButtonText>
+        </SignupButton>
 
-      <LoginButton onPress={handleLogin} activeOpacity={0.8}>
-        <ButtonText>Login</ButtonText>
-      </LoginButton>
-    </Wrapper>
+        <LoginButton onPress={handleLogin} activeOpacity={0.8}>
+          <ButtonText>Login</ButtonText>
+        </LoginButton>
+      </Wrapper>
+    </TouchableWithoutFeedback>
   );
 }
 
@@ -105,7 +114,6 @@ const Wrapper = styled(KeyboardAvoidingView)`
 `;
 
 const ButtonText = styled(Text)`
-  /* font-family: 'system font'; */
   font-style: normal;
   font-weight: 600;
   font-size: 15px;
