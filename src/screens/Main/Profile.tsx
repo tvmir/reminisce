@@ -1,11 +1,16 @@
 import React from 'react';
-import { Text, View } from 'react-native';
+import { FlatList, Image, Text, View } from 'react-native';
 import styled from 'styled-components/native';
 import { StackActions, useNavigation } from '@react-navigation/native';
 import { auth } from '../../api/firebase';
 import { SignupButton } from '../../ui/shared/Button';
+import { useAppSelector } from '../../utils/hooks';
 
 export default function Profile() {
+  const scrapbooks = useAppSelector((state) => state.scrapbooks.scrapbooks);
+  const currentUser = useAppSelector((state) => state.currentUser.currentUser);
+  console.log({ currentUser, scrapbooks });
+
   const navigation = useNavigation();
 
   const handleLogout = () => {
@@ -22,6 +27,19 @@ export default function Profile() {
   return (
     <Wrapper>
       <T>Profile</T>
+      <T>{currentUser?.email}</T>
+      <ListWrapper>
+        <FlatList
+          numColumns={2}
+          horizontal={false}
+          data={scrapbooks}
+          renderItem={({ item }) => (
+            <ImgWrapper>
+              <Img source={{ uri: item.downloadURL }} />
+            </ImgWrapper>
+          )}
+        />
+      </ListWrapper>
       <SignupButton onPress={handleLogout}>
         <ButtonText>Logout</ButtonText>
       </SignupButton>
@@ -31,8 +49,21 @@ export default function Profile() {
 
 const Wrapper = styled(View)`
   flex: 1;
-  justify-content: center;
-  align-items: center;
+  margin-top: 60px;
+`;
+
+const ListWrapper = styled(View)`
+  margin: 15px;
+`;
+
+const ImgWrapper = styled(View)`
+  flex: 1;
+  flex-direction: row;
+`;
+
+const Img = styled(Image)`
+  flex: 2;
+  aspect-ratio: 1;
 `;
 
 const ButtonText = styled(Text)`

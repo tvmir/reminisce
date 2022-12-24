@@ -1,10 +1,10 @@
+import React, { useEffect, useState } from 'react';
 import { useNavigation } from '@react-navigation/core';
 import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
   signInWithEmailAndPassword,
 } from 'firebase/auth';
-import { useEffect, useState } from 'react';
 import {
   Keyboard,
   KeyboardAvoidingView,

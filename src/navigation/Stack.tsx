@@ -3,9 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from '../screens/Auth/Login';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../api/firebase';
-import { View, Text } from 'react-native';
 import { Provider } from 'react-redux';
-import { store } from '../../src/context/store/index';
 import Home from '../screens/Main/Home';
 import Map from '../screens/Main/Map';
 import { RootStackParamList } from '../utils/types';
@@ -14,6 +12,8 @@ import CameraScrapbook from '../screens/Scrapbook/Camera';
 import PhoneLibrary from '../screens/Scrapbook/PhoneLibrary';
 import PostScrapbook from '../screens/Scrapbook/PostScrapbook';
 import AddScrapbook from '../screens/Scrapbook/AddScrapbook';
+import { store } from '../features/store';
+import Loading from '../ui/components/Loading';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -22,13 +22,19 @@ export default function MainStackNavigator() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
   useEffect(() => {
+    setTimeout(() => {
+      setIsLoaded(true);
+    }, 5000);
+  }, [setIsLoaded]);
+
+  useEffect(() => {
     const unsub = onAuthStateChanged(auth, (user) => {
       if (!user) {
         setIsLoggedIn(false);
         setIsLoaded(true);
       } else {
-        setIsLoggedIn(true);
         setIsLoaded(true);
+        setIsLoggedIn(true);
       }
     });
     return unsub;
@@ -38,11 +44,9 @@ export default function MainStackNavigator() {
     <>
       {/* TODO: Make a custom loading screen */}
       {!isLoaded ? (
-        <View
-          style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
-        >
-          <Text>Loading...</Text>
-        </View>
+        <>
+          <Loading />
+        </>
       ) : !isLoggedIn ? (
         <Stack.Navigator>
           <Stack.Screen
