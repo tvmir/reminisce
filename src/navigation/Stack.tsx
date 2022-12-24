@@ -42,7 +42,6 @@ export default function MainStackNavigator() {
 
   return (
     <>
-      {/* TODO: Make a custom loading screen */}
       {!isLoaded ? (
         <>
           <Loading />
