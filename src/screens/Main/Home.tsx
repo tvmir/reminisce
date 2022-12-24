@@ -1,9 +1,7 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components/native';
-import { bindActionCreators } from 'redux';
-import { fetchUser } from '../../context/actions';
-import { connect } from 'react-redux';
-import { AppDispatch } from '../../context/store';
+import { fetchUser } from '../../features/users/currentUserSlice';
+import { fetchUserScrapbooks } from '../../features/scrapbooks/scrapbooksSlice';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Profile from './Profile';
 import Feather from 'react-native-vector-icons/Feather';
@@ -13,16 +11,18 @@ import Notifications from './Notifications';
 import Feed from './Feed';
 import { theme } from '../../ui/shared/Theme';
 import { BottomTabParamList, RootStackParamList } from '../../utils/types';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { Text, TouchableOpacity } from 'react-native';
 import { horizontalScale, verticalScale } from '../../utils/scale';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { useAppDispatch } from '../../utils/hooks';
 
 interface UserProps {
-  currentUser: any;
-  fetchUser: () => void;
-  navigation: NativeStackNavigationProp<RootStackParamList, 'AddScrapbook'>;
+  navigation: NativeStackNavigationProp<
+    RootStackParamList,
+    'AddScrapbook',
+    'Map'
+  >;
 }
 
 const FillInComponent = () => {
@@ -31,17 +31,19 @@ const FillInComponent = () => {
 
 const Tab = createBottomTabNavigator<BottomTabParamList>();
 
-function Home({ currentUser, fetchUser, navigation }: UserProps) {
+export default function Home({ navigation }: UserProps) {
+  const dispatch = useAppDispatch();
+
+  // Getting current user's data and their scrapbooks when loading the app
   useEffect(() => {
-    fetchUser();
+    dispatch(fetchUser());
+    dispatch(fetchUserScrapbooks());
   }, []);
-  console.log(currentUser);
 
   return (
     <Tab.Navigator
       initialRouteName="Feed"
       screenOptions={{
-        // headerShown: true,
         tabBarStyle: {
           elevation: 0,
           borderTopColor: theme.colors.background,
@@ -105,8 +107,8 @@ function Home({ currentUser, fetchUser, navigation }: UserProps) {
         name="MapFC"
         component={FillInComponent}
         listeners={({ navigation }) => ({
-          tabPress: (event) => {
-            event.preventDefault();
+          tabPress: (e) => {
+            e.preventDefault();
             navigation.navigate('Map');
           },
         })}
@@ -148,15 +150,6 @@ function Home({ currentUser, fetchUser, navigation }: UserProps) {
     </Tab.Navigator>
   );
 }
-
-export const mapStateToProps = (state: any) => ({
-  currentUser: state.userState.currentUser,
-});
-
-const mapDispatchProps = (dispatch: AppDispatch) =>
-  bindActionCreators({ fetchUser }, dispatch);
-
-export default connect(mapStateToProps, mapDispatchProps)(Home);
 
 // Styles
 const TextLogo = styled(Text)`

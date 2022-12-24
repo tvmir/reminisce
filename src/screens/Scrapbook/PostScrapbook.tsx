@@ -33,8 +33,7 @@ export default function PostScrapbook({ route, navigation }: PostProps) {
 
   const upload = async () => {
     const storage = getStorage();
-    const uri = image;
-    const response = await fetch(uri);
+    const response = await fetch(image);
     const path = `scrapbooks/${auth.currentUser?.uid}/${Math.random().toString(
       36
     )}`;
