@@ -3,7 +3,9 @@ import { doc, DocumentData, getDoc } from 'firebase/firestore';
 import { auth, db } from '../../api/firebase';
 import { RootState } from '../store';
 
-interface User {
+export interface User {
+  name: string;
+  username: string;
   email: string;
 }
 
@@ -13,6 +15,8 @@ interface UserData {
 
 const initialState: UserData = {
   currentUser: {
+    name: '',
+    username: '',
     email: '',
   },
 };

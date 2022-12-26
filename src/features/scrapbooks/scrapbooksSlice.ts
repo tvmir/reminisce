@@ -27,8 +27,8 @@ export const fetchUserScrapbooks = createAsyncThunk(
       orderBy('createdAt', 'desc')
     );
 
-    const querySnapshot = await getDocs(q);
-    let scrapbooks = querySnapshot.docs.map((doc) => {
+    const scrapbooksQuerySnapshot = await getDocs(q);
+    let scrapbooks = scrapbooksQuerySnapshot.docs.map((doc) => {
       return { id: doc.id, ...doc.data() };
     });
     return scrapbooks;

@@ -6,7 +6,7 @@ export default function Loading() {
   return (
     <Wrapper>
       <LoadingLogo>reminisce</LoadingLogo>
-      <Load size="large" color="white" />
+      <Load size="small" color="white" />
     </Wrapper>
   );
 }
@@ -20,14 +20,14 @@ const Wrapper = styled(View)`
 `;
 
 const Load = styled(ActivityIndicator)`
-  top: 100px;
+  top: 30%;
 `;
 
 const LoadingLogo = styled(Text)`
   position: absolute;
-  width: 137px;
+  width: 130px;
   height: 33px;
-  left: 126px;
+  left: 120px;
   top: 405px;
 
   font-family: 'Montserrat';

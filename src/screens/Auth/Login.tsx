@@ -1,10 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigation } from '@react-navigation/core';
-import {
-  createUserWithEmailAndPassword,
-  onAuthStateChanged,
-  signInWithEmailAndPassword,
-} from 'firebase/auth';
+import { onAuthStateChanged, signInWithEmailAndPassword } from 'firebase/auth';
 import {
   Keyboard,
   KeyboardAvoidingView,
@@ -14,53 +9,42 @@ import {
   View,
 } from 'react-native';
 import styled from 'styled-components/native';
-import { auth, db } from '../../api/firebase';
-import { LoginButton, SignupButton } from '../../ui/shared/Button';
+import { auth } from '../../api/firebase';
+import { LoginButton } from '../../ui/shared/Button';
 import {
   horizontalScale,
   moderateScale,
   verticalScale,
 } from '../../utils/scale';
-import { doc, setDoc } from 'firebase/firestore';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../utils/types';
 
-export default function Login() {
+interface LoginProps {
+  navigation: NativeStackNavigationProp<RootStackParamList, 'Login'>;
+}
+
+export default function Login({ navigation }: LoginProps) {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-
-  const navigation = useNavigation();
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (user) => {
       if (user) {
-        // @ts-ignore
         navigation.navigate('Home');
       }
     });
     return unsub;
   }, []); // runs once
 
-  // Handling signup and login functionalities
-  const handleSignup = () => {
-    createUserWithEmailAndPassword(auth, email, password)
-      .then(async (userCredential) => {
-        const user = userCredential.user;
-        // Adding user details to our Firestore database
-        // TODO: Add more params (name, username, etc.) and move this to a separate screen
-        await setDoc(doc(db, 'users', user.uid), {
-          email: user.email,
-        });
-        console.log('Signing up with', user.email);
-      })
-      .catch((err) => {
-        console.log(err.code, err.message);
-      });
-  };
-
   const handleLogin = () => {
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const user = userCredential.user;
-        console.log('Logging in with', user.email);
+        console.log(
+          'Logging in with: \n',
+          `Email: ${user.email}\n`,
+          `Username: ${user.displayName}\n`
+        );
       })
       .catch((err) => {
         console.log(err.code, err.message);
@@ -82,7 +66,6 @@ export default function Login() {
             keyboardAppearance="dark"
             onChangeText={(text) => setEmail(text)}
           />
-
           <Input
             placeholder="Password"
             placeholderTextColor="#edededb2"
@@ -93,13 +76,16 @@ export default function Login() {
           />
         </InputContainer>
 
-        <SignupButton onPress={handleSignup} activeOpacity={0.8}>
-          <ButtonText>Sign Up</ButtonText>
-        </SignupButton>
-
         <LoginButton onPress={handleLogin} activeOpacity={0.8}>
           <ButtonText>Login</ButtonText>
         </LoginButton>
+
+        <BottomContainer>
+          <BottomText>Don't have an account?</BottomText>
+          <BottomTextBtn onPress={() => navigation.push('Signup')}>
+            Signup
+          </BottomTextBtn>
+        </BottomContainer>
       </Wrapper>
     </TouchableWithoutFeedback>
   );
@@ -110,7 +96,6 @@ const Wrapper = styled(KeyboardAvoidingView)`
   flex: 1;
   justify-content: center;
   align-items: center;
-  background-color: ${(p) => p.theme.colors.background};
 `;
 
 const ButtonText = styled(Text)`
@@ -123,10 +108,9 @@ const ButtonText = styled(Text)`
 
 const Header = styled(Text)`
   position: absolute;
-  width: ${horizontalScale(76)}px;
   height: ${verticalScale(42)}px;
   left: ${horizontalScale(21)}px;
-  top: ${verticalScale(110)}px;
+  top: ${verticalScale(100)}px;
   /* font-family: 'Poppins'; */
   font-style: normal;
   font-weight: 600;
@@ -158,4 +142,31 @@ const Input = styled(TextInput)`
   border: 1px solid #1d1d1d;
   border-radius: ${moderateScale(4)}px;
   color: white;
+`;
+
+const BottomContainer = styled(View)`
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  color: white;
+  position: absolute;
+  left: 25%;
+  top: 92%;
+`;
+
+const BottomText = styled(Text)`
+  width: 56%;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 18px;
+  color: #747980;
+`;
+
+const BottomTextBtn = styled(Text)`
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 18px;
+  color: #10f0fe;
 `;

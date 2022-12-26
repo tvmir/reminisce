@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Login from '../screens/Auth/Login';
+import Login from '../../screens/Auth/Login';
 import { onAuthStateChanged } from 'firebase/auth';
-import { auth } from '../api/firebase';
+import { auth } from '../../api/firebase';
 import { Provider } from 'react-redux';
-import Home from '../screens/Main/Home';
-import Map from '../screens/Main/Map';
-import { RootStackParamList } from '../utils/types';
-import { theme } from '../ui/shared/Theme';
-import CameraScrapbook from '../screens/Scrapbook/Camera';
-import PhoneLibrary from '../screens/Scrapbook/PhoneLibrary';
-import PostScrapbook from '../screens/Scrapbook/PostScrapbook';
-import AddScrapbook from '../screens/Scrapbook/AddScrapbook';
-import { store } from '../features/store';
-import Loading from '../ui/components/Loading';
+import Home from '../Tab';
+import Map from '../../screens/Map';
+import { RootStackParamList } from '../../utils/types';
+import { theme } from '../../ui/shared/Theme';
+import Images from '../../screens/Scrapbook/Images';
+import Post from '../../screens/Scrapbook/Post';
+import Add from '../../screens/Scrapbook/Add';
+import { store } from '../../features/store';
+import Loading from '../../ui/components/Loading';
+import Signup from '../../screens/Auth/Signup';
+import { Text } from 'react-native';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -57,6 +58,15 @@ export default function MainStackNavigator() {
             name="Login"
             component={Login}
           />
+          <Stack.Screen
+            options={{
+              headerShown: false,
+              headerBackTitleVisible: false,
+              animationTypeForReplace: 'pop',
+            }}
+            name="Signup"
+            component={Signup}
+          />
         </Stack.Navigator>
       ) : (
         <Provider store={store}>
@@ -85,37 +95,43 @@ export default function MainStackNavigator() {
                 },
                 headerTitleStyle: {
                   fontWeight: 'bold',
+                  color: theme.colors.primary,
                 },
                 headerShown: true,
+                headerShadowVisible: false,
                 headerBackTitle: '',
                 headerTitle: 'New Scrapbook',
               }}
-              name="AddScrapbook"
-              component={AddScrapbook}
+              name="Add"
+              component={Add}
             />
             <Stack.Screen
               options={{
-                headerShown: false,
+                headerRight: () => (
+                  <Text style={{ color: 'white', fontSize: 15 }}>Next</Text>
+                ),
+                headerStyle: {
+                  backgroundColor: theme.colors.background,
+                },
+                headerTitleStyle: {
+                  fontWeight: 'bold',
+                },
+                headerShown: true,
+                headerShadowVisible: false,
+                headerBackTitle: '',
+                headerTitle: 'New Scrapbook',
               }}
-              name="Camera"
-              component={CameraScrapbook}
-              // navigationKey="Camera"
-            />
-            <Stack.Screen
-              options={{
-                headerShown: false,
-              }}
-              name="PhoneLibrary"
-              component={PhoneLibrary}
+              name="Images"
+              component={Images}
             />
             <Stack.Screen
               options={{
                 headerShown: true,
                 headerTitle: 'Post',
               }}
-              name="PostScrapbook"
+              name="Post"
               // @ts-ignore TODO: Fix this
-              component={PostScrapbook}
+              component={Post}
             />
           </Stack.Navigator>
         </Provider>
