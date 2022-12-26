@@ -3,12 +3,12 @@ import styled from 'styled-components/native';
 import { fetchUser } from '../../features/users/currentUserSlice';
 import { fetchUserScrapbooks } from '../../features/scrapbooks/scrapbooksSlice';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Profile from './Profile';
+import Profile from '../../screens/Profile';
 import Feather from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import Search from './Search';
-import Notifications from './Notifications';
-import Feed from './Feed';
+import Search from '../../screens/Search';
+import Notifications from '../../screens/Notifications';
+import Feed from '../../screens/Feed';
 import { theme } from '../../ui/shared/Theme';
 import { BottomTabParamList, RootStackParamList } from '../../utils/types';
 import { Text, TouchableOpacity } from 'react-native';
@@ -18,11 +18,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import { useAppDispatch } from '../../utils/hooks';
 
 interface UserProps {
-  navigation: NativeStackNavigationProp<
-    RootStackParamList,
-    'AddScrapbook',
-    'Map'
-  >;
+  navigation: NativeStackNavigationProp<RootStackParamList, 'Home'>;
 }
 
 const FillInComponent = () => {
@@ -70,7 +66,7 @@ export default function Home({ navigation }: UserProps) {
           headerRight: () => (
             <>
               <AddBtn
-                onPress={() => navigation.navigate('AddScrapbook')}
+                onPress={() => navigation.navigate('Add')}
                 activeOpacity={0.8}
               >
                 <AntDesign name="pluscircleo" size={25} color="white" />
@@ -163,7 +159,7 @@ const TextLogo = styled(Text)`
 
 const AddBtn = styled(TouchableOpacity)`
   right: ${horizontalScale(12)}px;
-  top: ${verticalScale(16)}px;
+  top: ${verticalScale(16.5)}px;
 `;
 
 const MessageBtn = styled(TouchableOpacity)`

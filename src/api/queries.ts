@@ -4,10 +4,10 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../utils/types';
 
 // Add a new 'scrapbook' using the user's id and placing it in the 'user_scrapbooks' collection
-export const writeNewUserScrapbook = async (
+export const writeNewScrapbook = async (
   description: string,
   location: string,
-  navigation: NativeStackNavigationProp<RootStackParamList, 'Home'>,
+  navigation: NativeStackNavigationProp<RootStackParamList, 'Post'>,
   downloadURL: string,
   tags: string[] = []
 ) => {

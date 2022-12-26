@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { Text, View, TouchableOpacity } from 'react-native';
 import styled from 'styled-components/native';
 import { horizontalScale, verticalScale } from '../../utils/scale';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -7,32 +7,26 @@ import { RootStackParamList } from '../../utils/types';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 interface AddProps {
-  navigation: NativeStackNavigationProp<
-    RootStackParamList,
-    'Camera',
-    'PhoneLibrary'
-  >;
+  navigation: NativeStackNavigationProp<RootStackParamList, 'Add'>;
 }
 
-export default function AddScrapbook({ navigation }: AddProps) {
+export default function Add({ navigation }: AddProps) {
   return (
     <Wrapper>
       <Header>Start a Scrapbook</Header>
       <HeaderTwo>
         Add content to your scrapbook using the tools below.
       </HeaderTwo>
-      <CameraBtn
-        onPress={() => navigation.navigate('Camera')}
-        activeOpacity={0.8}
-      >
-        <Ionicons name="ios-camera" size={40} color="white" />
-      </CameraBtn>
-      <ImageBtn
-        onPress={() => navigation.navigate('PhoneLibrary')}
-        activeOpacity={0.8}
-      >
-        <Ionicons name="image-outline" size={38} color="white" />
-      </ImageBtn>
+      <View style={{ paddingBottom: 50 }}>
+        <View style={{ marginLeft: 140, paddingTop: 260 }}>
+          <Ionicons
+            name="image-outline"
+            onPress={() => navigation.push('Images')}
+            color="white"
+            size={38}
+          />
+        </View>
+      </View>
     </Wrapper>
   );
 }
@@ -42,7 +36,7 @@ const Wrapper = styled(View)`
   position: absolute;
   width: ${horizontalScale(229)}px;
   left: ${horizontalScale(34)}px;
-  top: ${verticalScale(230)}px;
+  top: ${verticalScale(150)}px;
 `;
 
 const Header = styled(Text)`
@@ -65,19 +59,4 @@ const HeaderTwo = styled(Text)`
   font-size: 13px;
   line-height: 16px;
   color: ${(p) => p.theme.colors.primary};
-`;
-
-const CameraBtn = styled(TouchableOpacity)`
-  /* position: absolute; */
-  width: 40px;
-  height: 40px;
-  left: 70px;
-  top: 300px;
-`;
-
-const ImageBtn = styled(TouchableOpacity)`
-  width: 40px;
-  height: 40px;
-  left: 200px;
-  top: 260px;
 `;
