@@ -11,10 +11,13 @@ import { theme } from '../../ui/shared/Theme';
 import Images from '../../screens/Scrapbook/Images';
 import Post from '../../screens/Scrapbook/Post';
 import Add from '../../screens/Scrapbook/Add';
-import { store } from '../../features/store';
+import { store } from '../../contexts/store';
 import Loading from '../../ui/components/Loading';
 import Signup from '../../screens/Auth/Signup';
-import { Text } from 'react-native';
+import { Text, TouchableOpacity } from 'react-native';
+import Edit from '../../screens/Profile/Edit';
+import Modal from '../../ui/components/Modal';
+import UsersProfile from '../../screens/Profile/UsersProfile';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -53,7 +56,6 @@ export default function MainStackNavigator() {
             options={{
               headerShown: false,
               headerBackTitleVisible: false,
-              animationTypeForReplace: 'pop',
             }}
             name="Login"
             component={Login}
@@ -62,7 +64,6 @@ export default function MainStackNavigator() {
             options={{
               headerShown: false,
               headerBackTitleVisible: false,
-              animationTypeForReplace: 'pop',
             }}
             name="Signup"
             component={Signup}
@@ -81,9 +82,19 @@ export default function MainStackNavigator() {
             />
             <Stack.Screen
               options={{
-                headerShown: true,
-                headerBackTitleVisible: false,
-                headerBackVisible: true,
+                headerTitle: '',
+                headerStyle: {
+                  backgroundColor: 'transparent',
+                },
+                headerSearchBarOptions: {
+                  placeholder: 'Search',
+                  tintColor: theme.colors.primary,
+                  barTintColor: '#000000',
+                },
+                // headerBackTitleVisible: false,
+                headerBackVisible: false,
+                headerBackTitle: 'Cancel',
+                animation: 'none',
               }}
               name="Map"
               component={Map}
@@ -99,17 +110,28 @@ export default function MainStackNavigator() {
                 },
                 headerShown: true,
                 headerShadowVisible: false,
-                headerBackTitle: '',
+                headerBackTitleVisible: false,
                 headerTitle: 'New Scrapbook',
               }}
               name="Add"
               component={Add}
             />
             <Stack.Screen
-              options={{
+              options={({ navigation }) => ({
                 headerRight: () => (
-                  <Text style={{ color: 'white', fontSize: 15 }}>Next</Text>
+                  <TouchableOpacity>
+                    <Text
+                      style={{
+                        color: 'white',
+                        fontSize: 16,
+                        fontWeight: 'bold',
+                      }}
+                    >
+                      Next
+                    </Text>
+                  </TouchableOpacity>
                 ),
+
                 headerStyle: {
                   backgroundColor: theme.colors.background,
                 },
@@ -120,20 +142,54 @@ export default function MainStackNavigator() {
                 headerShadowVisible: false,
                 headerBackTitle: '',
                 headerTitle: 'New Scrapbook',
-              }}
+              })}
               name="Images"
               component={Images}
             />
             <Stack.Screen
               options={{
                 headerShown: true,
+                headerStyle: {
+                  backgroundColor: theme.colors.background,
+                },
+                headerShadowVisible: false,
+                headerBackTitleVisible: false,
                 headerTitle: 'Post',
               }}
               name="Post"
               // @ts-ignore TODO: Fix this
               component={Post}
             />
+            <Stack.Screen
+              options={{
+                headerShown: true,
+                headerStyle: {
+                  backgroundColor: theme.colors.background,
+                },
+                headerShadowVisible: false,
+                headerBackTitleVisible: false,
+                headerTitle: 'Edit Profile',
+              }}
+              name="EditProfile"
+              component={Edit}
+            />
+            <Stack.Screen
+              options={{
+                headerShown: false,
+                headerTitle: '',
+                animation: 'slide_from_bottom',
+                headerStyle: {
+                  backgroundColor: theme.colors.background,
+                },
+                headerShadowVisible: false,
+                headerBackTitleVisible: false,
+                // headerTitle: 'Edit Profile',
+              }}
+              name="UsersProfile"
+              component={UsersProfile}
+            />
           </Stack.Navigator>
+          <Modal />
         </Provider>
       )}
     </>

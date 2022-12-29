@@ -18,6 +18,7 @@ import {
 } from '../../utils/scale';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../utils/types';
+import { login } from '../../contexts/slices/users/currentUserSlice';
 
 interface LoginProps {
   navigation: NativeStackNavigationProp<RootStackParamList, 'Login'>;
@@ -34,22 +35,7 @@ export default function Login({ navigation }: LoginProps) {
       }
     });
     return unsub;
-  }, []); // runs once
-
-  const handleLogin = () => {
-    signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        const user = userCredential.user;
-        console.log(
-          'Logging in with: \n',
-          `Email: ${user.email}\n`,
-          `Username: ${user.displayName}\n`
-        );
-      })
-      .catch((err) => {
-        console.log(err.code, err.message);
-      });
-  };
+  }, []);
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -76,7 +62,7 @@ export default function Login({ navigation }: LoginProps) {
           />
         </InputContainer>
 
-        <LoginButton onPress={handleLogin} activeOpacity={0.8}>
+        <LoginButton onPress={() => login(email, password)} activeOpacity={0.8}>
           <ButtonText>Login</ButtonText>
         </LoginButton>
 

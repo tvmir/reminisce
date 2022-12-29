@@ -12,7 +12,8 @@ module.exports = function(api) {
         "whitelist": null,
         "safe": false,
         "allowUndefined": true
-    }]
+    }],
+    ['react-native-reanimated/plugin']
    ]
   };
 };

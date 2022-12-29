@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components/native';
-import { fetchUser } from '../../features/users/currentUserSlice';
-import { fetchUserScrapbooks } from '../../features/scrapbooks/scrapbooksSlice';
+import { fetchUser } from '../../contexts/slices/users/currentUserSlice';
+import { fetchUserScrapbooks } from '../../contexts/slices/scrapbooks/scrapbooksSlice';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Profile from '../../screens/Profile';
 import Feather from 'react-native-vector-icons/Feather';
@@ -15,7 +15,7 @@ import { Text, TouchableOpacity } from 'react-native';
 import { horizontalScale, verticalScale } from '../../utils/scale';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import { useAppDispatch } from '../../utils/hooks';
+import { useAppDispatch, useAppSelector } from '../../utils/hooks';
 
 interface UserProps {
   navigation: NativeStackNavigationProp<RootStackParamList, 'Home'>;
@@ -29,11 +29,12 @@ const Tab = createBottomTabNavigator<BottomTabParamList>();
 
 export default function Home({ navigation }: UserProps) {
   const dispatch = useAppDispatch();
+  const currentUser = useAppSelector((state) => state.currentUser.currentUser);
 
   // Getting current user's data and their scrapbooks when loading the app
   useEffect(() => {
     dispatch(fetchUser());
-    dispatch(fetchUserScrapbooks());
+    dispatch(fetchUserScrapbooks(currentUser?.uid));
   }, []);
 
   return (
@@ -94,13 +95,14 @@ export default function Home({ navigation }: UserProps) {
         component={Search}
         options={{
           headerShown: false,
+          headerTitle: '',
           tabBarIcon: ({ color }) => (
             <Feather name="search" color={color} size={26} />
           ),
         }}
       />
       <Tab.Screen
-        name="MapFC"
+        name="MapS"
         component={FillInComponent}
         listeners={({ navigation }) => ({
           tabPress: (e) => {

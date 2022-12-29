@@ -6,9 +6,10 @@ import {
   getDocs,
   orderBy,
   query,
+  where,
 } from 'firebase/firestore';
-import { auth, db } from '../../api/firebase';
-import { RootState } from '../store';
+import { auth, db } from '../../../api/firebase';
+import { RootState } from '../../store';
 
 interface ScrapbookData {
   scrapbooks: DocumentData[] | undefined;
@@ -20,10 +21,11 @@ const initialState: ScrapbookData = {
 
 export const fetchUserScrapbooks = createAsyncThunk(
   'scrapbooks/fetchUserScrapbooks',
-  async () => {
-    const scrapbooksRef = doc(db, 'scrapbooks', auth.currentUser?.uid!!);
+  async (uid: string | undefined = auth.currentUser?.uid) => {
+    const scrapbooksRef = collection(db, 'scrapbooks');
     const q = query(
-      collection(scrapbooksRef, 'user_scrapbooks'),
+      scrapbooksRef,
+      where('uid', '==', uid),
       orderBy('createdAt', 'desc')
     );
 
@@ -48,5 +50,7 @@ const scrapbooksSlice = createSlice({
 
 export const selectScrapbooks = (state: RootState) =>
   state.scrapbooks.scrapbooks;
+
+// export const selectAllScrapbooks = (state: RootState) => state.scrapbooks.scrapbooks;
 
 export default scrapbooksSlice.reducer;
