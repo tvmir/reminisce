@@ -6,8 +6,8 @@ import {
   query,
   where,
 } from 'firebase/firestore';
-import { db } from '../../api/firebase';
-import { RootState } from '../store';
+import { db } from '../../../api/firebase';
+import { RootState } from '../../store';
 
 interface UsersData {
   users: DocumentData[] | undefined;
@@ -17,11 +17,18 @@ const initialState: UsersData = {
   users: [],
 };
 
+// Used for search
+// TODO: update function name
 export const fetchUsers = createAsyncThunk(
   'users/fetchUsers',
   async (user: string) => {
+    if (user === '') return [];
     const usersRef = collection(db, 'users');
-    const q = query(usersRef, where('email', '>=', user));
+    const q = query(
+      usersRef,
+      where('username', '>=', user),
+      where('username', '<=', user + '\uf8ff')
+    );
     const usersQuerySnapshot = await getDocs(q);
     let users = usersQuerySnapshot.docs.map((doc) => {
       return { id: doc.id, ...doc.data() };

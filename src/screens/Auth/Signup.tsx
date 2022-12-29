@@ -16,7 +16,9 @@ import {
 } from 'react-native';
 import styled from 'styled-components/native';
 import { auth, db } from '../../api/firebase';
+import { signup } from '../../contexts/slices/users/currentUserSlice';
 import { SignupButton } from '../../ui/shared/Button';
+import { useAppDispatch } from '../../utils/hooks';
 import {
   horizontalScale,
   moderateScale,
@@ -34,41 +36,15 @@ export default function Signup({ navigation }: SignupProps) {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
 
-  useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        navigation.navigate('Login');
-      }
-    });
-    return unsub;
-  }, []); // runs once
+  // useEffect(() => {
+  //   const unsub = onAuthStateChanged(auth, (user) => {
+  //     if (user) {
+  //       navigation.navigate('Login');
+  //     }
+  //   });
+  //   return unsub;
+  // }, []); // runs once
 
-  // Handling signup and login functionalities
-  const handleSignup = () => {
-    createUserWithEmailAndPassword(auth, email, password)
-      .then(async (userCredential) => {
-        const user = userCredential.user;
-        // Adding user details to our Firestore database
-        await updateProfile(user, {
-          displayName: username,
-        });
-
-        await setDoc(doc(db, 'users', user.uid), {
-          name,
-          username: user.displayName,
-          email: user.email,
-        });
-
-        console.log(
-          'Signing up with: \n',
-          `Email: ${email}\n`,
-          `Username: ${username}\n`
-        );
-      })
-      .catch((err) => {
-        console.log(err.code, err.message);
-      });
-  };
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <Wrapper behavior="padding">
@@ -115,7 +91,10 @@ export default function Signup({ navigation }: SignupProps) {
             />
           </InputBorder>
         </InputContainer>
-        <SignupButton onPress={handleSignup} activeOpacity={0.8}>
+        <SignupButton
+          onPress={() => signup(email, password, name, username, navigation)}
+          activeOpacity={0.8}
+        >
           <ButtonText>Sign Up</ButtonText>
         </SignupButton>
 

@@ -1,25 +1,49 @@
 import { auth, db } from '../api/firebase';
-import { addDoc, collection, doc, serverTimestamp } from 'firebase/firestore';
+import {
+  addDoc,
+  collection,
+  doc,
+  serverTimestamp,
+  updateDoc,
+} from 'firebase/firestore';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../utils/types';
 
-// Add a new 'scrapbook' using the user's id and placing it in the 'user_scrapbooks' collection
 export const writeNewScrapbook = async (
   description: string,
   location: string,
   navigation: NativeStackNavigationProp<RootStackParamList, 'Post'>,
-  downloadURL: string,
+  images: string[],
+  // images: string[],
   tags: string[] = []
 ) => {
-  const scrapbookUserRef = doc(db, 'scrapbooks', auth.currentUser?.uid!!);
-  await addDoc(collection(scrapbookUserRef, 'user_scrapbooks'), {
+  await addDoc(collection(db, 'scrapbooks'), {
+    uid: auth.currentUser?.uid,
     description,
     location,
     tags,
-    downloadURL,
+    images,
     createdAt: serverTimestamp(),
+    like_count: 0,
+    comment_count: 0,
+    // images,
   }).then(() => {
     // Returning to the feed page
-    navigation.popToTop();
+    // navigation.popToTop();
+    console.log('IMAGES:', images);
   });
+};
+
+export const updateProfilePicture = async (downloadURL: string) => {
+  const scrapbookUserRef = doc(db, 'users', auth.currentUser?.uid!!);
+  await updateDoc(scrapbookUserRef, {
+    photoURL: downloadURL,
+  })
+    .then(() => {
+      // navigation.pop();
+      console.log('Profile picture updated successfully');
+    })
+    .catch((err) => {
+      console.log('Error updating profile pic: ', err);
+    });
 };

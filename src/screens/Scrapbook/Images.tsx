@@ -19,7 +19,7 @@ interface LoadProps {
 }
 
 export default function Images({ navigation }: LoadProps) {
-  const [images, setImages] = useState<string[] | null>([]);
+  const [images, setImages] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { width } = useWindowDimensions();
 
@@ -56,14 +56,18 @@ export default function Images({ navigation }: LoadProps) {
       quality: 0.2,
     });
     setIsLoading(false);
-
     let results: string[] = [];
     result.assets?.forEach((asset) => results.push(asset.uri));
-    if (result.assets!.length > 1) {
-      setImages([...results, ...(images as string[])]);
-    } else {
-      setImages(results);
-    }
+
+    Promise.all(results)
+      .then(() => {
+        if (result.assets!.length > 1) {
+          setImages([...results, ...images]);
+        } else {
+          setImages(results);
+        }
+      })
+      .catch((err) => console.log('No image has been selected.'));
   };
 
   // Accessing the system camera
@@ -94,7 +98,6 @@ export default function Images({ navigation }: LoadProps) {
       quality: 0.2,
     });
     setIsLoading(false);
-    // console.log(result.assets?.map((asset) => asset.uri));
     if (!result.canceled) {
       setImages(result.assets?.map((asset) => asset.uri));
     }
@@ -139,6 +142,7 @@ export default function Images({ navigation }: LoadProps) {
   );
 }
 
+// Styles
 const Wrapper = styled(View)`
   flex: 1;
   justify-content: 'center';

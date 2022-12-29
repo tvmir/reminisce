@@ -12,13 +12,16 @@ export type RootStackParamList = {
   Add: undefined;
   Images: undefined;
   Post: undefined;
+  // Profile Screens
+  EditProfile: undefined;
+  UsersProfile: undefined;
 };
 
 export type BottomTabParamList = {
   // Main Screens
   Feed: undefined;
   Search: undefined;
-  MapFC: undefined;
+  MapS: undefined;
   Notifications: undefined;
   Profile: undefined;
 };

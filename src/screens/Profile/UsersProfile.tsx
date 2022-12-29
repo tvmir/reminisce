@@ -1,13 +1,10 @@
 import React from 'react';
-import { FlatList, Image, Text, View } from 'react-native';
+import { FlatList, Image, Text, TouchableOpacity, View } from 'react-native';
 import styled from 'styled-components/native';
-import { StackActions } from '@react-navigation/native';
-import { auth } from '../../api/firebase';
-import { useAppSelector } from '../../utils/hooks';
+import { useAppSelector, useUserQuery } from '../../utils/hooks';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../utils/types';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import {
   horizontalScale,
   moderateScale,
@@ -18,21 +15,10 @@ interface ProfileProps {
   navigation: NativeStackNavigationProp<RootStackParamList, 'EditProfile'>;
 }
 
-export default function Profile({ navigation }: ProfileProps) {
+export default function UsersProfile({ route }: any) {
   const scrapbooks = useAppSelector((state) => state.scrapbooks.scrapbooks);
-  const currentUser = useAppSelector((state) => state.currentUser.currentUser);
-  console.log({ currentUser, scrapbooks });
-
-  const handleLogout = () => {
-    auth
-      .signOut()
-      .then(() => {
-        navigation.dispatch(StackActions.replace('Login'));
-      })
-      .catch((err) => {
-        console.log(err.code, err.message);
-      });
-  };
+  const { user } = route.params;
+  console.log({ user, scrapbooks });
 
   return (
     <Wrapper>
@@ -47,12 +33,12 @@ export default function Profile({ navigation }: ProfileProps) {
               <ProfilePicture>
                 <Image
                   style={{ height: 120, width: 120, position: 'absolute' }}
-                  source={{ uri: currentUser?.photoURL }}
+                  source={{ uri: user?.photoURL }}
                 />
                 <View style={{ backgroundColor: 'rgba(0,0,0, 0.5)' }} />
               </ProfilePicture>
-              <HeaderNameText>{currentUser?.name}</HeaderNameText>
-              <UsernameText>@{currentUser?.username}</UsernameText>
+              <HeaderNameText>{user?.name}</HeaderNameText>
+              <UsernameText>@{user?.username}</UsernameText>
               <FollowageContainer>
                 <FollowageSubContainer>
                   <FollowageCount>10</FollowageCount>
@@ -67,12 +53,19 @@ export default function Profile({ navigation }: ProfileProps) {
                   <FollowageCount>5</FollowageCount>
                   <FollowageDesc>Following</FollowageDesc>
                 </View>
-                <EditProfileButton
-                  onPress={() => navigation.navigate('EditProfile')}
-                  activeOpacity={0.8}
+                <TouchableOpacity
+                  style={{
+                    borderRadius: 20,
+                    borderColor: '#d226c1',
+                    borderWidth: 1,
+                    paddingVertical: 8,
+                    paddingHorizontal: 25,
+                  }}
                 >
-                  <EditProfileText>Edit Profile</EditProfileText>
-                </EditProfileButton>
+                  <Text style={{ color: 'white', fontWeight: '500' }}>
+                    Follow
+                  </Text>
+                </TouchableOpacity>
               </FollowageContainer>
               <BioText>My life through a lens</BioText>
             </DetailsWrapper>
@@ -84,10 +77,6 @@ export default function Profile({ navigation }: ProfileProps) {
           )}
         />
       </ListWrapper>
-
-      {/* <SignupButton onPress={handleLogout}>
-        <ButtonText>Logout</ButtonText>
-      </SignupButton> */}
     </Wrapper>
   );
 }
@@ -162,28 +151,9 @@ const Img = styled(Image)`
   flex: 1;
 `;
 
-const EditProfileButton = styled(TouchableOpacity)`
-  border: 1px solid #727477;
-  border-radius: 20px;
-  padding: 8px 25px;
-`;
-
-const EditProfileText = styled(Text)`
-  color: ${(p) => p.theme.colors.primary};
-  font-weight: 500;
-`;
-
 const BioText = styled(Text)`
   padding-top: ${verticalScale(10)}px;
   font-size: ${moderateScale(14)}px;
   font-weight: 400;
-  color: ${(p) => p.theme.colors.primary};
-`;
-
-const ButtonText = styled(Text)`
-  font-style: normal;
-  font-weight: 600;
-  font-size: 15px;
-  line-height: 22px;
   color: ${(p) => p.theme.colors.primary};
 `;
