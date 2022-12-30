@@ -30,7 +30,7 @@ export default function Images({ navigation }: LoadProps) {
     if (permission.granted === false) {
       Alert.alert(
         'Share on Reminisce',
-        'Allow access to your Photos so you can start your sharing memories.',
+        'Allow access to your Photos so you can start sharing your memories.',
         [
           {
             text: 'Settings',
@@ -67,7 +67,7 @@ export default function Images({ navigation }: LoadProps) {
           setImages(results);
         }
       })
-      .catch((err) => console.log('No image has been selected.'));
+      .catch((err) => console.log('No image has been selected.', err));
   };
 
   // Accessing the system camera
@@ -132,7 +132,7 @@ export default function Images({ navigation }: LoadProps) {
               <Button onPress={useCamera} title="Open Camera" />
               <Button
                 onPress={() => navigation.navigate('Post', { images } as any)}
-                title="Test"
+                title="Post"
               />
             </>
           )

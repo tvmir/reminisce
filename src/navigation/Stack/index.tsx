@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+// import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createStackNavigator } from '@react-navigation/stack';
 import Login from '../../screens/Auth/Login';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../../api/firebase';
@@ -18,8 +19,10 @@ import { Text, TouchableOpacity } from 'react-native';
 import Edit from '../../screens/Profile/Edit';
 import Modal from '../../ui/components/Modal';
 import UsersProfile from '../../screens/Profile/UsersProfile';
+import Expanded from '../../screens/Scrapbook/Expanded';
 
-const Stack = createNativeStackNavigator<RootStackParamList>();
+// const Stack = createNativeStackNavigator<RootStackParamList>();
+const Stack = createStackNavigator<RootStackParamList>();
 
 export default function MainStackNavigator() {
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
@@ -86,15 +89,9 @@ export default function MainStackNavigator() {
                 headerStyle: {
                   backgroundColor: 'transparent',
                 },
-                headerSearchBarOptions: {
-                  placeholder: 'Search',
-                  tintColor: theme.colors.primary,
-                  barTintColor: '#000000',
-                },
                 // headerBackTitleVisible: false,
-                headerBackVisible: false,
+                // headerBackVisible: false,
                 headerBackTitle: 'Cancel',
-                animation: 'none',
               }}
               name="Map"
               component={Map}
@@ -177,7 +174,7 @@ export default function MainStackNavigator() {
               options={{
                 headerShown: false,
                 headerTitle: '',
-                animation: 'slide_from_bottom',
+                // animation: 'slide_from_bottom',
                 headerStyle: {
                   backgroundColor: theme.colors.background,
                 },
@@ -187,6 +184,25 @@ export default function MainStackNavigator() {
               }}
               name="UsersProfile"
               component={UsersProfile}
+            />
+            <Stack.Screen
+              options={{
+                headerShown: false,
+                headerTitle: '',
+                headerStyle: {
+                  backgroundColor: theme.colors.background,
+                },
+                headerShadowVisible: false,
+                headerBackTitleVisible: false,
+                // animationEnabled: false,
+                cardStyleInterpolator: ({ current }) => ({
+                  cardStyle: {
+                    opacity: current.progress,
+                  },
+                }),
+              }}
+              name="Expanded"
+              component={Expanded}
             />
           </Stack.Navigator>
           <Modal />

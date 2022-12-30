@@ -19,9 +19,11 @@ interface ProfileProps {
 }
 
 export default function Profile({ navigation }: ProfileProps) {
-  const scrapbooks = useAppSelector((state) => state.scrapbooks.scrapbooks);
+  const currentUserScrapbooks = useAppSelector(
+    (state) => state.currentUserScrapbooks.scrapbooks
+  );
   const currentUser = useAppSelector((state) => state.currentUser.currentUser);
-  console.log({ currentUser, scrapbooks });
+  console.log({ currentUser, currentUserScrapbooks });
 
   const handleLogout = () => {
     auth
@@ -41,7 +43,7 @@ export default function Profile({ navigation }: ProfileProps) {
           numColumns={2}
           removeClippedSubviews
           nestedScrollEnabled
-          data={scrapbooks}
+          data={currentUserScrapbooks}
           ListHeaderComponent={() => (
             <DetailsWrapper>
               <ProfilePicture>

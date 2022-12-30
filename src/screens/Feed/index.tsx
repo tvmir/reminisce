@@ -6,19 +6,21 @@ import {
   Dimensions,
   FlatList,
   Image,
-  Text,
-  TouchableOpacity,
+  TouchableHighlight,
+  TouchableWithoutFeedback,
   View,
 } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import styled from 'styled-components/native';
-import { fetchFeedScrapbooks } from '../../contexts/slices/scrapbooks/feedSlice';
+import { fetchScrapbooks } from '../../contexts/slices/scrapbooks/scrapbooksSlice';
 import ScrollFeed from '../../ui/components/ScrollFeed';
 import {
   useAppDispatch,
   useAppSelector,
   useUserQuery,
 } from '../../utils/hooks';
+import { Motion } from '@legendapp/motion';
 
 interface FeedProps {
   route: RouteProp<{ params: { setUserInView: any } }, 'params'>;
@@ -27,37 +29,50 @@ interface FeedProps {
 
 export default function Feed({ route, navigation }: any) {
   const dispatch = useAppDispatch();
-  const feedScrapbooks = useAppSelector(
-    (state) => state.feedScrapbooks.feedScrapbooks
-  );
+  const scrapbooks = useAppSelector((state) => state.scrapbooks.scrapbooks);
   const bottomTabBarHeight = useBottomTabBarHeight();
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    dispatch(fetchFeedScrapbooks());
+    dispatch(fetchScrapbooks());
   }, []);
 
   return (
-    <Wrapper>
+    <Wrapper edges={['top', 'left', 'right']}>
       <FlatList
         removeClippedSubviews
         pagingEnabled
         decelerationRate={'normal'}
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}
-        viewabilityConfig={{
-          itemVisiblePercentThreshold: 90,
-        }}
         keyExtractor={(item) => item.id}
-        data={feedScrapbooks}
+        data={scrapbooks}
         renderItem={({ item }) => (
-          <FeedWrapper
-            style={{
-              height:
-                Dimensions.get('window').height - bottomTabBarHeight - 166,
-            }}
-          >
-            <ScrollFeed item={item} navigation={navigation} />
-          </FeedWrapper>
+          <>
+            <TouchableWithoutFeedback
+              onPress={() => navigation.navigate('Expanded')}
+            >
+              <FeedWrapper
+                style={{
+                  height:
+                    // 186 for iPhone 13, 180 with header
+                    Dimensions.get('window').height - bottomTabBarHeight - 181,
+                  borderRadius: 20,
+                }}
+              >
+                <Image
+                  style={{ flex: 1, borderRadius: 20 }}
+                  resizeMode="cover"
+                  source={{
+                    uri: item.images[0],
+                  }}
+                />
+              </FeedWrapper>
+            </TouchableWithoutFeedback>
+            <View style={{ height: 80 }}>
+              <ScrollFeed item={item} navigation={navigation} />
+            </View>
+          </>
         )}
       />
     </Wrapper>
@@ -67,9 +82,12 @@ export default function Feed({ route, navigation }: any) {
 // Styles
 const Wrapper = styled(SafeAreaView)`
   flex: 1;
+  width: 95%;
+  margin: 0 auto 0 auto;
+  margin-top: -30px;
 `;
 
 const FeedWrapper = styled(View)`
   flex: 1;
-  background-color: #434343;
+  background-color: #272727;
 `;

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components/native';
 import { fetchUser } from '../../contexts/slices/users/currentUserSlice';
-import { fetchUserScrapbooks } from '../../contexts/slices/scrapbooks/scrapbooksSlice';
+import { fetchCurrentUserScrapbooks } from '../../contexts/slices/scrapbooks/currentUserScrapbooksSlice';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Profile from '../../screens/Profile';
 import Feather from 'react-native-vector-icons/Feather';
@@ -34,7 +34,7 @@ export default function Home({ navigation }: UserProps) {
   // Getting current user's data and their scrapbooks when loading the app
   useEffect(() => {
     dispatch(fetchUser());
-    dispatch(fetchUserScrapbooks(currentUser?.uid));
+    dispatch(fetchCurrentUserScrapbooks(currentUser?.uid));
   }, []);
 
   return (
@@ -55,7 +55,7 @@ export default function Home({ navigation }: UserProps) {
         name="Feed"
         component={Feed}
         options={{
-          headerShown: true,
+          // headerShown: false,
           headerTitle: '',
           headerStyle: {
             backgroundColor: theme.colors.background,

@@ -1,16 +1,16 @@
 import { configureStore } from '@reduxjs/toolkit';
 import currentUserReducer from './slices/users/currentUserSlice';
-import usersReducer from './slices/users/usersSlice';
+import usersSearchReducer from './slices/users/usersSlice';
+import currentUserScrapbooksReducer from './slices/scrapbooks/currentUserScrapbooksSlice';
 import scrapbooksReducer from './slices/scrapbooks/scrapbooksSlice';
-import feedScrapbooksReducer from './slices/scrapbooks/feedSlice';
 import modalsReducer from './slices/modals/modalsSlice';
 
 export const store = configureStore({
   reducer: {
     currentUser: currentUserReducer,
-    users: usersReducer,
+    users: usersSearchReducer,
+    currentUserScrapbooks: currentUserScrapbooksReducer,
     scrapbooks: scrapbooksReducer,
-    feedScrapbooks: feedScrapbooksReducer,
     modal: modalsReducer,
   },
   middleware: (getDefaultMiddleware) =>

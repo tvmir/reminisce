@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { FlatList, Image, Text, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import styled from 'styled-components/native';
-import { fetchUsers } from '../../contexts/slices/users/usersSlice';
+import { fetchUsersSearch } from '../../contexts/slices/users/usersSlice';
 import { SearchInput } from '../../ui/shared/Input';
 import { theme } from '../../ui/shared/Theme';
 import { useAppDispatch, useAppSelector } from '../../utils/hooks';
@@ -23,7 +23,7 @@ export default function Search({ route, navigation }: SearchProps) {
   useEffect(() => {
     if (input !== search) {
       setSearch(input);
-      dispatch(fetchUsers(input));
+      dispatch(fetchUsersSearch(input));
     }
   }, [input]);
 
