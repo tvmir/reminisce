@@ -13,6 +13,7 @@ import { DocumentData } from 'firebase/firestore';
 import { commentModal } from '../../contexts/slices/modals/modalsSlice';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { BottomTabParamList, RootStackParamList } from '../../utils/types';
+import moment from 'moment';
 
 interface FeedCardProps {
   item: DocumentData;
@@ -48,19 +49,13 @@ export default function ScrollFeed({ item, navigation }: FeedCardProps) {
   // Temporary styling for rn
   return (
     <>
-      <Image
-        style={{ flex: 1 }}
-        resizeMode="cover"
-        source={{
-          uri: item.images[1],
-        }}
-      />
       <View
         style={{
-          width: Dimensions.get('window').width,
-          position: 'absolute',
-          bottom: 0,
-          padding: 10,
+          // width: Dimensions.get('window').width,
+          // position: 'absolute',
+          bottom: 10,
+          padding: 1,
+          paddingTop: 10,
           flexDirection: 'row',
           justifyContent: 'space-between',
           alignItems: 'flex-end',
@@ -70,6 +65,7 @@ export default function ScrollFeed({ item, navigation }: FeedCardProps) {
           style={{
             alignItems: 'flex-start',
             flexDirection: 'row',
+            paddingVertical: 10,
           }}
         >
           <TouchableOpacity
@@ -79,28 +75,64 @@ export default function ScrollFeed({ item, navigation }: FeedCardProps) {
           >
             <Image
               style={{
-                height: 50,
-                width: 50,
-                borderRadius: 25,
+                height: 45,
+                width: 45,
+                borderRadius: 23,
                 borderWidth: 1,
               }}
               source={{ uri: user?.photoURL }}
             />
           </TouchableOpacity>
-          <View style={{ paddingHorizontal: 13 }}>
+          <View style={{ paddingHorizontal: 6 }}>
             <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 16 }}>
               {user?.name}
             </Text>
-            <Text style={{ marginTop: 1, color: 'white', fontSize: 12 }}>
+            <Text
+              style={{
+                marginTop: 1,
+                color: 'white',
+                fontSize: 12,
+              }}
+            >
               @{user?.username}
             </Text>
-            <Text style={{ marginTop: 2, color: 'white', fontSize: 10 }}>
-              New York, NY
-            </Text>
+            <View style={{ flexDirection: 'row' }}>
+              <Text
+                style={{
+                  marginTop: 2,
+                  color: 'white',
+                  fontSize: 10,
+                  opacity: 0.9,
+                }}
+              >
+                Khartoum, SD
+              </Text>
+              <Text
+                style={{
+                  marginTop: 2,
+                  color: 'white',
+                  fontSize: 10,
+                  paddingHorizontal: 3,
+                  opacity: 0.9,
+                }}
+              >
+                ·
+              </Text>
+              <Text
+                style={{
+                  marginTop: 2,
+                  color: 'white',
+                  fontSize: 10,
+                  opacity: 0.9,
+                }}
+              >
+                {moment(item.createdAt.toDate()).fromNow()}
+              </Text>
+            </View>
           </View>
         </View>
 
-        <View style={{ flexDirection: 'row' }}>
+        <View style={{ flexDirection: 'row', paddingVertical: 20 }}>
           <TouchableOpacity
             style={{
               flexDirection: 'row',
@@ -110,7 +142,7 @@ export default function ScrollFeed({ item, navigation }: FeedCardProps) {
             onPress={handleLikeCount}
             activeOpacity={0.8}
           >
-            <Ionicons color="white" name="heart" size={32} />
+            <Ionicons color="white" name="heart" size={28} />
             <Text style={{ color: 'white', paddingHorizontal: 5 }}>
               {isLiked.counter}
             </Text>
@@ -124,7 +156,7 @@ export default function ScrollFeed({ item, navigation }: FeedCardProps) {
             onPress={() => dispatch(commentModal(item))}
             activeOpacity={0.8}
           >
-            <MaterialIcons color="white" name="mode-comment" size={30} />
+            <MaterialIcons color="white" name="mode-comment" size={26} />
             <Text style={{ color: 'white', paddingHorizontal: 5 }}>0</Text>
           </TouchableOpacity>
         </View>

@@ -12,6 +12,7 @@ export type RootStackParamList = {
   Add: undefined;
   Images: undefined;
   Post: undefined;
+  Expanded: undefined;
   // Profile Screens
   EditProfile: undefined;
   UsersProfile: undefined;

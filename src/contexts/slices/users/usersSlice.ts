@@ -9,18 +9,17 @@ import {
 import { db } from '../../../api/firebase';
 import { RootState } from '../../store';
 
-interface UsersData {
+interface UsersSearchData {
   users: DocumentData[] | undefined;
 }
 
-const initialState: UsersData = {
+const initialState: UsersSearchData = {
   users: [],
 };
 
 // Used for search
-// TODO: update function name
-export const fetchUsers = createAsyncThunk(
-  'users/fetchUsers',
+export const fetchUsersSearch = createAsyncThunk(
+  'users/fetchUsersSearch',
   async (user: string) => {
     if (user === '') return [];
     const usersRef = collection(db, 'users');
@@ -42,7 +41,7 @@ export const usersSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(fetchUsers.fulfilled, (state, action) => {
+    builder.addCase(fetchUsersSearch.fulfilled, (state, action) => {
       state.users = action.payload;
     });
   },

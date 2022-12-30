@@ -16,9 +16,11 @@ interface ProfileProps {
 }
 
 export default function UsersProfile({ route }: any) {
-  const scrapbooks = useAppSelector((state) => state.scrapbooks.scrapbooks);
+  const currentUserScrapbooks = useAppSelector(
+    (state) => state.currentUserScrapbooks.scrapbooks
+  );
   const { user } = route.params;
-  console.log({ user, scrapbooks });
+  console.log({ user, currentUserScrapbooks });
 
   return (
     <Wrapper>
@@ -27,7 +29,7 @@ export default function UsersProfile({ route }: any) {
           numColumns={2}
           removeClippedSubviews
           nestedScrollEnabled
-          data={scrapbooks}
+          data={currentUserScrapbooks}
           ListHeaderComponent={() => (
             <DetailsWrapper>
               <ProfilePicture>
