@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
-// import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createStackNavigator } from '@react-navigation/stack';
 import Login from '../../screens/Auth/Login';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../../api/firebase';
 import { Provider } from 'react-redux';
 import Home from '../Tab';
-import Map from '../../screens/Map';
 import { RootStackParamList } from '../../utils/types';
 import { theme } from '../../ui/shared/Theme';
 import Images from '../../screens/Scrapbook/Images';
@@ -19,10 +18,12 @@ import { Text, TouchableOpacity } from 'react-native';
 import Edit from '../../screens/Profile/Edit';
 import Modal from '../../ui/components/Modal';
 import UsersProfile from '../../screens/Profile/UsersProfile';
+import ExpandedFeed from '../../screens/Scrapbook/ExpandedFeed';
 import Expanded from '../../screens/Scrapbook/Expanded';
+import { createSharedElementStackNavigator } from 'react-navigation-shared-element';
 
 // const Stack = createNativeStackNavigator<RootStackParamList>();
-const Stack = createStackNavigator<RootStackParamList>();
+const Stack = createSharedElementStackNavigator();
 
 export default function MainStackNavigator() {
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
@@ -85,19 +86,6 @@ export default function MainStackNavigator() {
             />
             <Stack.Screen
               options={{
-                headerTitle: '',
-                headerStyle: {
-                  backgroundColor: 'transparent',
-                },
-                // headerBackTitleVisible: false,
-                // headerBackVisible: false,
-                headerBackTitle: 'Cancel',
-              }}
-              name="Map"
-              component={Map}
-            />
-            <Stack.Screen
-              options={{
                 headerStyle: {
                   backgroundColor: theme.colors.background,
                 },
@@ -114,7 +102,7 @@ export default function MainStackNavigator() {
               component={Add}
             />
             <Stack.Screen
-              options={({ navigation }) => ({
+              options={({}) => ({
                 headerRight: () => (
                   <TouchableOpacity>
                     <Text
@@ -194,15 +182,25 @@ export default function MainStackNavigator() {
                 },
                 headerShadowVisible: false,
                 headerBackTitleVisible: false,
-                // animationEnabled: false,
-                cardStyleInterpolator: ({ current }) => ({
-                  cardStyle: {
-                    opacity: current.progress,
-                  },
-                }),
+              }}
+              name="ExpandedFeed"
+              component={ExpandedFeed}
+            />
+            <Stack.Screen
+              options={{
+                headerShown: false,
+                headerTitle: '',
+                headerStyle: {
+                  backgroundColor: theme.colors.background,
+                },
+                headerShadowVisible: false,
+                headerBackTitleVisible: false,
               }}
               name="Expanded"
               component={Expanded}
+              sharedElements={(route) => {
+                return [route.params.item.id];
+              }}
             />
           </Stack.Navigator>
           <Modal />

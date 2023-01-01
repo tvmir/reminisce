@@ -1,21 +1,23 @@
 import React from 'react';
-import { Text, View } from 'react-native';
-import styled from 'styled-components/native';
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import { mapNightTheme, mapDarkTheme } from '../../ui/shared/MapTheme';
 
 export default function Map() {
   return (
-    <Wrapper>
-      <T>Map</T>
-    </Wrapper>
+    <MapView
+      provider={PROVIDER_GOOGLE}
+      customMapStyle={mapNightTheme}
+      initialRegion={{
+        latitude: 25.0976,
+        longitude: 55.1631,
+        latitudeDelta: 0.08,
+        longitudeDelta: 0.08,
+      }}
+      showsUserLocation
+      // showsMyLocationButton
+      style={{ flex: 1 }}
+    >
+      <Marker coordinate={{ latitude: 25.0976, longitude: 55.1631 }} />
+    </MapView>
   );
 }
-
-const Wrapper = styled(View)`
-  flex: 1;
-  justify-content: center;
-  align-items: center;
-`;
-
-const T = styled(Text)`
-  color: #fff;
-`;

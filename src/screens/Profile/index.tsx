@@ -1,7 +1,14 @@
-import React from 'react';
-import { FlatList, Image, Text, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import {
+  FlatList,
+  Image,
+  RefreshControl,
+  Text,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native';
 import styled from 'styled-components/native';
-import { StackActions } from '@react-navigation/native';
+import { StackActions, useNavigation } from '@react-navigation/native';
 import { auth } from '../../api/firebase';
 import { useAppSelector } from '../../utils/hooks';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -13,17 +20,22 @@ import {
   moderateScale,
   verticalScale,
 } from '../../utils/scale';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import { fetchCurrentUserScrapbooks } from '../../contexts/slices/scrapbooks/currentUserScrapbooksSlice';
+import { SharedElement } from 'react-navigation-shared-element';
 
-interface ProfileProps {
-  navigation: NativeStackNavigationProp<RootStackParamList, 'EditProfile'>;
-}
+// interface ProfileProps {
+//   navigation: NativeStackNavigationProp<RootStackParamList, 'EditProfile'>;
+// }
 
-export default function Profile({ navigation }: ProfileProps) {
+export default function Profile({ navigation }: any) {
   const currentUserScrapbooks = useAppSelector(
     (state) => state.currentUserScrapbooks.scrapbooks
   );
   const currentUser = useAppSelector((state) => state.currentUser.currentUser);
   console.log({ currentUser, currentUserScrapbooks });
+  // const navigation = useNavigation();
+  // const [refreshing, setRefreshing] = useState(true);
 
   const handleLogout = () => {
     auth
@@ -36,6 +48,11 @@ export default function Profile({ navigation }: ProfileProps) {
       });
   };
 
+  useEffect(() => {
+    fetchCurrentUserScrapbooks(currentUser?.uid);
+    // setRefreshing(false);
+  }, []);
+
   return (
     <Wrapper>
       <ListWrapper>
@@ -46,27 +63,27 @@ export default function Profile({ navigation }: ProfileProps) {
           data={currentUserScrapbooks}
           ListHeaderComponent={() => (
             <DetailsWrapper>
-              <ProfilePicture>
+              <ProfilePictureContainer>
                 <Image
                   style={{ height: 120, width: 120, position: 'absolute' }}
                   source={{ uri: currentUser?.photoURL }}
                 />
                 <View style={{ backgroundColor: 'rgba(0,0,0, 0.5)' }} />
-              </ProfilePicture>
+              </ProfilePictureContainer>
               <HeaderNameText>{currentUser?.name}</HeaderNameText>
               <UsernameText>@{currentUser?.username}</UsernameText>
               <FollowageContainer>
                 <FollowageSubContainer>
-                  <FollowageCount>10</FollowageCount>
+                  <FollowageCount>1000</FollowageCount>
                   <FollowageDesc>Followers</FollowageDesc>
                 </FollowageSubContainer>
                 <View
                   style={{
-                    flex: 1.8,
+                    flex: 2.3,
                     alignItems: 'flex-start',
                   }}
                 >
-                  <FollowageCount>5</FollowageCount>
+                  <FollowageCount>52</FollowageCount>
                   <FollowageDesc>Following</FollowageDesc>
                 </View>
                 <EditProfileButton
@@ -80,10 +97,51 @@ export default function Profile({ navigation }: ProfileProps) {
             </DetailsWrapper>
           )}
           renderItem={({ item }) => (
-            <ImgWrapper style={{ flex: 1 / 2 }}>
-              <Img source={{ uri: item.images[0] }} />
+            <ImgWrapper style={{ flex: 1 / 2, paddingHorizontal: 5 }}>
+              <ImageWrapper>
+                <TouchableWithoutFeedback
+                  onPress={() => navigation.navigate('Expanded', { item })}
+                >
+                  <SharedElement id={item.id}>
+                    <ImageStyle source={{ uri: item.images[0] }} />
+                  </SharedElement>
+                </TouchableWithoutFeedback>
+                <View style={{ padding: 5 }}>
+                  <Text
+                    style={{ color: 'white', fontSize: 13, fontWeight: '600' }}
+                  >
+                    {item.name}
+                  </Text>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      paddingRight: 10,
+                      paddingVertical: 2,
+                    }}
+                  >
+                    <Ionicons name="location-sharp" size={10} color="#10F0FE" />
+                    <Text
+                      style={{
+                        color: 'white',
+                        fontSize: 9,
+                        fontWeight: '400',
+                        paddingHorizontal: 2,
+                      }}
+                    >
+                      {item.location}
+                    </Text>
+                  </View>
+                </View>
+              </ImageWrapper>
             </ImgWrapper>
           )}
+          // refreshControl={
+          //   <RefreshControl
+          //     refreshing={refreshing}
+          //     onRefresh={fetchCurrentUserScrapbooks}
+          //     size={10}
+          //   />
+          // }
         />
       </ListWrapper>
 
@@ -101,16 +159,16 @@ const Wrapper = styled(SafeAreaView)`
 `;
 
 const ListWrapper = styled(View)`
-  margin: 10px;
+  /* margin: 8px; */
+  padding: 8px;
 `;
 
 const DetailsWrapper = styled(View)`
   padding-bottom: ${verticalScale(30)}px;
   align-items: center;
-  padding-left: ${horizontalScale(20)}px;
 `;
 
-const ProfilePicture = styled(View)`
+const ProfilePictureContainer = styled(View)`
   background-color: #656565;
   height: ${verticalScale(120)}px;
   width: ${horizontalScale(120)}px;
@@ -141,18 +199,19 @@ const FollowageContainer = styled(View)`
 
 const FollowageSubContainer = styled(View)`
   flex: 1;
-  align-items: flex-start;
+  padding-left: 8px;
 `;
 
 const FollowageCount = styled(Text)`
   font-weight: bold;
-  font-size: ${moderateScale(16)}px;
+  font-size: ${moderateScale(15)}px;
+  font-weight: 500;
   color: ${(p) => p.theme.colors.primary};
 `;
 
 const FollowageDesc = styled(Text)`
   color: gray;
-  font-size: ${moderateScale(14)}px;
+  font-size: ${moderateScale(13)}px;
   font-weight: 400;
 `;
 
@@ -160,14 +219,10 @@ const ImgWrapper = styled(View)`
   height: ${verticalScale(150)}px;
 `;
 
-const Img = styled(Image)`
-  flex: 1;
-`;
-
 const EditProfileButton = styled(TouchableOpacity)`
   border: 1px solid #727477;
   border-radius: 20px;
-  padding: 8px 25px;
+  padding: 7px 30px;
 `;
 
 const EditProfileText = styled(Text)`
@@ -180,6 +235,20 @@ const BioText = styled(Text)`
   font-size: ${moderateScale(14)}px;
   font-weight: 400;
   color: ${(p) => p.theme.colors.primary};
+`;
+
+const ImageWrapper = styled(View)`
+  height: 140px;
+  border-radius: 6px;
+  border: 0.5px solid #1f1e1e;
+  padding-bottom: 25px;
+`;
+
+const ImageStyle = styled(Image)`
+  height: 90%;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+  background-color: #727477;
 `;
 
 const ButtonText = styled(Text)`

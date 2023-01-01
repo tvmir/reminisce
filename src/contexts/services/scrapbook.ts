@@ -25,6 +25,7 @@ import { RootStackParamList } from '../../utils/types';
 // Uploading images to Firebase Storage. From there, we can extract the image URL and store it
 // with the rest of the scrapbook details in the database.
 export const uploadScrapbook = async (
+  name: string,
   images: string[],
   description: string,
   location: string,
@@ -61,7 +62,7 @@ export const uploadScrapbook = async (
         //   .then(() => {
         getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
           promises.push(downloadURL);
-          writeNewScrapbook(description, location, navigation, promises);
+          writeNewScrapbook(name, description, location, navigation, promises);
         });
       }
     );

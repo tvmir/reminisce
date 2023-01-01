@@ -54,16 +54,11 @@ export const signup = (
         username: user.displayName,
         email: user.email,
         emailVerified: user.emailVerified,
+        createdAt: user.metadata.creationTime,
         // bio,
       }).then(() => {
-        navigation.navigate('Login');
+        // navigation.navigate('Login');
       });
-
-      // console.log(
-      //   'Signing up with: \n',
-      //   `Email: ${email}\n`,
-      //   `Username: ${username}\n`
-      // );
     })
     .catch((err) => {
       console.log(err.code, err.message);

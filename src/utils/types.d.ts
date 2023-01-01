@@ -7,11 +7,11 @@ export type RootStackParamList = {
   Signup: undefined;
   // Main Screens
   Home: undefined;
-  Map: undefined;
   // Scrapbook Screens
   Add: undefined;
   Images: undefined;
   Post: undefined;
+  ExpandedFeed: undefined;
   Expanded: undefined;
   // Profile Screens
   EditProfile: undefined;
@@ -22,7 +22,7 @@ export type BottomTabParamList = {
   // Main Screens
   Feed: undefined;
   Search: undefined;
-  MapS: undefined;
+  Map: undefined;
   Notifications: undefined;
   Profile: undefined;
 };

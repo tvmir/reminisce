@@ -10,6 +10,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../utils/types';
 
 export const writeNewScrapbook = async (
+  name: string,
   description: string,
   location: string,
   navigation: NativeStackNavigationProp<RootStackParamList, 'Post'>,
@@ -19,13 +20,14 @@ export const writeNewScrapbook = async (
 ) => {
   await addDoc(collection(db, 'scrapbooks'), {
     uid: auth.currentUser?.uid,
+    name,
     description,
     location,
     tags,
     images,
     createdAt: serverTimestamp(),
-    like_count: 0,
-    comment_count: 0,
+    likes_count: 0,
+    comments_count: 0,
     // images,
   }).then(() => {
     // Returning to the feed page
@@ -41,9 +43,9 @@ export const updateProfilePicture = async (downloadURL: string) => {
   })
     .then(() => {
       // navigation.pop();
-      console.log('Profile picture updated successfully');
+      console.log('Profile picture has been updated successfully');
     })
     .catch((err) => {
-      console.log('Error updating profile pic: ', err);
+      console.log('Error updating profile picture: ', err);
     });
 };
