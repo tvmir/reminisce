@@ -16,6 +16,7 @@ import { horizontalScale, verticalScale } from '../../utils/scale';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { useAppDispatch, useAppSelector } from '../../utils/hooks';
+import Map from '../../screens/Map';
 
 interface UserProps {
   navigation: NativeStackNavigationProp<RootStackParamList, 'Home'>;
@@ -96,24 +97,26 @@ export default function Home({ navigation }: UserProps) {
         options={{
           headerShown: false,
           headerTitle: '',
-          tabBarIcon: ({ color }) => (
-            <Feather name="search" color={color} size={26} />
+          tabBarIcon: ({ focused, color }) => (
+            <Feather
+              name="search"
+              color={focused ? '#0FEFFD' : color}
+              size={26}
+            />
           ),
         }}
       />
       <Tab.Screen
-        name="MapS"
-        component={FillInComponent}
-        listeners={({ navigation }) => ({
-          tabPress: (e) => {
-            e.preventDefault();
-            navigation.navigate('Map');
-          },
-        })}
+        name="Map"
+        component={Map}
         options={{
           headerShown: false,
-          tabBarIcon: ({ color }) => (
-            <Feather name={'map-pin'} color={color} size={25} />
+          tabBarIcon: ({ focused, color }) => (
+            <Feather
+              name={'map-pin'}
+              color={focused ? '#EC00E2' : color}
+              size={25}
+            />
           ),
         }}
       />

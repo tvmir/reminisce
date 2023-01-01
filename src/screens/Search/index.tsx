@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { FlatList, Image, Text, TouchableOpacity } from 'react-native';
+import { FlatList, Image, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import styled from 'styled-components/native';
 import { fetchUsersSearch } from '../../contexts/slices/users/usersSlice';
 import { SearchInput } from '../../ui/shared/Input';
 import { theme } from '../../ui/shared/Theme';
 import { useAppDispatch, useAppSelector } from '../../utils/hooks';
+import {
+  horizontalScale,
+  moderateScale,
+  verticalScale,
+} from '../../utils/scale';
 import { RootStackParamList } from '../../utils/types';
 
 interface SearchProps {
@@ -40,26 +45,20 @@ export default function Search({ route, navigation }: SearchProps) {
         onBlur={() => setInputBorder('#1f1e1e')}
       />
       <FlatList
-        numColumns={1}
+        numColumns={3}
         horizontal={false}
         data={users}
         keyExtractor={(item) => item.id}
         renderItem={({ item } = route.params) => (
-          <TouchableOpacity
-            // onPress={() => navigation.navigate('UsersProfile', { item })}
-            style={{ padding: 10, flexDirection: 'row', alignItems: 'center' }}
+          <UserContainer
+          // onPress={() => navigation.navigate('UsersProfile', { item })}
           >
-            <T>{item.username}</T>
-            <Image
-              style={{
-                backgroundColor: '#8e8e8e',
-                height: 40,
-                width: 40,
-                borderRadius: 20,
-              }}
-              source={{ uri: item.photoURL }}
-            />
-          </TouchableOpacity>
+            <UserImage source={{ uri: item.photoURL }} />
+            <UserDetailsContainer>
+              <NameText>{item.name}</NameText>
+              <UsernameText>@{item.username}</UsernameText>
+            </UserDetailsContainer>
+          </UserContainer>
         )}
         style={{ marginLeft: 25 }}
       />
@@ -72,8 +71,31 @@ const Wrapper = styled(SafeAreaView)`
   flex: 1;
 `;
 
-const T = styled(Text)`
-  flex: 1;
-  font-size: 16px;
+const UserContainer = styled(TouchableOpacity)`
+  padding-top: ${verticalScale(15)}px;
+  justify-content: space-between;
+`;
+
+const UserImage = styled(Image)`
+  height: ${verticalScale(95)}px;
+  width: ${horizontalScale(95)}px;
+  border-radius: ${moderateScale(50)}px;
+  background-color: #272727;
+`;
+
+const UserDetailsContainer = styled(View)`
+  padding-top: ${verticalScale(6)}px;
+  align-items: center;
+`;
+
+const NameText = styled(Text)`
+  font-size: ${moderateScale(16)}px;
+  font-weight: 500;
   color: ${(p) => p.theme.colors.primary};
+`;
+
+const UsernameText = styled(Text)`
+  font-size: ${moderateScale(12)}px;
+  color: ${(p) => p.theme.colors.primary};
+  opacity: 0.9;
 `;

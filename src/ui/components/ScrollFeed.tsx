@@ -105,7 +105,7 @@ export default function ScrollFeed({ item, navigation }: FeedCardProps) {
                   opacity: 0.9,
                 }}
               >
-                Khartoum, SD
+                {item.location}
               </Text>
               <Text
                 style={{
@@ -132,7 +132,12 @@ export default function ScrollFeed({ item, navigation }: FeedCardProps) {
           </View>
         </View>
 
-        <View style={{ flexDirection: 'row', paddingVertical: 20 }}>
+        <View
+          style={{
+            flexDirection: 'row',
+            paddingVertical: 20,
+          }}
+        >
           <TouchableOpacity
             style={{
               flexDirection: 'row',
@@ -142,8 +147,8 @@ export default function ScrollFeed({ item, navigation }: FeedCardProps) {
             onPress={handleLikeCount}
             activeOpacity={0.8}
           >
-            <Ionicons color="white" name="heart" size={28} />
-            <Text style={{ color: 'white', paddingHorizontal: 5 }}>
+            <Ionicons color="white" name="heart" size={26} />
+            <Text style={{ color: 'white', paddingHorizontal: 6 }}>
               {isLiked.counter}
             </Text>
           </TouchableOpacity>
@@ -156,8 +161,8 @@ export default function ScrollFeed({ item, navigation }: FeedCardProps) {
             onPress={() => dispatch(commentModal(item))}
             activeOpacity={0.8}
           >
-            <MaterialIcons color="white" name="mode-comment" size={26} />
-            <Text style={{ color: 'white', paddingHorizontal: 5 }}>0</Text>
+            <MaterialIcons color="white" name="mode-comment" size={24} />
+            <Text style={{ color: 'white', paddingHorizontal: 6 }}>0</Text>
           </TouchableOpacity>
         </View>
       </View>

@@ -1,36 +1,29 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { View, Text, FlatList, Image, useWindowDimensions } from 'react-native';
-import { useAppSelector } from '../../utils/hooks';
-// @ts-ignore
-import Img1 from '../../../assets/imgt1.jpeg';
-// @ts-ignore
-import Img2 from '../../../assets/imgt2.jpeg';
-// @ts-ignore
-import Img3 from '../../../assets/imgt3.jpeg';
-// @ts-ignore
-import Img4 from '../../../assets/imgt4.jpeg';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { SharedElement } from 'react-navigation-shared-element';
 
-export default function Expanded() {
-  const scrapbooks = useAppSelector((state) => state.scrapbooks.scrapbooks);
+export default function Expanded({ route }: any) {
+  const { item } = route.params;
+  console.log(item);
+
   const { width } = useWindowDimensions();
-
-  const IMG1 = Image.resolveAssetSource(Img1).uri;
-  const IMG2 = Image.resolveAssetSource(Img2).uri;
-  const IMG3 = Image.resolveAssetSource(Img3).uri;
-  const IMG4 = Image.resolveAssetSource(Img4).uri;
-
-  const [images, setimages] = useState([IMG1, IMG2, IMG3, IMG4]);
   return (
-    <>
+    <SafeAreaView>
       <FlatList
         showsVerticalScrollIndicator={false}
-        data={images}
+        data={item.images}
         renderItem={({ item }) => (
-          <Image source={{ uri: item }} style={{ width: width, height: 250 }} />
+          <SharedElement id={item.id}>
+            <Image
+              source={{ uri: item }}
+              style={{ width: width, height: 250 }}
+            />
+          </SharedElement>
         )}
         keyExtractor={(item) => item}
         contentContainerStyle={{ marginVertical: 40, paddingBottom: 100 }}
       />
-    </>
+    </SafeAreaView>
   );
 }

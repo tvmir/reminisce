@@ -26,7 +26,6 @@ export default function App() {
       <QueryClientProvider client={queryClient}>
         <NavigationContainer theme={theme}>
           <MainStackNavigator />
-          {/* <Modal /> */}
         </NavigationContainer>
       </QueryClientProvider>
     </ThemeProvider>

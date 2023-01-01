@@ -1,5 +1,11 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { collection, DocumentData, getDocs } from 'firebase/firestore';
+import {
+  collection,
+  DocumentData,
+  getDocs,
+  orderBy,
+  query,
+} from 'firebase/firestore';
 import { db } from '../../../api/firebase';
 import { RootState } from '../../store';
 
@@ -11,11 +17,13 @@ const initialState: ScrapbookData = {
   scrapbooks: [],
 };
 
+// This is currently showcasing the most recent scrapbooks in our feed, we can customize it later on
 export const fetchScrapbooks = createAsyncThunk(
   'scrapbooks/fetchScrapbooks',
   async () => {
     const scrapbooksRef = collection(db, 'scrapbooks');
-    const scrapbooksSnapshot = await getDocs(scrapbooksRef);
+    const q = query(scrapbooksRef, orderBy('createdAt', 'desc'));
+    const scrapbooksSnapshot = await getDocs(q);
     let scrapbooks = scrapbooksSnapshot.docs.map((doc) => {
       return { id: doc.id, ...doc.data() };
     });
