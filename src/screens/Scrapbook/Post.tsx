@@ -10,7 +10,6 @@ import {
 } from 'react-native';
 import styled from 'styled-components/native';
 import { RouteProp } from '@react-navigation/native';
-
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../utils/types';
 import { uploadScrapbook } from '../../contexts/services/scrapbook';
@@ -33,7 +32,7 @@ export default function Post({ route, navigation }: PostProps) {
       <Wrapper>
         {images.map((image, i) => (
           <Image
-            style={{ width: width, height: 200, paddingVertical: 5 }}
+            style={{ width: width, height: 100, paddingVertical: 5 }}
             key={i}
             source={{ uri: image }}
           />

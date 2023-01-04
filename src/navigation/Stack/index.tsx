@@ -103,20 +103,6 @@ export default function MainStackNavigator() {
             />
             <Stack.Screen
               options={({}) => ({
-                headerRight: () => (
-                  <TouchableOpacity>
-                    <Text
-                      style={{
-                        color: 'white',
-                        fontSize: 16,
-                        fontWeight: 'bold',
-                      }}
-                    >
-                      Next
-                    </Text>
-                  </TouchableOpacity>
-                ),
-
                 headerStyle: {
                   backgroundColor: theme.colors.background,
                 },

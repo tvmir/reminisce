@@ -15,7 +15,6 @@ export const writeNewScrapbook = async (
   location: string,
   navigation: NativeStackNavigationProp<RootStackParamList, 'Post'>,
   images: string[],
-  // images: string[],
   tags: string[] = []
 ) => {
   await addDoc(collection(db, 'scrapbooks'), {
@@ -28,7 +27,6 @@ export const writeNewScrapbook = async (
     createdAt: serverTimestamp(),
     likes_count: 0,
     comments_count: 0,
-    // images,
   }).then(() => {
     // Returning to the feed page
     // navigation.popToTop();
@@ -36,10 +34,10 @@ export const writeNewScrapbook = async (
   });
 };
 
-export const updateProfilePicture = async (downloadURL: string) => {
+export const updateProfilePicture = async (photoURL: string) => {
   const scrapbookUserRef = doc(db, 'users', auth.currentUser?.uid!!);
   await updateDoc(scrapbookUserRef, {
-    photoURL: downloadURL,
+    photoURL,
   })
     .then(() => {
       // navigation.pop();

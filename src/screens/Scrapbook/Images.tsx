@@ -8,11 +8,13 @@ import {
   ActivityIndicator,
   Alert,
   Linking,
+  TouchableOpacity,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import styled from 'styled-components/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../utils/types';
+import DraggableFlatList from 'react-native-draggable-flatlist';
 
 interface LoadProps {
   navigation: NativeStackNavigationProp<RootStackParamList, 'Images'>;
@@ -53,7 +55,7 @@ export default function Images({ navigation }: LoadProps) {
       allowsMultipleSelection: true,
       selectionLimit: 10,
       aspect: [1, 1],
-      quality: 0.2,
+      quality: 0,
     });
     setIsLoading(false);
     let results: string[] = [];
@@ -103,23 +105,31 @@ export default function Images({ navigation }: LoadProps) {
     }
   };
 
-  // TODO: play around with the mount
   useEffect(() => {
     useLibrary();
   }, []);
 
   return (
     <>
-      <FlatList
+      <DraggableFlatList
         data={images}
-        renderItem={({ item }) => (
-          <Image
-            source={{ uri: item }}
-            style={{ width: width, height: 250 }}
-            key={item}
-          />
+        renderItem={({ item, drag, isActive }) => (
+          <>
+            <TouchableOpacity
+              activeOpacity={0.8}
+              onLongPress={drag}
+              disabled={isActive}
+            >
+              <Image
+                source={{ uri: item }}
+                style={{ width: width, height: 250 }}
+                key={item}
+              />
+            </TouchableOpacity>
+          </>
         )}
         keyExtractor={(item) => item}
+        onDragEnd={({ data }) => setImages(data)}
         contentContainerStyle={{ marginVertical: 40, paddingBottom: 100 }}
         ListHeaderComponent={
           isLoading ? (
@@ -128,8 +138,7 @@ export default function Images({ navigation }: LoadProps) {
             </View>
           ) : (
             <>
-              {/* <View>{navigation.pop()}</View> */}
-              <Button onPress={useCamera} title="Open Camera" />
+              {/* <Button onPress={useCamera} title="Open Camera" /> */}
               <Button
                 onPress={() => navigation.navigate('Post', { images } as any)}
                 title="Post"
