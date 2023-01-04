@@ -18,12 +18,32 @@ import {
   ref,
   uploadBytesResumable,
 } from 'firebase/storage';
+import { useState } from 'react';
 import { auth, db } from '../../api/firebase';
 import { writeNewScrapbook } from '../../api/queries';
 import { RootStackParamList } from '../../utils/types';
 
+// const [image, setImage] = useState<string>('');
+
 // Uploading images to Firebase Storage. From there, we can extract the image URL and store it
 // with the rest of the scrapbook details in the database.
+export const uploadImages = async (image: string) => {
+  const path = `scrapbooks/${auth.currentUser?.uid}/${Math.random().toString(
+    36
+  )}`;
+  const storage = getStorage();
+  const response = await fetch(image);
+  const storageRef = ref(storage, path);
+  const blob = await response.blob();
+  const metadata = { contentType: 'image/jpeg' };
+
+  console.log('Storage PATH:', path);
+
+  const uploadTask = await uploadBytesResumable(storageRef, blob, metadata);
+  const downloadURL = await getDownloadURL(uploadTask.ref);
+  return downloadURL;
+};
+
 export const uploadScrapbook = async (
   name: string,
   images: string[],
@@ -31,42 +51,25 @@ export const uploadScrapbook = async (
   location: string,
   navigation: NativeStackNavigationProp<RootStackParamList, 'Post'>
 ) => {
-  // new Promise((resolve, reject) => {
-  const promises: string[] = [];
-  images.map(async (image: string) => {
-    const path = `scrapbooks/${auth.currentUser?.uid}/${Math.random().toString(
-      36
-    )}`;
-    const storage = getStorage();
-    const response = await fetch(image);
-    const storageRef = ref(storage, path);
-    const blob = await response.blob();
-    const metadata = { contentType: 'image/jpeg' };
+  const urls = await Promise.all(images.map((image) => uploadImages(image)));
 
-    console.log('Storage PATH:', path);
-
-    const uploadTask = uploadBytesResumable(storageRef, blob, metadata);
-
-    uploadTask.on(
-      'state_changed',
-      (snapshot) => {
-        const progress =
-          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        console.log('Uploading... ' + Math.floor(progress) + '%');
-      },
-      (err) => {
-        console.log(err);
-      },
-      () => {
-        // Promise.all(promises)
-        //   .then(() => {
-        getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
-          promises.push(downloadURL);
-          writeNewScrapbook(name, description, location, navigation, promises);
-        });
-      }
-    );
-  });
+  await addDoc(collection(db, 'scrapbooks'), {
+    uid: auth.currentUser?.uid,
+    name,
+    description,
+    location,
+    images: urls,
+    createdAt: serverTimestamp(),
+    likes_count: 0,
+    comments_count: 0,
+  })
+    .then(() => {
+      console.log('Images:', urls);
+      // navigation.popToTop();
+    })
+    .catch((err) => {
+      console.log('Error uploading scrapbook:', err);
+    });
 };
 
 export const fetchLikes = async (scrapbookId: string, uid: string) =>
