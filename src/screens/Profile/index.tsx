@@ -66,7 +66,11 @@ export default function Profile({ navigation }: any) {
               <ProfilePictureContainer>
                 <Image
                   style={{ height: 120, width: 120, position: 'absolute' }}
-                  source={{ uri: currentUser?.photoURL }}
+                  source={
+                    currentUser?.photoURL
+                      ? { uri: currentUser?.photoURL }
+                      : undefined
+                  }
                 />
                 <View style={{ backgroundColor: 'rgba(0,0,0, 0.5)' }} />
               </ProfilePictureContainer>

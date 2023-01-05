@@ -12,7 +12,7 @@ import styled from 'styled-components/native';
 import { RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../utils/types';
-import { uploadScrapbook } from '../../contexts/services/scrapbook';
+import { writeScrapbook } from '../../contexts/services/scrapbook';
 
 interface PostProps {
   route: RouteProp<{ params: { images: string[] } }, 'params'>;
@@ -62,7 +62,7 @@ export default function Post({ route, navigation }: PostProps) {
         <Button
           title="Post"
           onPress={() =>
-            uploadScrapbook(name, images, description, location, navigation)
+            writeScrapbook(name, images, description, location, navigation)
           }
         />
       </Wrapper>
