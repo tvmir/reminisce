@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { View, Text, Image, Dimensions, TouchableOpacity } from 'react-native';
+import { View, Text, Image, TouchableOpacity } from 'react-native';
 import {
   useAppDispatch,
   useAppSelector,
@@ -23,7 +23,7 @@ interface FeedCardProps {
 export default function ScrollFeed({ item, navigation }: FeedCardProps) {
   const [isLiked, setisLiked] = useState({
     liked: false,
-    counter: item.like_count,
+    counter: item.like_count ? item.like_count : 0,
   });
   const currentUser = useAppSelector((state) => state.currentUser.currentUser);
   const user = useUserQuery(item.uid).data;
@@ -33,7 +33,7 @@ export default function ScrollFeed({ item, navigation }: FeedCardProps) {
     fetchLikes(item.id, currentUser?.uid).then((res) => {
       setisLiked({
         ...isLiked,
-        liked: res as boolean,
+        liked: res,
       });
     });
   }, []);
@@ -51,8 +51,6 @@ export default function ScrollFeed({ item, navigation }: FeedCardProps) {
     <>
       <View
         style={{
-          // width: Dimensions.get('window').width,
-          // position: 'absolute',
           bottom: 10,
           padding: 1,
           paddingTop: 10,
@@ -73,15 +71,17 @@ export default function ScrollFeed({ item, navigation }: FeedCardProps) {
             onPress={() => navigation.navigate('UsersProfile', { user })}
             activeOpacity={0.8}
           >
-            <Image
-              style={{
-                height: 45,
-                width: 45,
-                borderRadius: 23,
-                borderWidth: 1,
-              }}
-              source={{ uri: user?.photoURL }}
-            />
+            {user?.photoURL.length > 0 ? (
+              <Image
+                style={{
+                  height: 45,
+                  width: 45,
+                  borderRadius: 23,
+                  borderWidth: 1,
+                }}
+                source={{ uri: user?.photoURL }}
+              />
+            ) : null}
           </TouchableOpacity>
           <View style={{ paddingHorizontal: 6 }}>
             <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 16 }}>
