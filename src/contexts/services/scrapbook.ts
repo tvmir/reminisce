@@ -11,6 +11,7 @@ import {
   query,
   serverTimestamp,
   setDoc,
+  where,
 } from 'firebase/firestore';
 import { getDownloadURL } from 'firebase/storage';
 import { auth, db } from '../../api/firebase';
@@ -59,11 +60,30 @@ export const writeScrapbook = async (
   })
     .then(() => {
       console.log('Images:', urls);
-      // navigation.popToTop();
+      alert('Your scrapbook has been posted! 🎉');
+      navigation.popToTop();
     })
     .catch((err) => {
       console.log('Error uploading scrapbook:', err);
     });
+};
+
+// Fetching scrapbooks of a given user
+export const fetchScrapbooksByUser = async (
+  uid: string | undefined = auth.currentUser?.uid
+) => {
+  const scrapbooksRef = collection(db, 'scrapbooks');
+  const q = query(
+    scrapbooksRef,
+    where('uid', '==', uid),
+    orderBy('createdAt', 'desc')
+  );
+
+  const scrapbooksQuerySnapshot = await getDocs(q);
+  let scrapbooks = scrapbooksQuerySnapshot.docs.map((doc) => {
+    return { id: doc.id, ...doc.data() };
+  });
+  return scrapbooks;
 };
 
 // Likes and comments are stored in subcollections of the scrapbook document. This is because we
@@ -116,28 +136,32 @@ export const writeComment = async (
   });
 };
 
+let commentsListener: any = null;
+
 // Fetching comments of given scrapbook
-// TODO: Get onSnapshot to work, without it the comments don't update in real time
-export const fetchComments = async (sid: string, setComments: any) => {
+export const fetchComments = async (
+  sid: string,
+  setComments: React.Dispatch<React.SetStateAction<any>>
+) => {
   const commentsRef = doc(db, 'scrapbooks', sid);
   const q = query(
     collection(commentsRef, 'comments'),
     orderBy('createdAt', 'desc')
   );
-  const commentsSnap = await getDocs(q);
-  const comment = commentsSnap.docs.map((doc) => {
-    return { id: doc.id, ...doc.data() };
-  });
-  setComments(comment);
 
-  // const commentsSnap = onSnapshot(q, (snap) => {
-  //   if (snap.docChanges.length === 0) return;
-  //   let c = snap.docs.map((doc) => {
-  //     return { id: doc.id, ...doc.data() };
-  //   });
-  //   // return c;
-  //   setComments(c);
-  // });
-  // // setComments(commentsSnap);
-  // return commentsSnap;
+  commentsListener = onSnapshot(q, (querySnapshot) => {
+    if (querySnapshot.docChanges().length === 0) return;
+    let comment = querySnapshot.docs.map((value) => {
+      return { id: value.id, ...value.data() };
+    });
+    setComments(comment);
+  });
+};
+
+export const detachCommentsListener = () => {
+  console.log('Detaching comments listener...');
+  if (commentsListener != null) {
+    commentsListener();
+    commentsListener = null;
+  }
 };

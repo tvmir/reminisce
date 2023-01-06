@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, TextInput, FlatList } from 'react-native';
+import { View, Image, FlatList } from 'react-native';
 import styled from 'styled-components/native';
-import { useAppSelector, useUserQuery } from '../../../utils/hooks';
+import { useAppSelector } from '../../../utils/hooks';
 import {
+  detachCommentsListener,
   fetchComments,
   writeComment,
 } from '../../../contexts/services/scrapbook';
@@ -12,24 +13,27 @@ import {
   verticalScale,
 } from '../../../utils/scale';
 import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
+import { DocumentData } from 'firebase/firestore';
+import CommentDetails from './CommentDetails';
 
-export default function Comment({ item }: any) {
+export interface CommentProps {
+  item: DocumentData;
+}
+
+export default function Comment({ item }: CommentProps) {
   const [comment, setComment] = useState<string>('');
   const [comments, setComments] = useState<string>('');
   const currentUser = useAppSelector((state) => state.currentUser.currentUser);
-  // TODO: display correct user
-  const user = useUserQuery(item.uid).data;
-  console.log('USER', user);
 
   useEffect(() => {
     fetchComments(item.id, setComments);
+    return () => detachCommentsListener();
   }, []);
 
-  // console.log(comments);
+  // console.log('COMMENTS', comments);
 
   const handleComments = () => {
     if (comment.length > 0) {
-      // console.log('comment', comment);
       setComment('');
       writeComment(item.id, currentUser?.uid, comment);
     } else {
@@ -43,16 +47,7 @@ export default function Comment({ item }: any) {
         // @ts-ignore
         data={comments}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <CommentsWrapper>
-            <UsersImage source={{ uri: user?.photoURL }} />
-            <View style={{ marginHorizontal: 12 }}>
-              <UserText>{user?.name}</UserText>
-              <UsernameText>@{user?.username}</UsernameText>
-            </View>
-            <UserText>{item.comment}</UserText>
-          </CommentsWrapper>
-        )}
+        renderItem={({ item }) => <CommentDetails item={item} />}
       />
       <WrapperInput>
         <CUserImage source={{ uri: currentUser?.photoURL }} />
@@ -91,31 +86,9 @@ const Input = styled(BottomSheetTextInput)`
   padding: 10px;
 `;
 
-const CommentsWrapper = styled(View)`
-  flex: 1;
-  flex-direction: row;
-  padding: 10px;
-`;
-
-const UsersImage = styled(Image)`
-  height: ${verticalScale(32)}px;
-  width: ${horizontalScale(32)}px;
-  border-radius: ${moderateScale(16)}px;
-  border-width: 1px;
-`;
-
 const CUserImage = styled(Image)`
   height: ${verticalScale(38)}px;
   width: ${horizontalScale(38)}px;
   border-radius: ${moderateScale(20)}px;
   border-width: 1px;
-`;
-
-const UserText = styled(Text)`
-  color: ${(p) => p.theme.colors.primary};
-`;
-
-const UsernameText = styled(Text)`
-  font-size: 11px;
-  color: #cfcfcf;
 `;

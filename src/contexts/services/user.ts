@@ -44,7 +44,7 @@ export const updateProfilePicture = async (photoURL: string) => {
 };
 
 // Fetching users from the database (for the feed screen)
-export const fetchUsers = async (uid: string) => {
+export const fetchUsersByID = async (uid: string) => {
   const userRef = doc(db, 'users', uid!);
   const userSnapshot = await getDoc(userRef);
   if (userSnapshot.exists()) {

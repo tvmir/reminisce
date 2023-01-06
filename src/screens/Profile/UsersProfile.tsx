@@ -1,7 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { FlatList, Image, Text, TouchableOpacity, View } from 'react-native';
 import styled from 'styled-components/native';
-import { useAppSelector, useUserQuery } from '../../utils/hooks';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../utils/types';
@@ -10,17 +9,21 @@ import {
   moderateScale,
   verticalScale,
 } from '../../utils/scale';
+import { fetchScrapbooksByUser } from '../../contexts/services/scrapbook';
+import ProfileDetails from '../../ui/components/ProfileDetails';
 
 interface ProfileProps {
   navigation: NativeStackNavigationProp<RootStackParamList, 'EditProfile'>;
 }
 
-export default function UsersProfile({ route }: any) {
-  const currentUserScrapbooks = useAppSelector(
-    (state) => state.currentUserScrapbooks.scrapbooks
-  );
+export default function UsersProfile({ route, navigation }: any) {
   const { user } = route.params;
-  console.log({ user, currentUserScrapbooks });
+  const [userScrapbooks, setUserScrapbooks] = useState<any>([]);
+  console.log({ user, userScrapbooks });
+
+  useEffect(() => {
+    fetchScrapbooksByUser(user?.uid).then(setUserScrapbooks);
+  }, []);
 
   return (
     <Wrapper>
@@ -29,7 +32,7 @@ export default function UsersProfile({ route }: any) {
           numColumns={2}
           removeClippedSubviews
           nestedScrollEnabled
-          data={currentUserScrapbooks}
+          data={userScrapbooks}
           ListHeaderComponent={() => (
             <DetailsWrapper>
               <ProfilePicture>
@@ -73,9 +76,7 @@ export default function UsersProfile({ route }: any) {
             </DetailsWrapper>
           )}
           renderItem={({ item }) => (
-            <ImgWrapper style={{ flex: 1 / 2 }}>
-              <Img source={{ uri: item.images[0] }} />
-            </ImgWrapper>
+            <ProfileDetails item={item} navigation={navigation} />
           )}
         />
       </ListWrapper>
@@ -158,4 +159,18 @@ const BioText = styled(Text)`
   font-size: ${moderateScale(14)}px;
   font-weight: 400;
   color: ${(p) => p.theme.colors.primary};
+`;
+
+const ImageWrapper = styled(View)`
+  height: 140px;
+  border-radius: 6px;
+  border: 0.5px solid #1f1e1e;
+  padding-bottom: 25px;
+`;
+
+const ImageStyle = styled(Image)`
+  height: 90%;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+  background-color: #727477;
 `;

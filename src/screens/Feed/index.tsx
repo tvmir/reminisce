@@ -1,6 +1,6 @@
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { RouteProp } from '@react-navigation/native';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Dimensions,
   FlatList,
@@ -12,11 +12,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import styled from 'styled-components/native';
 import { fetchScrapbooks } from '../../contexts/slices/scrapbooks/scrapbooksSlice';
 import ScrollFeed from '../../ui/components/ScrollFeed';
-import {
-  useAppDispatch,
-  useAppSelector,
-  useUserQuery,
-} from '../../utils/hooks';
+import { useAppDispatch, useAppSelector } from '../../utils/hooks';
 import { verticalScale } from '../../utils/scale';
 
 interface FeedProps {
@@ -29,16 +25,21 @@ export default function Feed({ route, navigation }: any) {
   const scrapbooks = useAppSelector((state) => state.scrapbooks.scrapbooks);
   const bottomTabBarHeight = useBottomTabBarHeight();
   const [isOpen, setIsOpen] = useState(false);
+  const [refreshing, setRefreshing] = useState<boolean>(true);
 
   useEffect(() => {
-    dispatch(fetchScrapbooks());
-  }, []);
+    dispatch(fetchScrapbooks()).then(() => {
+      setRefreshing(false);
+    });
+  }, [refreshing]);
 
   return (
     <Wrapper edges={['top', 'left', 'right']}>
       <FlatList
         removeClippedSubviews
         pagingEnabled
+        refreshing={refreshing}
+        onRefresh={fetchScrapbooks}
         decelerationRate={'normal'}
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}

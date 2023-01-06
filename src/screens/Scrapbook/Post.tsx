@@ -25,7 +25,6 @@ export default function Post({ route, navigation }: PostProps) {
   const [description, setDescription] = useState<string>('');
   const [location, setLocation] = useState<string>('');
   const { width } = useWindowDimensions();
-  console.log(images);
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>

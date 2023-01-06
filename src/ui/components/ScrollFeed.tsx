@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-
 import { View, Text, Image, TouchableOpacity } from 'react-native';
 import {
   useAppDispatch,
@@ -46,7 +45,6 @@ export default function ScrollFeed({ item, navigation }: FeedCardProps) {
     updateLikes(item.id, currentUser?.uid, isLiked.liked);
   };
 
-  // Temporary styling for rn
   return (
     <>
       <View
@@ -67,7 +65,6 @@ export default function ScrollFeed({ item, navigation }: FeedCardProps) {
           }}
         >
           <TouchableOpacity
-            // The most jank way possible of doing this and it don't even work like that
             onPress={() => navigation.navigate('UsersProfile', { user })}
             activeOpacity={0.8}
           >
