@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
+  Button,
   FlatList,
   Image,
-  RefreshControl,
   Text,
   TouchableWithoutFeedback,
   View,
@@ -10,7 +10,7 @@ import {
 import styled from 'styled-components/native';
 import { StackActions, useNavigation } from '@react-navigation/native';
 import { auth } from '../../api/firebase';
-import { useAppSelector } from '../../utils/hooks';
+import { useAppDispatch, useAppSelector } from '../../utils/hooks';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../utils/types';
@@ -23,19 +23,20 @@ import {
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { fetchCurrentUserScrapbooks } from '../../contexts/slices/scrapbooks/currentUserScrapbooksSlice';
 import { SharedElement } from 'react-navigation-shared-element';
+import ProfileDetails from '../../ui/components/ProfileDetails';
 
 // interface ProfileProps {
 //   navigation: NativeStackNavigationProp<RootStackParamList, 'EditProfile'>;
 // }
 
-export default function Profile({ navigation }: any) {
+export default function Profile({ route, navigation }: any) {
   const currentUserScrapbooks = useAppSelector(
     (state) => state.currentUserScrapbooks.scrapbooks
   );
   const currentUser = useAppSelector((state) => state.currentUser.currentUser);
   console.log({ currentUser, currentUserScrapbooks });
-  // const navigation = useNavigation();
-  // const [refreshing, setRefreshing] = useState(true);
+  const [refreshing, setRefreshing] = useState<boolean>(true);
+  const dispatch = useAppDispatch();
 
   const handleLogout = () => {
     auth
@@ -48,18 +49,23 @@ export default function Profile({ navigation }: any) {
       });
   };
 
+  // TODO: Get refresh working
   useEffect(() => {
-    fetchCurrentUserScrapbooks(currentUser?.uid);
-    // setRefreshing(false);
-  }, []);
+    dispatch(fetchCurrentUserScrapbooks(currentUser?.uid)).then(() =>
+      setRefreshing(false)
+    );
+  }, [refreshing]);
 
   return (
     <Wrapper>
       <ListWrapper>
         <FlatList
           numColumns={2}
+          initialNumToRender={4}
           removeClippedSubviews
           nestedScrollEnabled
+          refreshing={refreshing}
+          onRefresh={fetchCurrentUserScrapbooks}
           data={currentUserScrapbooks}
           ListHeaderComponent={() => (
             <DetailsWrapper>
@@ -101,57 +107,12 @@ export default function Profile({ navigation }: any) {
             </DetailsWrapper>
           )}
           renderItem={({ item }) => (
-            <ImgWrapper style={{ flex: 1 / 2, paddingHorizontal: 5 }}>
-              <ImageWrapper>
-                <TouchableWithoutFeedback
-                  onPress={() => navigation.navigate('Expanded', { item })}
-                >
-                  <SharedElement id={item.id}>
-                    <ImageStyle source={{ uri: item.images[0] }} />
-                  </SharedElement>
-                </TouchableWithoutFeedback>
-                <View style={{ padding: 5 }}>
-                  <Text
-                    style={{ color: 'white', fontSize: 13, fontWeight: '600' }}
-                  >
-                    {item.name}
-                  </Text>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      paddingRight: 10,
-                      paddingVertical: 2,
-                    }}
-                  >
-                    <Ionicons name="location-sharp" size={10} color="#10F0FE" />
-                    <Text
-                      style={{
-                        color: 'white',
-                        fontSize: 9,
-                        fontWeight: '400',
-                        paddingHorizontal: 2,
-                      }}
-                    >
-                      {item.location}
-                    </Text>
-                  </View>
-                </View>
-              </ImageWrapper>
-            </ImgWrapper>
+            <ProfileDetails item={item} navigation={navigation} />
           )}
-          // refreshControl={
-          //   <RefreshControl
-          //     refreshing={refreshing}
-          //     onRefresh={fetchCurrentUserScrapbooks}
-          //     size={10}
-          //   />
-          // }
         />
       </ListWrapper>
 
-      {/* <SignupButton onPress={handleLogout}>
-        <ButtonText>Logout</ButtonText>
-      </SignupButton> */}
+      <Button title="Logout" onPress={handleLogout} />
     </Wrapper>
   );
 }
@@ -219,10 +180,6 @@ const FollowageDesc = styled(Text)`
   font-weight: 400;
 `;
 
-const ImgWrapper = styled(View)`
-  height: ${verticalScale(150)}px;
-`;
-
 const EditProfileButton = styled(TouchableOpacity)`
   border: 1px solid #727477;
   border-radius: 20px;
@@ -238,27 +195,5 @@ const BioText = styled(Text)`
   padding-top: ${verticalScale(10)}px;
   font-size: ${moderateScale(14)}px;
   font-weight: 400;
-  color: ${(p) => p.theme.colors.primary};
-`;
-
-const ImageWrapper = styled(View)`
-  height: 140px;
-  border-radius: 6px;
-  border: 0.5px solid #1f1e1e;
-  padding-bottom: 25px;
-`;
-
-const ImageStyle = styled(Image)`
-  height: 90%;
-  border-top-left-radius: 6px;
-  border-top-right-radius: 6px;
-  background-color: #727477;
-`;
-
-const ButtonText = styled(Text)`
-  font-style: normal;
-  font-weight: 600;
-  font-size: 15px;
-  line-height: 22px;
   color: ${(p) => p.theme.colors.primary};
 `;

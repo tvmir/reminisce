@@ -49,9 +49,9 @@ export default function Search({ route, navigation }: SearchProps) {
         horizontal={false}
         data={users}
         keyExtractor={(item) => item.id}
-        renderItem={({ item } = route.params) => (
+        renderItem={({ item }) => (
           <UserContainer
-          // onPress={() => navigation.navigate('UsersProfile', { item })}
+          // onPress={() => navigation.navigate('UsersProfile', { users })}
           >
             <UserImage source={{ uri: item.photoURL }} />
             <UserDetailsContainer>
