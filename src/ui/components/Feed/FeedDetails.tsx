@@ -4,14 +4,14 @@ import {
   useAppDispatch,
   useAppSelector,
   useUserQuery,
-} from '../../utils/hooks';
+} from '../../../utils/hooks';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { fetchLikes, updateLikes } from '../../contexts/services/scrapbook';
+import { fetchLikes, updateLikes } from '../../../contexts/services/scrapbook';
 import { DocumentData } from 'firebase/firestore';
-import { commentModal } from '../../contexts/slices/modals/modalsSlice';
+import { commentModal } from '../../../contexts/slices/modals/modalsSlice';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { BottomTabParamList, RootStackParamList } from '../../utils/types';
+import { BottomTabParamList, RootStackParamList } from '../../../utils/types';
 import moment from 'moment';
 
 interface FeedCardProps {
@@ -19,7 +19,7 @@ interface FeedCardProps {
   navigation: any;
 }
 
-export default function ScrollFeed({ item, navigation }: FeedCardProps) {
+export default function FeedDetails({ item, navigation }: FeedCardProps) {
   const [isLiked, setisLiked] = useState({
     liked: false,
     counter: item.like_count ? item.like_count : 0,

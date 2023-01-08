@@ -21,7 +21,7 @@ export default function Modal() {
   const renderModal = () => {
     switch (modal.modalType) {
       case 0:
-        return <Comment item={modal.data} />;
+        return <Comment item={modal.data!} />;
       default:
         return <></>;
     }

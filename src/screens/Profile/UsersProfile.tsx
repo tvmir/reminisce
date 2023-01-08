@@ -10,7 +10,7 @@ import {
   verticalScale,
 } from '../../utils/scale';
 import { fetchScrapbooksByUser } from '../../contexts/services/scrapbook';
-import ProfileDetails from '../../ui/components/ProfileDetails';
+import ProfileDetails from '../../ui/components/Profile/ProfileDetails';
 
 interface ProfileProps {
   navigation: NativeStackNavigationProp<RootStackParamList, 'EditProfile'>;
@@ -32,6 +32,7 @@ export default function UsersProfile({ route, navigation }: any) {
           numColumns={2}
           removeClippedSubviews
           nestedScrollEnabled
+          showsVerticalScrollIndicator={false}
           data={userScrapbooks}
           ListHeaderComponent={() => (
             <DetailsWrapper>

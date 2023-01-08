@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { ComponentType, useEffect } from 'react';
 import styled from 'styled-components/native';
 import { fetchUser } from '../../contexts/slices/users/currentUserSlice';
 import { fetchCurrentUserScrapbooks } from '../../contexts/slices/scrapbooks/currentUserScrapbooksSlice';
@@ -17,18 +17,44 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { useAppDispatch, useAppSelector } from '../../utils/hooks';
 import Map from '../../screens/Map';
+import {
+  createSharedElementStackNavigator,
+  SharedElementSceneComponent,
+} from 'react-navigation-shared-element';
 
-interface UserProps {
+interface TabProps {
   navigation: NativeStackNavigationProp<RootStackParamList, 'Home'>;
 }
 
-const FillInComponent = () => {
-  return null;
+const wrapInSharedElementStack = (
+  Screen: SharedElementSceneComponent<any>,
+  name: string
+): ComponentType<any> => {
+  const SharedStack = createSharedElementStackNavigator();
+  return () => (
+    <SharedStack.Navigator
+      screenOptions={{ headerShown: false }}
+      initialRouteName={name}
+    >
+      <SharedStack.Screen name={name} component={Screen} />
+    </SharedStack.Navigator>
+  );
 };
 
+// Wrapping each screen in a shared element stack
+const FeedStack = wrapInSharedElementStack(Feed, 'FeedStack');
+const SearchStack = wrapInSharedElementStack(Search, 'SearchStack');
+const MapStack = wrapInSharedElementStack(Map, 'MapStack');
+const NotificationsStack = wrapInSharedElementStack(
+  Notifications,
+  'NotificationsStack'
+);
+const ProfileStack = wrapInSharedElementStack(Profile, 'ProfileStack');
+
+// Creating the bottom tab navigator
 const Tab = createBottomTabNavigator<BottomTabParamList>();
 
-export default function Home({ navigation }: UserProps) {
+export default function Home({ navigation }: TabProps) {
   const dispatch = useAppDispatch();
   const currentUser = useAppSelector((state) => state.currentUser.currentUser);
 
@@ -54,7 +80,7 @@ export default function Home({ navigation }: UserProps) {
     >
       <Tab.Screen
         name="Feed"
-        component={Feed}
+        component={FeedStack}
         options={{
           // headerShown: false,
           headerTitle: '',
@@ -93,7 +119,7 @@ export default function Home({ navigation }: UserProps) {
       />
       <Tab.Screen
         name="Search"
-        component={Search}
+        component={SearchStack}
         options={{
           headerShown: false,
           headerTitle: '',
@@ -108,7 +134,7 @@ export default function Home({ navigation }: UserProps) {
       />
       <Tab.Screen
         name="Map"
-        component={Map}
+        component={MapStack}
         options={{
           headerShown: false,
           tabBarIcon: ({ focused, color }) => (
@@ -122,7 +148,7 @@ export default function Home({ navigation }: UserProps) {
       />
       <Tab.Screen
         name="Notifications"
-        component={Notifications}
+        component={NotificationsStack}
         options={{
           headerShown: false,
           tabBarIcon: ({ focused, color }) => (
@@ -136,7 +162,7 @@ export default function Home({ navigation }: UserProps) {
       />
       <Tab.Screen
         name="Profile"
-        component={Profile}
+        component={ProfileStack}
         options={{
           headerShown: false,
           tabBarIcon: ({ focused, color }) => (

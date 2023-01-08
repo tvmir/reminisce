@@ -5,13 +5,15 @@ import {
   Dimensions,
   FlatList,
   Image,
+  Text,
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { SharedElement } from 'react-navigation-shared-element';
 import styled from 'styled-components/native';
 import { fetchScrapbooks } from '../../contexts/slices/scrapbooks/scrapbooksSlice';
-import ScrollFeed from '../../ui/components/ScrollFeed';
+import FeedDetails from '../../ui/components/Feed/FeedDetails';
 import { useAppDispatch, useAppSelector } from '../../utils/hooks';
 import { verticalScale } from '../../utils/scale';
 
@@ -24,8 +26,9 @@ export default function Feed({ route, navigation }: any) {
   const dispatch = useAppDispatch();
   const scrapbooks = useAppSelector((state) => state.scrapbooks.scrapbooks);
   const bottomTabBarHeight = useBottomTabBarHeight();
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   const [refreshing, setRefreshing] = useState<boolean>(true);
+  const { width, height } = Dimensions.get('window');
 
   useEffect(() => {
     dispatch(fetchScrapbooks()).then(() => {
@@ -35,6 +38,11 @@ export default function Feed({ route, navigation }: any) {
 
   return (
     <Wrapper edges={['top', 'left', 'right']}>
+      {/* <View style={}>
+        <Text style={{ fontSize: 16, fontWeight: 'bold', color: 'white' }}>
+          Close By
+        </Text>
+      </View> */}
       <FlatList
         removeClippedSubviews
         pagingEnabled
@@ -47,28 +55,31 @@ export default function Feed({ route, navigation }: any) {
         data={scrapbooks}
         renderItem={({ item }) => (
           <>
-            <TouchableWithoutFeedback
-              onPress={() => navigation.navigate('ExpandedFeed')}
-            >
-              <FeedWrapper
-                style={{
-                  height:
-                    // 186 for iPhone 13, 182 for iPhone XS
-                    Dimensions.get('window').height - bottomTabBarHeight - 182,
-                  borderRadius: 20,
-                }}
+            <SharedElement id={`${item.id}.images`}>
+              <TouchableWithoutFeedback
+                onPress={() => navigation.navigate('ExpandedFeed', { item })}
               >
-                <Image
-                  style={{ flex: 1, borderRadius: 20 }}
-                  resizeMode="cover"
-                  source={{
-                    uri: item.images[0],
+                <FeedWrapper
+                  style={{
+                    height:
+                      // 186 for iPhone 13, 182 for iPhone XS
+                      Dimensions.get('window').height -
+                      bottomTabBarHeight -
+                      182,
+                    borderRadius: 20,
                   }}
-                />
-              </FeedWrapper>
-            </TouchableWithoutFeedback>
+                >
+                  <Image
+                    style={{ flex: 1, borderRadius: 20 }}
+                    source={{
+                      uri: item.images[0],
+                    }}
+                  />
+                </FeedWrapper>
+              </TouchableWithoutFeedback>
+            </SharedElement>
             <View style={{ height: 80 }}>
-              <ScrollFeed item={item} navigation={navigation} />
+              <FeedDetails item={item} navigation={navigation} />
             </View>
           </>
         )}
@@ -80,7 +91,7 @@ export default function Feed({ route, navigation }: any) {
 // Styles
 const Wrapper = styled(SafeAreaView)`
   flex: 1;
-  width: 95%;
+  width: 92%;
   margin: 0 auto 0 auto;
   margin-top: ${verticalScale(-30)}px;
 `;

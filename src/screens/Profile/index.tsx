@@ -1,14 +1,14 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Button,
   FlatList,
   Image,
   Text,
-  TouchableWithoutFeedback,
+  useWindowDimensions,
   View,
 } from 'react-native';
 import styled from 'styled-components/native';
-import { StackActions, useNavigation } from '@react-navigation/native';
+import { StackActions } from '@react-navigation/native';
 import { auth } from '../../api/firebase';
 import { useAppDispatch, useAppSelector } from '../../utils/hooks';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -20,23 +20,35 @@ import {
   moderateScale,
   verticalScale,
 } from '../../utils/scale';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import { fetchCurrentUserScrapbooks } from '../../contexts/slices/scrapbooks/currentUserScrapbooksSlice';
-import { SharedElement } from 'react-navigation-shared-element';
-import ProfileDetails from '../../ui/components/ProfileDetails';
+import ProfileDetails from '../../ui/components/Profile/ProfileDetails';
+import Animated from 'react-native-reanimated';
+import TabIndicator, { data } from '../../ui/components/Profile/TabIndicator';
 
 // interface ProfileProps {
 //   navigation: NativeStackNavigationProp<RootStackParamList, 'EditProfile'>;
 // }
 
 export default function Profile({ route, navigation }: any) {
+  const { width } = useWindowDimensions();
+  const [refreshing, setRefreshing] = useState<boolean>(true);
+  const dispatch = useAppDispatch();
+
+  const currentUser = useAppSelector((state) => state.currentUser.currentUser);
   const currentUserScrapbooks = useAppSelector(
     (state) => state.currentUserScrapbooks.scrapbooks
   );
-  const currentUser = useAppSelector((state) => state.currentUser.currentUser);
   console.log({ currentUser, currentUserScrapbooks });
-  const [refreshing, setRefreshing] = useState<boolean>(true);
-  const dispatch = useAppDispatch();
+
+  const scrollX = useRef(new Animated.Value(0)).current;
+  const ref = useRef();
+
+  const onItemPress = (itemIdx: any) => {
+    // @ts-ignore
+    ref?.current?.scrollToOffset({
+      offset: itemIdx * width,
+    });
+  };
 
   const handleLogout = () => {
     auth
@@ -103,16 +115,23 @@ export default function Profile({ route, navigation }: any) {
                   <EditProfileText>Edit Profile</EditProfileText>
                 </EditProfileButton>
               </FollowageContainer>
-              <BioText>My life through a lens</BioText>
+              <TabIndicator
+                data={data}
+                scrollX={scrollX}
+                onItemPress={onItemPress}
+              />
             </DetailsWrapper>
           )}
           renderItem={({ item }) => (
-            <ProfileDetails item={item} navigation={navigation} />
+            <>
+              <ProfileDetails item={item} navigation={navigation} />
+            </>
+            // AboutUserDetails
           )}
         />
       </ListWrapper>
 
-      <Button title="Logout" onPress={handleLogout} />
+      {/* <Button title="Logout" onPress={handleLogout} /> */}
     </Wrapper>
   );
 }

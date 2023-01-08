@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { View, Image, FlatList } from 'react-native';
 import styled from 'styled-components/native';
-import { useAppSelector } from '../../../utils/hooks';
+import { useAppSelector } from '../../../../utils/hooks';
 import {
   detachCommentsListener,
   fetchComments,
   writeComment,
-} from '../../../contexts/services/scrapbook';
+} from '../../../../contexts/services/scrapbook';
 import {
   horizontalScale,
   moderateScale,
   verticalScale,
-} from '../../../utils/scale';
+} from '../../../../utils/scale';
 import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
 import { DocumentData } from 'firebase/firestore';
 import CommentDetails from './CommentDetails';

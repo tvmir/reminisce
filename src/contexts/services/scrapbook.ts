@@ -69,9 +69,7 @@ export const writeScrapbook = async (
 };
 
 // Fetching scrapbooks of a given user
-export const fetchScrapbooksByUser = async (
-  uid: string | undefined = auth.currentUser?.uid
-) => {
+export const fetchScrapbooksByUser = async (uid: string) => {
   const scrapbooksRef = collection(db, 'scrapbooks');
   const q = query(
     scrapbooksRef,
@@ -158,6 +156,7 @@ export const fetchComments = async (
   });
 };
 
+// Detaching comments listener to prevent memory leaks and unnecessary calls to the database
 export const detachCommentsListener = () => {
   console.log('Detaching comments listener...');
   if (commentsListener != null) {

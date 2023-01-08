@@ -3,19 +3,11 @@ import { theme } from './ui/shared/Theme';
 import { NavigationContainer } from '@react-navigation/native';
 import MainStackNavigator from './navigation/Stack';
 import { useFonts } from 'expo-font';
-import { QueryClient, QueryClientProvider } from 'react-query';
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      refetchInterval: false,
-      staleTime: Infinity,
-    },
-  },
-});
+import { QueryClientProvider } from 'react-query';
+import { queryClient } from './api/client';
 
 export default function App() {
-  // Fonts
+  // Loading custom fonts
   const [fontsLoaded] = useFonts({
     Montserrat: require('../assets/fonts/Montserrat-Regular.ttf'),
   });

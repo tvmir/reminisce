@@ -18,12 +18,14 @@ import DraggableFlatList from 'react-native-draggable-flatlist';
 
 interface LoadProps {
   navigation: NativeStackNavigationProp<RootStackParamList, 'Images'>;
+  route: any;
 }
 
-export default function Images({ navigation }: LoadProps) {
+export default function Images({ navigation, route }: LoadProps) {
   const [images, setImages] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { width } = useWindowDimensions();
+  const { image } = route.params || {};
 
   // Selecting images from the system library
   const useLibrary = async () => {
@@ -61,48 +63,25 @@ export default function Images({ navigation }: LoadProps) {
     let results: string[] = [];
     result.assets?.forEach((asset) => results.push(asset.uri));
 
+    console.log('IMG', image);
+
     Promise.all(results)
       .then(() => {
-        if (result.assets!.length > 1) {
+        if (image === undefined && result.assets!.length > 1) {
           setImages([...results, ...images]);
+        } else if (image !== undefined && result.assets!.length > 0) {
+          setImages([image, ...results, ...images]);
         } else {
           setImages(results);
         }
       })
-      .catch((err) => console.log('No image has been selected.', err));
-  };
-
-  // Accessing the system camera
-  const useCamera = async () => {
-    setIsLoading(true);
-    const permission = await ImagePicker.requestCameraPermissionsAsync();
-    if (permission.granted === false) {
-      Alert.alert(
-        'Share on Reminisce',
-        'Allow access to your Camera so you can start capturing memories the moment they happen.',
-        [
-          {
-            text: 'Settings',
-            onPress: () => Linking.openURL('app-settings:'),
-          },
-          {
-            text: 'Cancel',
-            style: 'cancel',
-          },
-        ],
-        { cancelable: true }
+      .catch((err) =>
+        // console.log('No image has been selected from the library')
+        console.log('\n')
       );
-      setIsLoading(false);
-      return;
-    }
 
-    let result = await ImagePicker.launchCameraAsync({
-      quality: 0.2,
-    });
-    setIsLoading(false);
-    if (!result.canceled) {
-      setImages(result.assets?.map((asset) => asset.uri));
-    }
+    console.log('RESULTS', results);
+    console.log('IMAGES', images);
   };
 
   useEffect(() => {
@@ -138,7 +117,6 @@ export default function Images({ navigation }: LoadProps) {
             </View>
           ) : (
             <>
-              {/* <Button onPress={useCamera} title="Open Camera" /> */}
               <Button
                 onPress={() => navigation.navigate('Post', { images } as any)}
                 title="Post"
