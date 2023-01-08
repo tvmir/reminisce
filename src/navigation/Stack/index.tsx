@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { createStackNavigator } from '@react-navigation/stack';
 import Login from '../../screens/Auth/Login';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../../api/firebase';
@@ -12,9 +10,8 @@ import Images from '../../screens/Scrapbook/Images';
 import Post from '../../screens/Scrapbook/Post';
 import Add from '../../screens/Scrapbook/Add';
 import { store } from '../../contexts/store';
-import Loading from '../../ui/components/Loading';
+import Loading from '../../ui/components/Extra/Loading';
 import Signup from '../../screens/Auth/Signup';
-import { Text, TouchableOpacity } from 'react-native';
 import Edit from '../../screens/Profile/Edit';
 import Modal from '../../ui/components/Modal';
 import UsersProfile from '../../screens/Profile/UsersProfile';
@@ -22,7 +19,7 @@ import ExpandedFeed from '../../screens/Scrapbook/ExpandedFeed';
 import Expanded from '../../screens/Scrapbook/Expanded';
 import { createSharedElementStackNavigator } from 'react-navigation-shared-element';
 
-// const Stack = createNativeStackNavigator<RootStackParamList>();
+// Creating the shared element stack navigator
 const Stack = createSharedElementStackNavigator();
 
 export default function MainStackNavigator() {
@@ -113,6 +110,7 @@ export default function MainStackNavigator() {
                 headerShadowVisible: false,
                 headerBackTitle: '',
                 headerTitle: 'New Scrapbook',
+                animationEnabled: false,
               })}
               name="Images"
               component={Images}
@@ -168,9 +166,27 @@ export default function MainStackNavigator() {
                 },
                 headerShadowVisible: false,
                 headerBackTitleVisible: false,
+                cardStyleInterpolator: ({ current: { progress } }: any) => {
+                  return {
+                    cardStyle: {
+                      opacity: progress,
+                    },
+                  };
+                },
               }}
               name="ExpandedFeed"
               component={ExpandedFeed}
+              sharedElements={(route) => {
+                const { item } = route.params;
+                return [
+                  {
+                    id: `${item.id}.images`,
+                    animation: 'move',
+                    // align: 'center-center',
+                    // resize: 'clip',
+                  },
+                ];
+              }}
             />
             <Stack.Screen
               options={{
@@ -181,11 +197,26 @@ export default function MainStackNavigator() {
                 },
                 headerShadowVisible: false,
                 headerBackTitleVisible: false,
+                gestureEnabled: false,
+                cardStyleInterpolator: ({ current: { progress } }: any) => {
+                  return {
+                    cardStyle: {
+                      opacity: progress,
+                    },
+                  };
+                },
               }}
               name="Expanded"
               component={Expanded}
               sharedElements={(route) => {
-                return [route.params.item.id];
+                const { item } = route.params;
+                return [
+                  {
+                    id: `${item.id}.images`,
+                    animation: 'move',
+                    resize: 'clip',
+                  },
+                ];
               }}
             />
           </Stack.Navigator>

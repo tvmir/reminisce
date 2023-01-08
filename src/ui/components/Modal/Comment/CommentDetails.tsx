@@ -1,13 +1,13 @@
 import React from 'react';
 import { View, Text, Image } from 'react-native';
 import styled from 'styled-components/native';
-import { useUserQuery } from '../../../utils/hooks';
+import { useUserQuery } from '../../../../utils/hooks';
 import {
   horizontalScale,
   moderateScale,
   verticalScale,
-} from '../../../utils/scale';
-import { CommentProps } from './Comment';
+} from '../../../../utils/scale';
+import { CommentProps } from '.';
 
 export default function CommentDetails({ item }: CommentProps) {
   const user = useUserQuery(item.uid).data;
