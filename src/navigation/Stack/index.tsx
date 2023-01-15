@@ -4,7 +4,6 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../../api/firebase';
 import { Provider } from 'react-redux';
 import Home from '../Tab';
-import { RootStackParamList } from '../../utils/types';
 import { theme } from '../../ui/shared/Theme';
 import Images from '../../screens/Scrapbook/Images';
 import Post from '../../screens/Scrapbook/Post';
@@ -126,7 +125,6 @@ export default function MainStackNavigator() {
                 headerTitle: 'Post',
               }}
               name="Post"
-              // @ts-ignore TODO: Fix this
               component={Post}
             />
             <Stack.Screen
@@ -182,8 +180,6 @@ export default function MainStackNavigator() {
                   {
                     id: `${item.id}.images`,
                     animation: 'move',
-                    // align: 'center-center',
-                    // resize: 'clip',
                   },
                 ];
               }}

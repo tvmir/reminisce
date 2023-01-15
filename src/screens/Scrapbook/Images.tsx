@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {
   View,
-  FlatList,
   Button,
-  Image,
   useWindowDimensions,
   ActivityIndicator,
   Alert,
@@ -15,6 +13,7 @@ import styled from 'styled-components/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../utils/types';
 import DraggableFlatList from 'react-native-draggable-flatlist';
+import FitImage from 'react-native-fit-image';
 
 interface LoadProps {
   navigation: NativeStackNavigationProp<RootStackParamList, 'Images'>;
@@ -91,6 +90,7 @@ export default function Images({ navigation, route }: LoadProps) {
   return (
     <>
       <DraggableFlatList
+        showsVerticalScrollIndicator={false}
         data={images}
         renderItem={({ item, drag, isActive }) => (
           <>
@@ -99,17 +99,12 @@ export default function Images({ navigation, route }: LoadProps) {
               onLongPress={drag}
               disabled={isActive}
             >
-              <Image
-                source={{ uri: item }}
-                style={{ width: width, height: 250 }}
-                key={item}
-              />
+              <FitImage source={{ uri: item }} key={item} />
             </TouchableOpacity>
           </>
         )}
         keyExtractor={(item) => item}
         onDragEnd={({ data }) => setImages(data)}
-        contentContainerStyle={{ marginVertical: 40, paddingBottom: 100 }}
         ListHeaderComponent={
           isLoading ? (
             <View>
@@ -128,9 +123,3 @@ export default function Images({ navigation, route }: LoadProps) {
     </>
   );
 }
-
-// Styles
-const Wrapper = styled(View)`
-  flex: 1;
-  justify-content: 'center';
-`;

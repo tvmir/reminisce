@@ -1,11 +1,6 @@
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import {
-  createUserWithEmailAndPassword,
-  onAuthStateChanged,
-  updateProfile,
-} from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore';
-import React, { useEffect, useState } from 'react';
+
+import React, { useState } from 'react';
 import {
   Keyboard,
   KeyboardAvoidingView,
@@ -15,10 +10,8 @@ import {
   View,
 } from 'react-native';
 import styled from 'styled-components/native';
-import { auth, db } from '../../api/firebase';
 import { signup } from '../../contexts/slices/users/currentUserSlice';
 import { SignupButton } from '../../ui/shared/Button';
-import { useAppDispatch } from '../../utils/hooks';
 import {
   horizontalScale,
   moderateScale,
@@ -36,14 +29,10 @@ export default function Signup({ navigation }: SignupProps) {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
 
-  // useEffect(() => {
-  //   const unsub = onAuthStateChanged(auth, (user) => {
-  //     if (user) {
-  //       navigation.navigate('Login');
-  //     }
-  //   });
-  //   return unsub;
-  // }, []); // runs once
+  // Initial empty variables
+  const bio = '';
+  const followers_count = 0;
+  const following_count = 0;
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -66,6 +55,7 @@ export default function Signup({ navigation }: SignupProps) {
               placeholderTextColor="#edededb2"
               value={username}
               keyboardAppearance="dark"
+              autoCapitalize="none"
               onChangeText={(text) => setUsername(text)}
             />
           </InputBorder>
@@ -92,7 +82,18 @@ export default function Signup({ navigation }: SignupProps) {
           </InputBorder>
         </InputContainer>
         <SignupButton
-          onPress={() => signup(email, password, name, username, navigation)}
+          onPress={() =>
+            signup(
+              email,
+              password,
+              name,
+              username,
+              bio,
+              followers_count,
+              following_count,
+              navigation
+            )
+          }
           activeOpacity={0.8}
         >
           <ButtonText>Sign Up</ButtonText>
@@ -158,9 +159,6 @@ const Input = styled(TextInput)`
   padding: 15px 15px;
   margin-top: ${verticalScale(20)}px;
   width: 100%;
-  /* background: #050505; */
-  /* border: 1px dotted #6c2424; */
-  /* border-radius: ${moderateScale(5)}px; */
   color: white;
 `;
 

@@ -5,13 +5,13 @@ import {
   deleteDoc,
   doc,
   getDoc,
-  getDocs,
   onSnapshot,
   orderBy,
   query,
+  runTransaction,
   serverTimestamp,
   setDoc,
-  where,
+  updateDoc,
 } from 'firebase/firestore';
 import { getDownloadURL } from 'firebase/storage';
 import { auth, db } from '../../api/firebase';
@@ -60,6 +60,7 @@ export const writeScrapbook = async (
   })
     .then(() => {
       console.log('Images:', urls);
+      // TODO: cutomize alert
       alert('Your scrapbook has been posted! 🎉');
       navigation.popToTop();
     })
@@ -68,40 +69,17 @@ export const writeScrapbook = async (
     });
 };
 
-// Fetching scrapbooks of a given user
-export const fetchScrapbooksByUser = async (uid: string) => {
-  const scrapbooksRef = collection(db, 'scrapbooks');
-  const q = query(
-    scrapbooksRef,
-    where('uid', '==', uid),
-    orderBy('createdAt', 'desc')
-  );
-
-  const scrapbooksQuerySnapshot = await getDocs(q);
-  let scrapbooks = scrapbooksQuerySnapshot.docs.map((doc) => {
-    return { id: doc.id, ...doc.data() };
-  });
-  return scrapbooks;
-};
-
 // Likes and comments are stored in subcollections of the scrapbook document. This is because we
 // want to be able to query them without having to fetch the entire scrapbook document
 
 // Fetching likes
-export const fetchLikes = (sid: string, uid: string) =>
-  new Promise<boolean>(async (resolve, reject) => {
-    const likesRef = doc(db, 'scrapbooks', sid);
-    const likesSnapshot = await getDoc(doc(likesRef, 'likes', uid))
-      .then((doc) => {
-        resolve(doc.exists());
-      })
-      .catch((err) => {
-        console.log('Error getting likes:', err);
-        reject(err);
-      });
-
-    return likesSnapshot;
-  });
+export const fetchLikes = async (sid: string, uid: string) => {
+  // new Promise<boolean>(async (resolve, reject) => {
+  const likesRef = doc(db, 'scrapbooks', sid);
+  const likesDoc = await getDoc(doc(likesRef, 'likes', uid));
+  return likesDoc.exists();
+  // return true ? likesDoc.exists() : false;
+};
 
 // Updating likes (either adding or removing it from the subcollection) stored as the uid of the user who liked it
 export const updateLikes = async (
@@ -109,13 +87,52 @@ export const updateLikes = async (
   uid: string,
   isLiked: boolean
 ) => {
-  if (isLiked) {
-    const likesRef = doc(db, 'scrapbooks', sid);
+  const likesRef = doc(db, 'scrapbooks', sid);
+
+  const likesId = await getDoc(doc(likesRef, 'likes', uid));
+  if (isLiked || likesId.exists()) {
     await deleteDoc(doc(likesRef, 'likes', uid));
   } else {
-    const likesRef = doc(db, 'scrapbooks', sid);
     await setDoc(doc(likesRef, 'likes', uid), {});
   }
+};
+
+// Updating the likes count of the scrapbook, handled by a transaction
+export const updateLikeCount = async (
+  sid: string,
+  uid: string,
+  isLiked: any,
+  setIsLiked: any
+) => {
+  const likesRef = doc(db, 'scrapbooks', sid);
+  const likesId = await getDoc(doc(likesRef, 'likes', uid));
+
+  if (isLiked.liked || likesId.exists()) {
+    await runTransaction(db, async (transaction) => {
+      const likesDoc = await transaction.get(likesRef);
+      const likes = likesDoc.get('likes_count');
+      if (likes > 0) {
+        const newLikeCount = likesDoc?.data()?.likes_count - 1;
+        transaction.update(likesRef, { likes_count: newLikeCount });
+        setIsLiked({
+          liked: !isLiked.liked,
+          counter: newLikeCount,
+        });
+      }
+    });
+  } else {
+    await runTransaction(db, async (transaction) => {
+      const likesDoc = await transaction.get(likesRef);
+      console.log('DOC', likesDoc.data());
+      const newLikeCount = likesDoc?.data()?.likes_count + 1;
+      transaction.update(likesRef, { likes_count: newLikeCount });
+      setIsLiked({
+        liked: !isLiked.liked,
+        counter: newLikeCount,
+      });
+    });
+  }
+  updateLikes(sid, uid, isLiked.liked);
 };
 
 // Adding a comment
@@ -132,11 +149,12 @@ export const writeComment = async (
   }).then(() => {
     console.log('Comment has been sent');
   });
+  updateCommentCount(sid);
 };
 
 let commentsListener: any = null;
 
-// Fetching comments of given scrapbook
+// Fetching comments of a given scrapbook
 export const fetchComments = async (
   sid: string,
   setComments: React.Dispatch<React.SetStateAction<any>>
@@ -154,6 +172,16 @@ export const fetchComments = async (
     });
     setComments(comment);
   });
+};
+
+// Updating the comments count of the scrapbook
+export const updateCommentCount = async (sid: string) => {
+  const commentsRef = doc(db, 'scrapbooks', sid);
+  const commentsCount = await getDoc(commentsRef).then(
+    (doc) => doc.data()?.comments_count
+  );
+  const newCommentCount = commentsCount + 1;
+  await updateDoc(commentsRef, { comments_count: newCommentCount });
 };
 
 // Detaching comments listener to prevent memory leaks and unnecessary calls to the database

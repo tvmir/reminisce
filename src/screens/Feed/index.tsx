@@ -1,11 +1,10 @@
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { RouteProp } from '@react-navigation/native';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Dimensions,
   FlatList,
   Image,
-  Text,
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
@@ -22,67 +21,56 @@ interface FeedProps {
   navigation: any;
 }
 
-export default function Feed({ route, navigation }: any) {
+export default function Feed({ navigation }: any) {
   const dispatch = useAppDispatch();
   const scrapbooks = useAppSelector((state) => state.scrapbooks.scrapbooks);
   const bottomTabBarHeight = useBottomTabBarHeight();
-  const [isOpen, setIsOpen] = useState<boolean>(false);
   const [refreshing, setRefreshing] = useState<boolean>(true);
-  const { width, height } = Dimensions.get('window');
 
   useEffect(() => {
-    dispatch(fetchScrapbooks()).then(() => {
-      setRefreshing(false);
-    });
+    dispatch(fetchScrapbooks()).then(() => setRefreshing(false));
   }, [refreshing]);
 
   return (
     <Wrapper edges={['top', 'left', 'right']}>
-      {/* <View style={}>
-        <Text style={{ fontSize: 16, fontWeight: 'bold', color: 'white' }}>
-          Close By
-        </Text>
-      </View> */}
       <FlatList
         removeClippedSubviews
         pagingEnabled
         refreshing={refreshing}
-        onRefresh={fetchScrapbooks}
+        onRefresh={() => setRefreshing(true)}
         decelerationRate={'normal'}
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}
         keyExtractor={(item) => item.id}
         data={scrapbooks}
-        renderItem={({ item }) => (
-          <>
-            <SharedElement id={`${item.id}.images`}>
-              <TouchableWithoutFeedback
-                onPress={() => navigation.navigate('ExpandedFeed', { item })}
-              >
-                <FeedWrapper
-                  style={{
-                    height:
-                      // 186 for iPhone 13, 182 for iPhone XS
-                      Dimensions.get('window').height -
-                      bottomTabBarHeight -
-                      182,
-                    borderRadius: 20,
-                  }}
+        renderItem={({ item }) => {
+          return (
+            <View style={{ flex: 1 }}>
+              <SharedElement id={`${item.id}.images`}>
+                <TouchableWithoutFeedback
+                  onPress={() => navigation.navigate('ExpandedFeed', { item })}
                 >
-                  <Image
-                    style={{ flex: 1, borderRadius: 20 }}
-                    source={{
-                      uri: item.images[0],
+                  <FeedWrapper
+                    style={{
+                      height:
+                        Dimensions.get('window').height / 1.719 +
+                        bottomTabBarHeight,
+                      borderRadius: 20,
                     }}
-                  />
-                </FeedWrapper>
-              </TouchableWithoutFeedback>
-            </SharedElement>
-            <View style={{ height: 80 }}>
+                  >
+                    <Image
+                      style={{ flex: 1, borderRadius: 20 }}
+                      source={{
+                        uri: item.images[0],
+                      }}
+                    />
+                  </FeedWrapper>
+                </TouchableWithoutFeedback>
+              </SharedElement>
               <FeedDetails item={item} navigation={navigation} />
             </View>
-          </>
-        )}
+          );
+        }}
       />
     </Wrapper>
   );
@@ -91,7 +79,7 @@ export default function Feed({ route, navigation }: any) {
 // Styles
 const Wrapper = styled(SafeAreaView)`
   flex: 1;
-  width: 92%;
+  width: 93%;
   margin: 0 auto 0 auto;
   margin-top: ${verticalScale(-30)}px;
 `;

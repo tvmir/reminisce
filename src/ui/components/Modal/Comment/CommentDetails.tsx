@@ -11,6 +11,7 @@ import { CommentProps } from '.';
 
 export default function CommentDetails({ item }: CommentProps) {
   const user = useUserQuery(item.uid).data;
+
   return (
     <CommentsWrapper>
       <UsersImage source={{ uri: user?.photoURL }} />

@@ -1,98 +1,128 @@
-import React, { useMemo } from 'react';
-import { useWindowDimensions, View } from 'react-native';
-import BottomSheet from '@gorhom/bottom-sheet';
-import ScrapbookDetailsBackground from './ScrapbookDetailsBackground';
-import Animated, {
-  interpolate,
-  interpolateColor,
-  useAnimatedStyle,
-  useSharedValue,
-} from 'react-native-reanimated';
+import React, { useEffect, useState } from 'react';
+import {
+  Text,
+  TouchableOpacity,
+  useWindowDimensions,
+  Animated,
+} from 'react-native';
 import * as Animatable from 'react-native-animatable';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-
-const Ionicon = Animated.createAnimatedComponent(Ionicons);
-const MaterialCommunityIcon = Animated.createAnimatedComponent(
-  MaterialCommunityIcons
-);
+import Fontisto from 'react-native-vector-icons/Fontisto';
+import {
+  fetchLikes,
+  updateLikeCount,
+} from '../../../../contexts/services/scrapbook';
+import { useAppDispatch, useAppSelector } from '../../../../utils/hooks';
+import { BlurView } from 'expo-blur';
+import { commentModal } from '../../../../contexts/slices/modals/modalsSlice';
+import * as Sharing from 'expo-sharing';
+import * as ImageManipulator from 'expo-image-manipulator';
 
 export default function ScrapbookDetails({ item }: any) {
-  const animatedIndex = useSharedValue(0);
-  const { width } = useWindowDimensions();
+  const dispatch = useAppDispatch();
+  const [isLiked, setIsLiked] = useState({
+    liked: false,
+    counter: item.likes_count,
+  });
 
-  // Animated styles
-  const titleStyle = useAnimatedStyle(() => ({
-    color: interpolateColor(
-      animatedIndex.value,
-      [0, 0.2],
-      ['#ffffff', '#000000']
-    ),
-  }));
+  const openShareDialog = async () => {
+    let imageProc = await ImageManipulator.manipulateAsync(item.images[0]);
+    await Sharing.shareAsync(imageProc.uri);
+  };
 
-  const locationStyle = useAnimatedStyle(() => ({
-    color: interpolateColor(
-      animatedIndex.value,
-      [0, 0.2],
-      ['#e0e0e0', '#686868']
-    ),
-  }));
+  const currentUser = useAppSelector((state) => state.currentUser.currentUser);
 
-  const heartStyle = useAnimatedStyle(() => ({
-    color: interpolateColor(
-      animatedIndex.value,
-      [0, 0.2],
-      ['#ffffff', '#000000']
-    ),
-  }));
+  useEffect(() => {
+    fetchLikes(item.id, currentUser?.uid).then((res) => {
+      setIsLiked({
+        ...isLiked,
+        liked: res,
+      });
+    });
+  }, []);
 
   return (
-    <BottomSheet
-      index={0}
-      animatedIndex={animatedIndex}
-      snapPoints={useMemo(() => ['20%', '80%'], [])}
-      handleComponent={() => <View />}
-      backgroundComponent={ScrapbookDetailsBackground}
-    >
-      <Animatable.View
-        style={{ paddingVertical: 24, paddingHorizontal: 24 }}
-        animation="fadeInUp"
-        easing="ease-in-out"
-        delay={300}
-        duration={600}
+    <>
+      <Animated.View
+        style={{
+          position: 'absolute',
+          bottom: 30,
+          left: 0,
+          right: 0,
+          paddingVertical: 10,
+        }}
       >
         <Animatable.View
-          style={{ flexDirection: 'row', justifyContent: 'space-between' }}
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            paddingHorizontal: 24,
+          }}
         >
-          <Animated.Text
-            style={[{ fontSize: 32, fontWeight: 'bold' }, titleStyle]}
-          >
+          <Text style={[{ fontSize: 32, fontWeight: 'bold', color: '#fff' }]}>
             {item.name}
-          </Animated.Text>
+          </Text>
         </Animatable.View>
-        <Animated.Text style={[{ fontSize: 12 }, locationStyle]}>
+        <Animated.Text
+          style={[{ paddingHorizontal: 24, fontSize: 12, color: '#e0e0e0' }]}
+        >
           {item.location}
         </Animated.Text>
         <Animatable.View
           style={{
-            paddingVertical: 20,
+            paddingVertical: 18,
             flexDirection: 'row',
-            justifyContent: 'flex-end',
+            justifyContent: 'space-evenly',
           }}
         >
-          <Ionicon
-            style={[heartStyle]}
-            name="md-heart-circle-sharp"
-            size={50}
-          />
-          {/* <MaterialCommunityIcon
-            style={[heartStyle]}
-            name="message-outline"
-            size={40}
-          /> */}
+          <TouchableOpacity
+            style={{ flexDirection: 'row' }}
+            activeOpacity={0.8}
+            onPress={() =>
+              updateLikeCount(item.id, currentUser?.uid, isLiked, setIsLiked)
+            }
+          >
+            <Fontisto name="heart-alt" size={24} color="#ffffff" />
+            <Text
+              style={{
+                color: 'white',
+                paddingLeft: 6,
+                paddingVertical: 4,
+              }}
+            >
+              {isLiked.counter}
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              dispatch(commentModal(item));
+            }}
+            style={{ flexDirection: 'row' }}
+          >
+            <MaterialCommunityIcons
+              name="message-text-outline"
+              size={26}
+              color="#ffffff"
+            />
+            <Text
+              style={{
+                color: 'white',
+                paddingHorizontal: 6,
+                paddingVertical: 4,
+              }}
+            >
+              {item.comments_count}
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => openShareDialog()}>
+            <MaterialCommunityIcons
+              name="dots-horizontal"
+              size={24}
+              color="#ffffff"
+            />
+          </TouchableOpacity>
         </Animatable.View>
-      </Animatable.View>
-      {/* </View> */}
-    </BottomSheet>
+      </Animated.View>
+    </>
   );
 }

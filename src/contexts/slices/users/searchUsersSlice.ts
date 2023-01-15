@@ -17,7 +17,7 @@ const initialState: UsersSearchData = {
   users: [],
 };
 
-// Used for search
+// Used for search functionality
 export const fetchUsersSearch = createAsyncThunk(
   'users/fetchUsersSearch',
   async (user: string) => {

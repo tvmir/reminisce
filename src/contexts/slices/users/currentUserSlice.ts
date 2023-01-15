@@ -10,24 +10,32 @@ import { auth, db } from '../../../api/firebase';
 import { RootStackParamList } from '../../../utils/types';
 import { RootState } from '../../store';
 
-export interface User {
+export interface CurrentUser {
   name: string;
   username: string;
   email: string;
   photoURL?: string;
+  createdAt?: string;
   uid: string;
+  bio: string;
+  followers_count: number;
+  following_count: number;
 }
 
-interface UserData {
-  currentUser: User | DocumentData | undefined;
+interface CurrentUserData {
+  currentUser: CurrentUser | DocumentData | undefined;
 }
 
-const initialState: UserData = {
+const initialState: CurrentUserData = {
   currentUser: {
     name: '',
     username: '',
     email: '',
     photoURL: '',
+    createdAt: '',
+    bio: '',
+    followers_count: 0,
+    following_count: 0,
   },
 };
 
@@ -37,8 +45,10 @@ export const signup = (
   password: string,
   name: string,
   username: string,
+  bio: string,
+  followers_count: number,
+  following_count: number,
   navigation: NativeStackNavigationProp<RootStackParamList, 'Signup'>
-  // bio?: string
 ) => {
   createUserWithEmailAndPassword(auth, email, password)
     .then(async (userCredential) => {
@@ -55,6 +65,9 @@ export const signup = (
         email: user.email,
         emailVerified: user.emailVerified,
         createdAt: user.metadata.creationTime,
+        bio,
+        followers_count,
+        following_count,
         // bio,
       }).then(() => {
         // navigation.navigate('Login');
@@ -80,8 +93,8 @@ export const login = (email: string, password: string) => {
     });
 };
 
-export const fetchUser = createAsyncThunk(
-  'currentUser/fetchUser',
+export const fetchCurrentUser = createAsyncThunk(
+  'currentUser/fetchCurrentUser',
   async (uid: string | undefined = auth.currentUser?.uid) => {
     const userRef = doc(db, 'users', uid!);
     const userSnapshot = await getDoc(userRef);
@@ -98,7 +111,7 @@ export const currentUserSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(fetchUser.fulfilled, (state, action) => {
+    builder.addCase(fetchCurrentUser.fulfilled, (state, action) => {
       state.currentUser = action.payload;
     });
   },
