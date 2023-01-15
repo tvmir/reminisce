@@ -6,18 +6,16 @@ import ScrapbookDetails from '../../ui/components/Modal/Scrapbook/ScrapbookDetai
 
 export default function ExpandedFeed({ route, navigation }: any) {
   const { item } = route.params;
-  // console.log(item);
 
   return (
     <View style={{ flex: 1 }}>
-      <ScrapbookImageList images={[...item.images]} id={item.id} />
-      <ScrapbookDetails item={item} />
+      <ScrapbookImageList images={[...item.images]} id={item.id} item={item} />
       <TouchableOpacity
         style={{
           alignItems: 'flex-end',
           position: 'absolute',
           top: 50,
-          right: 20,
+          right: 10,
           opacity: 0.9,
         }}
         onPress={() => navigation.goBack()}

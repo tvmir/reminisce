@@ -30,8 +30,6 @@ export default function Comment({ item }: CommentProps) {
     return () => detachCommentsListener();
   }, []);
 
-  // console.log('COMMENTS', comments);
-
   const handleComments = () => {
     if (comment.length > 0) {
       setComment('');

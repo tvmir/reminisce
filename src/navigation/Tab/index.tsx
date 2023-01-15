@@ -1,17 +1,18 @@
 import React, { ComponentType, useEffect } from 'react';
 import styled from 'styled-components/native';
-import { fetchUser } from '../../contexts/slices/users/currentUserSlice';
+import { fetchCurrentUser } from '../../contexts/slices/users/currentUserSlice';
 import { fetchCurrentUserScrapbooks } from '../../contexts/slices/scrapbooks/currentUserScrapbooksSlice';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Profile from '../../screens/Profile';
 import Feather from 'react-native-vector-icons/Feather';
+import Octicons from 'react-native-vector-icons/Octicons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Search from '../../screens/Search';
 import Notifications from '../../screens/Notifications';
 import Feed from '../../screens/Feed';
 import { theme } from '../../ui/shared/Theme';
 import { BottomTabParamList, RootStackParamList } from '../../utils/types';
-import { Text, TouchableOpacity } from 'react-native';
+import { Image, Text, TouchableOpacity, View } from 'react-native';
 import { horizontalScale, verticalScale } from '../../utils/scale';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -21,6 +22,7 @@ import {
   createSharedElementStackNavigator,
   SharedElementSceneComponent,
 } from 'react-navigation-shared-element';
+import { auth } from '../../api/firebase';
 
 interface TabProps {
   navigation: NativeStackNavigationProp<RootStackParamList, 'Home'>;
@@ -60,7 +62,7 @@ export default function Home({ navigation }: TabProps) {
 
   // Getting current user's data and their scrapbooks when loading the app
   useEffect(() => {
-    dispatch(fetchUser());
+    dispatch(fetchCurrentUser(auth.currentUser?.uid));
     dispatch(fetchCurrentUserScrapbooks(currentUser?.uid));
   }, []);
 
@@ -108,11 +110,11 @@ export default function Home({ navigation }: TabProps) {
               </MessageBtn>
             </>
           ),
-          tabBarIcon: ({ focused, color }) => (
-            <Ionicons
-              name={focused ? 'ios-home' : 'ios-home-outline'}
-              color={color}
-              size={26}
+          tabBarIcon: ({ focused, color, size }) => (
+            <Octicons
+              name={'home'}
+              color={focused ? '#0FEFFD' : color}
+              size={size}
             />
           ),
         }}
@@ -123,11 +125,11 @@ export default function Home({ navigation }: TabProps) {
         options={{
           headerShown: false,
           headerTitle: '',
-          tabBarIcon: ({ focused, color }) => (
+          tabBarIcon: ({ focused, color, size }) => (
             <Feather
               name="search"
               color={focused ? '#0FEFFD' : color}
-              size={26}
+              size={size}
             />
           ),
         }}
@@ -137,16 +139,17 @@ export default function Home({ navigation }: TabProps) {
         component={MapStack}
         options={{
           headerShown: false,
-          tabBarIcon: ({ focused, color }) => (
+          tabBarIcon: ({ focused, color, size }) => (
             <Feather
               name={'map-pin'}
-              color={focused ? '#EC00E2' : color}
-              size={25}
+              color={focused ? '#0FEFFD' : color}
+              size={size - 2}
             />
           ),
         }}
       />
-      <Tab.Screen
+      {/* TODO: Contemplating whether I should keep Notifications in the Tab bar or put it in place of 'Add Scrapbook' */}
+      {/* <Tab.Screen
         name="Notifications"
         component={NotificationsStack}
         options={{
@@ -159,18 +162,36 @@ export default function Home({ navigation }: TabProps) {
             />
           ),
         }}
-      />
+      /> */}
       <Tab.Screen
         name="Profile"
         component={ProfileStack}
         options={{
           headerShown: false,
-          tabBarIcon: ({ focused, color }) => (
-            <Ionicons
-              name={focused ? 'ios-person' : 'ios-person-outline'}
-              color={color}
-              size={26}
+          tabBarIcon: ({ focused, color, size }) => (
+            <Feather
+              name={'user'}
+              color={focused ? '#0FEFFD' : color}
+              size={size}
             />
+            // <View
+            //   style={{
+            //     backgroundColor: '#656565',
+            //     overflow: 'hidden',
+            //     width: size,
+            //     height: size,
+            //     borderRadius: size / 2,
+            //   }}
+            // >
+            //   <Image
+            //     source={
+            //       currentUser?.photoURL
+            //         ? { uri: currentUser?.photoURL }
+            //         : undefined
+            //     }
+            //     style={{ width: size, height: size, borderRadius: size / 2 }}
+            //   />
+            // </View>
           ),
         }}
       />

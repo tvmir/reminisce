@@ -1,10 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import { FlatList, Image, Text, TouchableOpacity, View } from 'react-native';
+import React, { useCallback, useEffect, useState } from 'react';
+import {
+  FlatList,
+  View,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  Text,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import styled from 'styled-components/native';
-import { fetchUsersSearch } from '../../contexts/slices/users/usersSlice';
-import { SearchInput } from '../../ui/shared/Input';
-import { theme } from '../../ui/shared/Theme';
 import { useAppDispatch, useAppSelector } from '../../utils/hooks';
 import {
   horizontalScale,
@@ -12,56 +16,134 @@ import {
   verticalScale,
 } from '../../utils/scale';
 import { RootStackParamList } from '../../utils/types';
+import Feather from 'react-native-vector-icons/Feather';
+import ScrapbookMasonry from '../../ui/components/Search/ScrapbookMasonry';
+import { fetchScrapbooks } from '../../contexts/slices/scrapbooks/scrapbooksSlice';
+import { fetchScrapbooksSearch } from '../../contexts/slices/scrapbooks/searchScrapbooksSlice';
+import ScrapbookSearchCard from '../../ui/components/Search/ScrapbookSearchCard';
 
 interface SearchProps {
   route: any;
   navigation: any;
 }
 
-export default function Search({ route, navigation }: SearchProps) {
+// constants
+export const SPACING = 24;
+
+export default function Search({ navigation }: SearchProps) {
   const dispatch = useAppDispatch();
-  const users = useAppSelector((state) => state.users.users);
   const [input, setInput] = useState<string>('');
   const [search, setSearch] = useState<string>('');
-  const [inputBorder, setInputBorder] = useState('#1f1e1e');
+  const [refreshing, setRefreshing] = useState<boolean>(true);
+  const scrapbooks = useAppSelector((state) => state.scrapbooks.scrapbooks);
+  const scrapbooksSearch = useAppSelector(
+    (state) => state.scrapbooksSearch.scrapbooks
+  );
+
+  const clearInput = useCallback(() => setInput(''), []);
 
   useEffect(() => {
     if (input !== search) {
       setSearch(input);
-      dispatch(fetchUsersSearch(input));
+      dispatch(fetchScrapbooksSearch(input));
     }
   }, [input]);
 
+  useEffect(() => {
+    dispatch(fetchScrapbooks()).then(() => setRefreshing(false));
+  }, [refreshing]);
+
   return (
-    <Wrapper>
-      <SearchInput
-        placeholder="Search"
-        placeholderTextColor="#fff"
-        autoCapitalize="none"
-        keyboardAppearance="dark"
-        onChangeText={(text) => setInput(text)}
-        style={{ borderColor: inputBorder }}
-        onFocus={() => setInputBorder(theme.colors.primary)}
-        onBlur={() => setInputBorder('#1f1e1e')}
-      />
-      <FlatList
-        numColumns={3}
-        horizontal={false}
-        data={users}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <UserContainer
-          // onPress={() => navigation.navigate('UsersProfile', { users })}
+    <Wrapper edges={['top', 'left', 'right']}>
+      {input.length > 0 ? (
+        <>
+          <View
+            style={{
+              paddingHorizontal: 20,
+              paddingTop: SPACING,
+              paddingBottom: SPACING / 1.5,
+            }}
           >
-            <UserImage source={{ uri: item.photoURL }} />
-            <UserDetailsContainer>
-              <NameText>{item.name}</NameText>
-              <UsernameText>@{item.username}</UsernameText>
-            </UserDetailsContainer>
-          </UserContainer>
-        )}
-        style={{ marginLeft: 25 }}
-      />
+            <View style={{ flexDirection: 'row' }}>
+              <View
+                style={{ position: 'absolute', top: 11, left: 11, zIndex: 1 }}
+                pointerEvents="none"
+              >
+                <Feather name="search" size={20} color="#fff" />
+              </View>
+
+              <TextInput
+                style={{
+                  backgroundColor: '#1c1b1b',
+                  color: '#ededed',
+                  paddingLeft: 40,
+                  borderRadius: 18,
+                  height: 42,
+                  flex: 1,
+                  borderColor: '#1f1e1e',
+                }}
+                placeholder="Search"
+                value={input}
+                onChangeText={(text) => setInput(text)}
+                clearButtonMode="always"
+              />
+              <TouchableOpacity
+                onPress={clearInput}
+                style={{ paddingVertical: 15, paddingHorizontal: 5 }}
+              >
+                <Text style={{ color: 'white' }}>Cancel</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+          <FlatList
+            numColumns={3}
+            horizontal={false}
+            data={scrapbooksSearch}
+            refreshing={refreshing}
+            onRefresh={() => setRefreshing(true)}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <ScrapbookSearchCard item={item} navigation={navigation} />
+            )}
+            style={{ marginLeft: 25 }}
+          />
+        </>
+      ) : (
+        <>
+          <View
+            style={{
+              paddingHorizontal: 20,
+              paddingTop: SPACING,
+              paddingBottom: SPACING / 1.5,
+            }}
+          >
+            <View style={{ flexDirection: 'row' }}>
+              <View
+                style={{ position: 'absolute', top: 11, left: 11, zIndex: 1 }}
+                pointerEvents="none"
+              >
+                <Feather name="search" size={20} color="#fff" />
+              </View>
+
+              <TextInput
+                style={{
+                  backgroundColor: '#1c1b1b',
+                  color: '#ededed',
+                  paddingLeft: 40,
+                  borderRadius: 18,
+                  height: 42,
+                  flex: 1,
+                  borderColor: '#1f1e1e',
+                }}
+                placeholder="Search"
+                value={input}
+                onChangeText={(text) => setInput(text)}
+              />
+            </View>
+          </View>
+          <ScrapbookMasonry scrapbooks={scrapbooks} navigation={navigation} />
+        </>
+      )}
     </Wrapper>
   );
 }
@@ -69,33 +151,4 @@ export default function Search({ route, navigation }: SearchProps) {
 // Styles
 const Wrapper = styled(SafeAreaView)`
   flex: 1;
-`;
-
-const UserContainer = styled(TouchableOpacity)`
-  padding-top: ${verticalScale(15)}px;
-  justify-content: space-between;
-`;
-
-const UserImage = styled(Image)`
-  height: ${verticalScale(95)}px;
-  width: ${horizontalScale(95)}px;
-  border-radius: ${moderateScale(50)}px;
-  background-color: #272727;
-`;
-
-const UserDetailsContainer = styled(View)`
-  padding-top: ${verticalScale(6)}px;
-  align-items: center;
-`;
-
-const NameText = styled(Text)`
-  font-size: ${moderateScale(16)}px;
-  font-weight: 500;
-  color: ${(p) => p.theme.colors.primary};
-`;
-
-const UsernameText = styled(Text)`
-  font-size: ${moderateScale(12)}px;
-  color: ${(p) => p.theme.colors.primary};
-  opacity: 0.9;
 `;

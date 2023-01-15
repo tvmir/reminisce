@@ -2,106 +2,235 @@ import React from 'react';
 import {
   View,
   Text,
-  TouchableWithoutFeedback,
   Image,
+  useWindowDimensions,
+  TouchableOpacity,
+  StyleSheet,
   Dimensions,
 } from 'react-native';
+import Animated from 'react-native-reanimated';
 import styled from 'styled-components/native';
-import { verticalScale } from '../../../utils/scale';
-import { SharedElement } from 'react-navigation-shared-element';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import Entypo from 'react-native-vector-icons/Entypo';
+import {
+  horizontalScale,
+  moderateScale,
+  verticalScale,
+} from '../../../utils/scale';
+import { LinearGradient } from 'expo-linear-gradient';
+import { theme } from '../../shared/Theme';
+import {
+  useAppSelector,
+  useFollowMutation,
+  useFollowingQuery,
+} from '../../../utils/hooks';
+import { auth } from '../../../api/firebase';
+import { BlurView } from 'expo-blur';
 
-// constants
-const { width } = Dimensions.get('window');
-const CARD_WIDTH = width / 2 - (24 + 18 / 2);
-const CARD_HEIGHT = 200;
+const { height } = Dimensions.get('window');
 
-export default function ProfileDetails({ item, navigation }: any) {
-  return (
-    <TouchableWithoutFeedback
-      style={{}}
-      onPress={() => navigation.navigate('Expanded', { item })}
-    >
-      <View
-        style={{
-          flexDirection: 'row',
-          flexWrap: 'wrap',
-        }}
-      >
-        <ImgWrapper
+export default function ProfileDetails({ user, navigation, me = true }: any) {
+  const isFollowing = useFollowingQuery(auth.currentUser?.uid, user?.uid).data;
+  const isFollowingMutation = useFollowMutation();
+  const currentUser = useAppSelector((state) => state.currentUser.currentUser);
+
+  const { width } = useWindowDimensions();
+
+  const handleFollow = () => {
+    if (isFollowing) {
+      return (
+        <FollowingButton
+          onPress={() => {
+            isFollowingMutation.mutate({
+              followedUID: user?.uid,
+              isFollowing,
+            });
+          }}
+          activeOpacity={0.8}
+        >
+          <ButtonText>Following</ButtonText>
+        </FollowingButton>
+      );
+    } else {
+      return (
+        <LinearGradient
+          colors={[
+            '#6b0169',
+            '#5a0158',
+            '#750273',
+            '#850283',
+            '#850283',
+            '#9a0398',
+          ]}
+          start={{ x: 0.0, y: 1.0 }}
+          end={{ x: 1.0, y: 1.0 }}
           style={{
-            marginLeft: 12,
-            marginRight: 20,
-            marginBottom: 24,
+            width: 110,
+            height: 32,
+            borderRadius: 20,
+            padding: 1,
+            right: 10,
+            overflow: 'hidden',
           }}
         >
-          <ImageWrapper
+          <TouchableOpacity
             style={{
-              width: CARD_WIDTH + 1,
-              height: CARD_HEIGHT,
+              flex: 1,
+              borderRadius: 20,
+              backgroundColor: theme.colors.background,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+            onPress={() => {
+              isFollowingMutation.mutate({
+                followedUID: user?.uid,
+                isFollowing,
+              });
             }}
           >
-            <SharedElement
-              id={`${item.id}.images`}
-              // id={`${item.id}`}
-            >
-              <View
-                style={{
-                  width: CARD_WIDTH,
-                  height: CARD_HEIGHT - 60,
-                  borderTopLeftRadius: 16,
-                  borderTopRightRadius: 16,
-                  overflow: 'hidden',
-                }}
-              >
-                <ImageStyle
-                  style={{
-                    width: CARD_WIDTH,
-                    height: CARD_HEIGHT - 60,
-                    resizeMode: 'cover',
-                  }}
-                  source={{ uri: item.images[0] }}
-                />
-              </View>
-            </SharedElement>
+            <ButtonText>Follow</ButtonText>
+          </TouchableOpacity>
+        </LinearGradient>
+      );
+    }
+  };
+
+  return (
+    <View style={{ paddingBottom: verticalScale(30) }}>
+      <Animated.View style={[{ width, height: 380 }]}>
+        <Image
+          style={{
+            width,
+            height: 380,
+          }}
+          source={user?.photoURL ? { uri: user?.photoURL } : undefined}
+        />
+        <LinearGradient
+          style={{ ...StyleSheet.absoluteFillObject }}
+          colors={['#000000', '#00000000', '#000000']}
+          locations={[1, 0.65, 0.9]}
+        />
+      </Animated.View>
+      <BlurView
+        intensity={2}
+        tint="dark"
+        style={{
+          position: 'absolute',
+          top: 310,
+          left: 10,
+        }}
+      >
+        <HeaderNameText>{user?.name}</HeaderNameText>
+        <UsernameText>@{user?.username}</UsernameText>
+      </BlurView>
+      <FollowageContainer>
+        <FollowageSubContainer>
+          <FollowageCount>{user?.followers_count}</FollowageCount>
+          <FollowageDesc>Followers</FollowageDesc>
+        </FollowageSubContainer>
+
+        {me ? (
+          <>
             <View
               style={{
-                flexDirection: 'row',
+                flex: 2.1,
                 alignItems: 'flex-start',
-                marginTop: 4,
-                marginLeft: 10,
-                marginRight: 6,
               }}
             >
-              <View style={{ flex: 1 }}>
-                <Text
-                  style={{
-                    marginVertical: 4,
-                    fontSize: 14,
-                    fontWeight: 'bold',
-                    color: '#d3d6d9',
-                  }}
-                >
-                  {item.name}
-                </Text>
-                <Text style={{ fontSize: 12, color: '#8e8e8e' }}>
-                  {item.location}
-                </Text>
-              </View>
-              <Entypo name="dots-three-horizontal" size={12} color="#d3d6d9" />
+              <FollowageCount>{user?.following_count}</FollowageCount>
+              <FollowageDesc>Following</FollowageDesc>
             </View>
-          </ImageWrapper>
-        </ImgWrapper>
-      </View>
-    </TouchableWithoutFeedback>
+            <EditProfileButton
+              onPress={() =>
+                navigation.navigate('EditProfile', {
+                  field: {
+                    name: 'name',
+                    bio: 'bio',
+                  },
+                  value: currentUser,
+                })
+              }
+              activeOpacity={0.8}
+            >
+              <ButtonText>Edit Profile</ButtonText>
+            </EditProfileButton>
+          </>
+        ) : (
+          <>
+            <View
+              style={{
+                flex: 2.3,
+                alignItems: 'flex-start',
+              }}
+            >
+              <FollowageCount>{user?.following_count}</FollowageCount>
+              <FollowageDesc>Following</FollowageDesc>
+            </View>
+            {handleFollow()}
+          </>
+        )}
+      </FollowageContainer>
+    </View>
   );
 }
 
-const ImgWrapper = styled(View)``;
-const ImageWrapper = styled(View)`
-  border-radius: 16px;
-  border: 0.5px solid #121212;
+// Styles
+const HeaderNameText = styled(Text)`
+  padding-top: ${verticalScale(8)}px;
+  padding-bottom: ${verticalScale(3)}px;
+  font-size: ${moderateScale(28)}px;
+  font-weight: 600;
+  color: ${(p) => p.theme.colors.primary};
 `;
 
-const ImageStyle = styled(Image)``;
+const UsernameText = styled(Text)`
+  padding-bottom: ${verticalScale(10)}px;
+  font-size: ${moderateScale(14)}px;
+  color: #8b8e93;
+`;
+
+const BioText = styled(Text)`
+  padding-bottom: ${verticalScale(10)}px;
+  font-size: ${moderateScale(14)}px;
+  color: #d7d7d7;
+`;
+
+const FollowageContainer = styled(View)`
+  flex-direction: row;
+  padding-top: ${verticalScale(10)}px;
+  padding-bottom: ${verticalScale(12)}px;
+`;
+
+const FollowageSubContainer = styled(View)`
+  flex: 1;
+  padding-left: 10px;
+`;
+
+const FollowageCount = styled(Text)`
+  font-weight: bold;
+  font-size: ${moderateScale(15)}px;
+  font-weight: 500;
+  color: ${(p) => p.theme.colors.primary};
+`;
+
+const FollowageDesc = styled(Text)`
+  color: gray;
+  font-size: ${moderateScale(13)}px;
+  font-weight: 400;
+`;
+
+const EditProfileButton = styled(TouchableOpacity)`
+  border: 0.5px solid #727477;
+  border-radius: 20px;
+  padding: 8px 27px;
+`;
+
+const FollowingButton = styled(TouchableOpacity)`
+  border: 0.5px solid #10f0fe;
+  border-radius: 20px;
+  padding: 8px 25px;
+  margin-right: 10px;
+`;
+
+const ButtonText = styled(Text)`
+  color: ${(p) => p.theme.colors.primary};
+  font-weight: 500;
+`;

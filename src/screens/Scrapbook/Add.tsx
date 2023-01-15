@@ -26,11 +26,12 @@ export default function Add({ navigation }: AddProps) {
   const [image, setImage] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const saveToCameraRoll = async (item: any) => {
+  // Saving image to camera roll
+  const saveToCameraRoll = async (image: string) => {
     const permission = await MediaLibrary.requestPermissionsAsync();
     if (permission.granted) {
       try {
-        const asset = await MediaLibrary.createAssetAsync(item);
+        const asset = await MediaLibrary.createAssetAsync(image);
         MediaLibrary.createAlbumAsync('Images', asset, false)
           .then(() => {
             console.log('Image has been saved successfully');

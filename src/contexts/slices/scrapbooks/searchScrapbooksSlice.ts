@@ -3,31 +3,31 @@ import {
   collection,
   DocumentData,
   getDocs,
-  orderBy,
   query,
   where,
 } from 'firebase/firestore';
-import { auth, db } from '../../../api/firebase';
+import { db } from '../../../api/firebase';
 import { RootState } from '../../store';
 
-interface ScrapbookData {
+interface ScrapbooksSearchData {
   scrapbooks: DocumentData[] | undefined;
 }
 
-export const initialState: ScrapbookData = {
+const initialState: ScrapbooksSearchData = {
   scrapbooks: [],
 };
 
-export const fetchCurrentUserScrapbooks = createAsyncThunk(
-  'currentUserScrapbooks/fetchCurrentUserScrapbooks',
-  async (uid: string | undefined = auth.currentUser?.uid) => {
+// Used for search
+export const fetchScrapbooksSearch = createAsyncThunk(
+  'scrapbooks/fetchScrapbooksSearch',
+  async (scrapbook: string) => {
+    if (scrapbook === '') return [];
     const scrapbooksRef = collection(db, 'scrapbooks');
     const q = query(
       scrapbooksRef,
-      where('uid', '==', uid),
-      orderBy('createdAt', 'desc')
+      where('name', '>=', scrapbook),
+      where('name', '<=', scrapbook + '\uf8ff')
     );
-
     const scrapbooksQuerySnapshot = await getDocs(q);
     let scrapbooks = scrapbooksQuerySnapshot.docs.map((doc) => {
       return { id: doc.id, ...doc.data() };
@@ -36,18 +36,17 @@ export const fetchCurrentUserScrapbooks = createAsyncThunk(
   }
 );
 
-const currentUserScrapbooksSlice = createSlice({
-  name: 'currentUserScrapbooks',
+export const scrapbooksSearchSlice = createSlice({
+  name: 'scrapbooks',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(fetchCurrentUserScrapbooks.fulfilled, (state, action) => {
+    builder.addCase(fetchScrapbooksSearch.fulfilled, (state, action) => {
       state.scrapbooks = action.payload;
     });
   },
 });
 
-export const selectCurrentUserScrapbooks = (state: RootState) =>
-  state.currentUserScrapbooks.scrapbooks;
-
-export default currentUserScrapbooksSlice.reducer;
+export const searchScrapbook = (state: RootState) =>
+  state.scrapbooksSearch.scrapbooks;
+export default scrapbooksSearchSlice.reducer;
