@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -25,11 +25,14 @@ import {
 import { auth } from '../../../api/firebase';
 import { BlurView } from 'expo-blur';
 
-const { height } = Dimensions.get('window');
-
 export default function ProfileDetails({ user, navigation, me = true }: any) {
   const isFollowing = useFollowingQuery(auth.currentUser?.uid, user?.uid).data;
   const isFollowingMutation = useFollowMutation();
+  // TODO: Figure this out
+  const [count, setCount] = useState<any>({
+    followingCount: user?.following_count,
+    followersCount: user?.followers_count,
+  });
   const currentUser = useAppSelector((state) => state.currentUser.currentUser);
 
   const { width } = useWindowDimensions();

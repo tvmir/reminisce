@@ -10,6 +10,12 @@ import nearBy from '../../../assets/gray_i.png';
 import current from '../../../assets/curr_i.png';
 import { Dimensions, Image, Platform, Text, View } from 'react-native';
 
+// APIs that I'll need:
+// - Places Autocomplete
+// - Geocoding: Get the coordinates based on the name of the location
+// - Reverse Geocoding: Get the name of the location based on the coordinates
+// - Directions: Get the directions from the current location to the location of the scrapbook
+
 // constants
 const nearByIndicator = Image.resolveAssetSource(nearBy).uri;
 const currentIndicator = Image.resolveAssetSource(current).uri;

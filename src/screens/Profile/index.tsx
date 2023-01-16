@@ -68,7 +68,7 @@ export default function Profile({ navigation }: any) {
         />
       </View>
 
-      {/* <Button title="Logout" onPress={handleLogout} /> */}
+      <Button title="Logout" onPress={handleLogout} />
     </ScrollView>
   );
 }

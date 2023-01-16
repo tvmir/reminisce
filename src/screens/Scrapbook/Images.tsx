@@ -9,11 +9,11 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import styled from 'styled-components/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../utils/types';
 import DraggableFlatList from 'react-native-draggable-flatlist';
 import FitImage from 'react-native-fit-image';
+import Header from '../../ui/components/Extra/Header';
 
 interface LoadProps {
   navigation: NativeStackNavigationProp<RootStackParamList, 'Images'>;
@@ -23,7 +23,7 @@ interface LoadProps {
 export default function Images({ navigation, route }: LoadProps) {
   const [images, setImages] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const { width } = useWindowDimensions();
+  const { height } = useWindowDimensions();
   const { image } = route.params || {};
 
   // Selecting images from the system library
@@ -88,19 +88,29 @@ export default function Images({ navigation, route }: LoadProps) {
   }, []);
 
   return (
-    <>
+    <View style={{ flex: 1 }}>
+      <Header
+        title="New Scrapbook"
+        navigation={navigation}
+        onSave={() => navigation.navigate('Post', { images } as any)}
+        text="Next"
+      />
       <DraggableFlatList
         showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ height: height + 100 }}
         data={images}
         renderItem={({ item, drag, isActive }) => (
           <>
-            <TouchableOpacity
-              activeOpacity={0.8}
-              onLongPress={drag}
-              disabled={isActive}
-            >
-              <FitImage source={{ uri: item }} key={item} />
-            </TouchableOpacity>
+            <View style={{ marginTop: 20 }}>
+              <TouchableOpacity
+                // style={{ paddingTop: 20 }}
+                activeOpacity={0.8}
+                onLongPress={drag}
+                disabled={isActive}
+              >
+                <FitImage source={{ uri: item }} key={item} />
+              </TouchableOpacity>
+            </View>
           </>
         )}
         keyExtractor={(item) => item}
@@ -111,15 +121,10 @@ export default function Images({ navigation, route }: LoadProps) {
               <ActivityIndicator style={{ paddingTop: 20 }} />
             </View>
           ) : (
-            <>
-              <Button
-                onPress={() => navigation.navigate('Post', { images } as any)}
-                title="Post"
-              />
-            </>
+            <></>
           )
         }
       />
-    </>
+    </View>
   );
 }

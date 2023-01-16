@@ -1,10 +1,12 @@
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { RouteProp } from '@react-navigation/native';
+import { DocumentData } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 import {
   Dimensions,
   FlatList,
   Image,
+  LogBox,
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
@@ -15,32 +17,37 @@ import { fetchScrapbooks } from '../../contexts/slices/scrapbooks/scrapbooksSlic
 import FeedDetails from '../../ui/components/Feed/FeedDetails';
 import { useAppDispatch, useAppSelector } from '../../utils/hooks';
 import { verticalScale } from '../../utils/scale';
+import { useScrollToTop } from '@react-navigation/native';
 
 interface FeedProps {
-  route: RouteProp<{ params: { setUserInView: any } }, 'params'>;
   navigation: any;
 }
 
 export default function Feed({ navigation }: any) {
   const dispatch = useAppDispatch();
-  const scrapbooks = useAppSelector((state) => state.scrapbooks.scrapbooks);
+  const scrapbook = useAppSelector((state) => state.scrapbooks.scrapbooks);
+  const [scrapbooks, setScrapbooks] = useState<DocumentData[] | undefined>([]);
   const bottomTabBarHeight = useBottomTabBarHeight();
   const [refreshing, setRefreshing] = useState<boolean>(true);
+  const ref = React.useRef(null);
+  useScrollToTop(ref);
 
   useEffect(() => {
-    dispatch(fetchScrapbooks()).then(() => setRefreshing(false));
+    dispatch(fetchScrapbooks())
+      .then(() => setScrapbooks(scrapbook))
+      .then(() => setRefreshing(false));
   }, [refreshing]);
 
   return (
     <Wrapper edges={['top', 'left', 'right']}>
       <FlatList
+        ref={ref}
         removeClippedSubviews
         pagingEnabled
+        showsVerticalScrollIndicator={false}
         refreshing={refreshing}
         onRefresh={() => setRefreshing(true)}
         decelerationRate={'normal'}
-        showsVerticalScrollIndicator={false}
-        showsHorizontalScrollIndicator={false}
         keyExtractor={(item) => item.id}
         data={scrapbooks}
         renderItem={({ item }) => {
@@ -50,8 +57,10 @@ export default function Feed({ navigation }: any) {
                 <TouchableWithoutFeedback
                   onPress={() => navigation.navigate('ExpandedFeed', { item })}
                 >
-                  <FeedWrapper
+                  <View
                     style={{
+                      flex: 1,
+                      backgroundColor: '#272727',
                       height:
                         Dimensions.get('window').height / 1.719 +
                         bottomTabBarHeight,
@@ -64,7 +73,7 @@ export default function Feed({ navigation }: any) {
                         uri: item.images[0],
                       }}
                     />
-                  </FeedWrapper>
+                  </View>
                 </TouchableWithoutFeedback>
               </SharedElement>
               <FeedDetails item={item} navigation={navigation} />
@@ -82,9 +91,4 @@ const Wrapper = styled(SafeAreaView)`
   width: 93%;
   margin: 0 auto 0 auto;
   margin-top: ${verticalScale(-30)}px;
-`;
-
-const FeedWrapper = styled(View)`
-  flex: 1;
-  background-color: #272727;
 `;

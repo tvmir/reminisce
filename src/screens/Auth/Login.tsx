@@ -7,6 +7,9 @@ import {
   TextInput,
   TouchableWithoutFeedback,
   View,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
 } from 'react-native';
 import styled from 'styled-components/native';
 import { auth } from '../../api/firebase';
@@ -38,121 +41,145 @@ export default function Login({ navigation }: LoginProps) {
   }, []);
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <Wrapper behavior="padding">
-        <Header>Login</Header>
-        <InputContainer>
-          <Input
-            placeholder="Email"
-            placeholderTextColor="#edededb2"
-            keyboardType="email-address"
-            autoCapitalize="none"
-            autoCorrect={false}
-            value={email}
-            keyboardAppearance="dark"
-            onChangeText={(text) => setEmail(text)}
-          />
-          <Input
-            placeholder="Password"
-            placeholderTextColor="#edededb2"
-            value={password}
-            keyboardAppearance="dark"
-            onChangeText={(text) => setPassword(text)}
-            secureTextEntry
-          />
-        </InputContainer>
+    <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
+      <ScrollView
+        contentContainerStyle={{
+          paddingTop: 100,
+        }}
+        showsVerticalScrollIndicator={false}
+      >
+        <TouchableWithoutFeedback
+          onPress={Keyboard.dismiss}
+          style={{ flex: 1 }}
+        >
+          <View style={{ flex: 1 }}>
+            <Text
+              style={{
+                color: 'white',
+                fontSize: 32,
+                fontWeight: 'bold',
+                paddingHorizontal: 20,
+              }}
+            >
+              Login
+            </Text>
 
-        <LoginButton onPress={() => login(email, password)} activeOpacity={0.8}>
-          <ButtonText>Login</ButtonText>
-        </LoginButton>
+            <View style={{ alignItems: 'center', marginTop: 50, flex: 1 }}>
+              <View style={{ padding: 10, width: '90%' }}>
+                <Text style={styles.text}>Email</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholderTextColor="#959595"
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  keyboardAppearance="dark"
+                  onChangeText={setEmail}
+                />
+                <View>
+                  <Text style={styles.text}>Password</Text>
+                  <TextInput
+                    style={styles.input}
+                    secureTextEntry
+                    placeholderTextColor="#959595"
+                    keyboardType="default"
+                    autoCapitalize="none"
+                    keyboardAppearance="dark"
+                    onChangeText={setPassword}
+                  />
+                </View>
+              </View>
 
-        <BottomContainer>
-          <BottomText>Don't have an account?</BottomText>
-          <BottomTextBtn onPress={() => navigation.push('Signup')}>
-            Signup
-          </BottomTextBtn>
-        </BottomContainer>
-      </Wrapper>
-    </TouchableWithoutFeedback>
+              <Text
+                style={{
+                  position: 'absolute',
+                  top: 165,
+                  right: 31,
+                  color: '#10f0fe',
+                }}
+              >
+                Forgot Passoword?
+              </Text>
+
+              <View style={{ paddingTop: 30, width: '60%' }}>
+                <TouchableOpacity
+                  onPress={() => login(email, password)}
+                  activeOpacity={0.8}
+                  style={{
+                    backgroundColor: '#101010',
+                    borderWidth: 1,
+                    borderColor: '#1F1E1E',
+                    borderRadius: 6,
+                    height: 40,
+                  }}
+                >
+                  <Text
+                    style={{
+                      color: 'white',
+                      textAlign: 'center',
+                      top: 8,
+                      fontSize: 16,
+                    }}
+                  >
+                    Login
+                  </Text>
+                </TouchableOpacity>
+              </View>
+
+              <View
+                style={{
+                  flexDirection: 'row',
+                  paddingTop: 320,
+                }}
+              >
+                <Text
+                  style={{ color: '#747980', fontSize: 12, fontWeight: '500' }}
+                >
+                  Don't have an account?
+                </Text>
+                <Text
+                  style={{ fontSize: 12, color: '#10f0fe', paddingLeft: 5 }}
+                  onPress={() => navigation.push('Signup')}
+                >
+                  Signup
+                </Text>
+              </View>
+            </View>
+          </View>
+        </TouchableWithoutFeedback>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
-// Styles
-const Wrapper = styled(KeyboardAvoidingView)`
-  flex: 1;
-  justify-content: center;
-  align-items: center;
-`;
-
-const ButtonText = styled(Text)`
-  font-style: normal;
-  font-weight: 600;
-  font-size: 15px;
-  line-height: 22px;
-  color: ${(p) => p.theme.colors.primary};
-`;
-
-const Header = styled(Text)`
-  position: absolute;
-  height: ${verticalScale(42)}px;
-  left: ${horizontalScale(21)}px;
-  top: ${verticalScale(100)}px;
-  /* font-family: 'Poppins'; */
-  font-style: normal;
-  font-weight: 600;
-  font-size: 28px;
-  line-height: 42px;
-  color: ${(p) => p.theme.colors.primary};
-`;
-
-const InputContainer = styled(View)`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  padding: 0px 6px 0px 0px;
-  position: absolute;
-  height: ${horizontalScale(157)}px;
-  width: ${verticalScale(342)}px;
-  left: ${horizontalScale(19)}px;
-  top: ${verticalScale(180)}px;
-`;
-
-const Input = styled(TextInput)`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  padding: 15px 15px;
-  margin-top: ${verticalScale(20)}px;
-  width: 100%;
-  background: #050505;
-  border: 1px solid #1d1d1d;
-  border-radius: ${moderateScale(4)}px;
-  color: white;
-`;
-
-const BottomContainer = styled(View)`
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  color: white;
-  position: absolute;
-  left: 25%;
-  top: 92%;
-`;
-
-const BottomText = styled(Text)`
-  width: 56%;
-  font-style: normal;
-  font-weight: 500;
-  font-size: 12px;
-  line-height: 18px;
-  color: #747980;
-`;
-
-const BottomTextBtn = styled(Text)`
-  font-style: normal;
-  font-weight: 500;
-  font-size: 12px;
-  line-height: 18px;
-  color: #10f0fe;
-`;
+const styles = StyleSheet.create({
+  input: {
+    borderWidth: 1,
+    borderColor: '#1F1E1E',
+    marginBottom: 15,
+    marginTop: 5,
+    height: 42,
+    textAlignVertical: 'top',
+    color: '#fff',
+    alignItems: 'stretch',
+    flexShrink: 1,
+    borderRadius: 4,
+    paddingLeft: 8,
+  },
+  inputBio: {
+    borderWidth: 1,
+    borderColor: '#1F1E1E',
+    marginBottom: 15,
+    marginTop: 5,
+    height: 100,
+    textAlignVertical: 'top',
+    color: '#fff',
+    alignItems: 'stretch',
+    flexShrink: 1,
+    borderRadius: 4,
+    paddingLeft: 8,
+  },
+  text: {
+    color: '#fff',
+    fontWeight: '500',
+  },
+});
