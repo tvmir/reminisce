@@ -41,6 +41,7 @@ export const writeScrapbook = async (
   images: string[],
   description: string,
   location: string,
+  tags: string[],
   navigation: NativeStackNavigationProp<RootStackParamList, 'Post'>
 ) => {
   const urls = await Promise.all(
@@ -56,7 +57,7 @@ export const writeScrapbook = async (
     createdAt: serverTimestamp(),
     likes_count: 0,
     comments_count: 0,
-    // tags will be added later
+    tags,
   })
     .then(() => {
       console.log('Images:', urls);
@@ -74,11 +75,9 @@ export const writeScrapbook = async (
 
 // Fetching likes
 export const fetchLikes = async (sid: string, uid: string) => {
-  // new Promise<boolean>(async (resolve, reject) => {
   const likesRef = doc(db, 'scrapbooks', sid);
   const likesDoc = await getDoc(doc(likesRef, 'likes', uid));
   return likesDoc.exists();
-  // return true ? likesDoc.exists() : false;
 };
 
 // Updating likes (either adding or removing it from the subcollection) stored as the uid of the user who liked it
@@ -88,8 +87,8 @@ export const updateLikes = async (
   isLiked: boolean
 ) => {
   const likesRef = doc(db, 'scrapbooks', sid);
-
   const likesId = await getDoc(doc(likesRef, 'likes', uid));
+
   if (isLiked || likesId.exists()) {
     await deleteDoc(doc(likesRef, 'likes', uid));
   } else {

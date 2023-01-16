@@ -13,7 +13,7 @@ export default function ScrapbookSearchCard({ item, navigation }: any) {
   return (
     <TouchableWithoutFeedback
       style={{}}
-      onPress={() => navigation.navigate('Expanded', { item })}
+      onPress={() => navigation.navigate('ExpandedFeed', { item })}
     >
       <View
         style={{

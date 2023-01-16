@@ -15,8 +15,9 @@ import Edit from '../../screens/Profile/Edit';
 import Modal from '../../ui/components/Modal';
 import UsersProfile from '../../screens/Profile/UsersProfile';
 import ExpandedFeed from '../../screens/Scrapbook/ExpandedFeed';
-import Expanded from '../../screens/Scrapbook/Expanded';
 import { createSharedElementStackNavigator } from 'react-navigation-shared-element';
+import { Text, TouchableOpacity, View } from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 // Creating the shared element stack navigator
 const Stack = createSharedElementStackNavigator();
@@ -89,10 +90,9 @@ export default function MainStackNavigator() {
                   fontWeight: 'bold',
                   color: theme.colors.primary,
                 },
-                headerShown: true,
+                headerShown: false,
                 headerShadowVisible: false,
                 headerBackTitleVisible: false,
-                headerTitle: 'New Scrapbook',
               }}
               name="Add"
               component={Add}
@@ -105,10 +105,9 @@ export default function MainStackNavigator() {
                 headerTitleStyle: {
                   fontWeight: 'bold',
                 },
-                headerShown: true,
+                headerShown: false,
                 headerShadowVisible: false,
                 headerBackTitle: '',
-                headerTitle: 'New Scrapbook',
                 animationEnabled: false,
               })}
               name="Images"
@@ -116,20 +115,19 @@ export default function MainStackNavigator() {
             />
             <Stack.Screen
               options={{
-                headerShown: true,
+                headerShown: false,
                 headerStyle: {
                   backgroundColor: theme.colors.background,
                 },
                 headerShadowVisible: false,
                 headerBackTitleVisible: false,
-                headerTitle: 'Post',
               }}
               name="Post"
               component={Post}
             />
             <Stack.Screen
               options={{
-                headerShown: true,
+                headerShown: false,
                 headerStyle: {
                   backgroundColor: theme.colors.background,
                 },
@@ -180,37 +178,6 @@ export default function MainStackNavigator() {
                   {
                     id: `${item.id}.images`,
                     animation: 'move',
-                  },
-                ];
-              }}
-            />
-            <Stack.Screen
-              options={{
-                headerShown: false,
-                headerTitle: '',
-                headerStyle: {
-                  backgroundColor: theme.colors.background,
-                },
-                headerShadowVisible: false,
-                headerBackTitleVisible: false,
-                gestureEnabled: false,
-                cardStyleInterpolator: ({ current: { progress } }: any) => {
-                  return {
-                    cardStyle: {
-                      opacity: progress,
-                    },
-                  };
-                },
-              }}
-              name="Expanded"
-              component={Expanded}
-              sharedElements={(route) => {
-                const { item } = route.params;
-                return [
-                  {
-                    id: `${item.id}.images`,
-                    animation: 'move',
-                    resize: 'clip',
                   },
                 ];
               }}

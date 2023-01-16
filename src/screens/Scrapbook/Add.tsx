@@ -16,15 +16,16 @@ import { RootStackParamList } from '../../utils/types';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import * as ImagePicker from 'expo-image-picker';
 import * as MediaLibrary from 'expo-media-library';
+import Header from '../../ui/components/Extra/Header';
 
 interface AddProps {
   navigation: NativeStackNavigationProp<RootStackParamList, 'Add'>;
 }
 
 export default function Add({ navigation }: AddProps) {
-  const { width, height } = useWindowDimensions();
   const [image, setImage] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { width, height } = useWindowDimensions();
 
   // Saving image to camera roll
   const saveToCameraRoll = async (image: string) => {
@@ -91,6 +92,7 @@ export default function Add({ navigation }: AddProps) {
 
   return (
     <>
+      <Header title="New Scrapbook" navigation={navigation} />
       {isLoading && !image ? (
         <View>
           <ActivityIndicator style={{ paddingTop: 20 }} />
@@ -138,12 +140,14 @@ export default function Add({ navigation }: AddProps) {
         </>
       ) : (
         <View style={{}}>
-          <WrapperHeader>
-            <Header>Start a Scrapbook</Header>
+          <View
+            style={{ position: 'absolute', width: 229, left: 34, top: 150 }}
+          >
+            <HeaderText>Start a Scrapbook</HeaderText>
             <HeaderTwo>
               Add content to your scrapbook using the tools below.
             </HeaderTwo>
-          </WrapperHeader>
+          </View>
           <View
             style={{
               width: width,
@@ -178,16 +182,8 @@ export default function Add({ navigation }: AddProps) {
 }
 
 // Styles
-const WrapperHeader = styled(View)`
+const HeaderText = styled(Text)`
   position: absolute;
-  width: ${horizontalScale(229)}px;
-  left: ${horizontalScale(34)}px;
-  top: ${verticalScale(150)}px;
-`;
-
-const Header = styled(Text)`
-  position: absolute;
-  /* font-family: 'Poppins'; */
   font-style: normal;
   font-weight: 700;
   font-size: 32px;
@@ -199,7 +195,6 @@ const HeaderTwo = styled(Text)`
   position: absolute;
   width: ${horizontalScale(204)}px;
   top: ${verticalScale(60)}px;
-  /* font-family: 'Poppins'; */
   font-style: normal;
   font-weight: 500;
   font-size: 13px;

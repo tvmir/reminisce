@@ -1,10 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
-import {
-  useAppDispatch,
-  useAppSelector,
-  useUserQuery,
-} from '../../../utils/hooks';
+import { useAppSelector, useUserQuery } from '../../../utils/hooks';
 import {
   fetchLikes,
   updateLikeCount,

@@ -12,7 +12,7 @@ import Notifications from '../../screens/Notifications';
 import Feed from '../../screens/Feed';
 import { theme } from '../../ui/shared/Theme';
 import { BottomTabParamList, RootStackParamList } from '../../utils/types';
-import { Image, Text, TouchableOpacity, View } from 'react-native';
+import { Image, LogBox, Text, TouchableOpacity, View } from 'react-native';
 import { horizontalScale, verticalScale } from '../../utils/scale';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -58,12 +58,17 @@ const Tab = createBottomTabNavigator<BottomTabParamList>();
 
 export default function Home({ navigation }: TabProps) {
   const dispatch = useAppDispatch();
-  const currentUser = useAppSelector((state) => state.currentUser.currentUser);
+
+  useEffect(() => {
+    LogBox.ignoreLogs([
+      `undefined is not an object (evaluating '_n7.indexOf')]`,
+    ]);
+  }, []);
 
   // Getting current user's data and their scrapbooks when loading the app
   useEffect(() => {
     dispatch(fetchCurrentUser(auth.currentUser?.uid));
-    dispatch(fetchCurrentUserScrapbooks(currentUser?.uid));
+    dispatch(fetchCurrentUserScrapbooks(auth.currentUser?.uid));
   }, []);
 
   return (
