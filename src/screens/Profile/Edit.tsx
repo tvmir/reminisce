@@ -24,6 +24,9 @@ import {
   verticalScale,
 } from '../../utils/scale';
 import Header from '../../ui/components/Extra/Header';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+// @ts-ignore
+import { MAPS_API_KEY } from '@env';
 
 export default function Edit({ route, navigation }: any) {
   const { field, value } = route.params;
@@ -44,6 +47,7 @@ export default function Edit({ route, navigation }: any) {
 
   const [inputBio, setInputBio] = useState<string>(value.bio);
   const [inputName, setInputName] = useState<string>(value.name);
+  const [inputLocation, setInputLocation] = useState<string>(value.location);
 
   const editDetails = () => {
     if (field.name)
@@ -55,11 +59,16 @@ export default function Edit({ route, navigation }: any) {
       updateUserDetails(field.bio, inputBio).then(() => {
         navigation.goBack();
       });
+
+    if (field.location)
+      updateUserDetails(field.location, inputLocation).then(() => {
+        navigation.goBack();
+      });
   };
 
   return (
     <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView keyboardShouldPersistTaps="always">
         <TouchableWithoutFeedback
           onPress={Keyboard.dismiss}
           style={{ flex: 1 }}
@@ -127,14 +136,57 @@ export default function Edit({ route, navigation }: any) {
                   </Text>
                 </View>
                 <Text style={styles.text}>Location</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder={'Where are you located?'}
-                  placeholderTextColor="#959595"
-                  keyboardType="default"
-                  autoCapitalize="none"
-                  keyboardAppearance="dark"
-                  // onChangeText={setInputName}
+                <GooglePlacesAutocomplete
+                  placeholder={inputLocation}
+                  listViewDisplayed={false}
+                  // keyboardShouldPersistTaps="handled"
+                  minLength={2}
+                  nearbyPlacesAPI="GooglePlacesSearch"
+                  debounce={400}
+                  styles={{
+                    listView: {
+                      borderRadius: 6,
+                      borderBottomColor: '#c73131',
+                    },
+                    row: {
+                      backgroundColor: '#050505',
+                    },
+                    description: {
+                      color: '#fff',
+                      fontSize: 12,
+                      right: 10,
+                    },
+                  }}
+                  query={{
+                    key: MAPS_API_KEY,
+                    language: 'en',
+                  }}
+                  fetchDetails={true}
+                  onPress={(data, details = null) => {
+                    console.log('DATA', data);
+                    console.log('DETAILS', details);
+                    //@ts-ignore
+                    setInputLocation(details?.formatted_address);
+                  }}
+                  onFail={(error) => console.log(error)}
+                  enablePoweredByContainer={false}
+                  textInputProps={{
+                    placeholderTextColor: '#959595',
+                    style: {
+                      width: '100%',
+                      borderWidth: 1,
+                      borderColor: '#1F1E1E',
+                      marginBottom: 15,
+                      marginTop: 5,
+                      height: 42,
+                      textAlignVertical: 'top',
+                      color: '#fff',
+                      alignItems: 'stretch',
+                      flexShrink: 1,
+                      borderRadius: 4,
+                      paddingLeft: 8,
+                    },
+                  }}
                 />
               </View>
             </View>

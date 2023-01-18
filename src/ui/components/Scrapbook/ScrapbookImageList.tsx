@@ -2,83 +2,70 @@ import React from 'react';
 import {
   Dimensions,
   FlatList,
-  LayoutRectangle,
   View,
   Animated,
+  Text,
+  Image,
 } from 'react-native';
 import FitImage from 'react-native-fit-image';
 // import Animated from 'react-native-reanimated';
 import { SharedElement } from 'react-navigation-shared-element';
-import styled from 'styled-components/native';
 import ScrapbookDetails from '../Modal/Scrapbook/ScrapbookDetails';
+import MasonryList from '@react-native-seoul/masonry-list';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 // constants
 const { height } = Dimensions.get('window');
 // const MAX_HEIGHT = height / 1.2;
 
-export default function ScrapbookImageList({ images, id, item }: any) {
+export default function ScrapbookImageList({ images, id, item, index }: any) {
   const scrollY = React.useRef(new Animated.Value(0)).current;
-  const [bottomActions, setBottomActions] = React.useState<LayoutRectangle>(
-    null as any
-  );
+  const even = index % 2 === 0;
 
   return (
-    <View style={{ flex: 1 }}>
-      <Animated.FlatList
-        onScroll={Animated.event(
-          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-          { useNativeDriver: true }
-        )}
+    <SafeAreaView style={{ flex: 1, paddingTop: 25 }}>
+      <MasonryList
         showsVerticalScrollIndicator={false}
         keyExtractor={(_, index) => index.toString()}
-        contentContainerStyle={{ height: (images.length + 1) * height }}
-        // ListFooterComponent={() => (
-        //   <>
-        //     <View
-        //       onLayout={(ev) => {
-        //         setBottomActions(ev.nativeEvent.layout);
-        //       }}
-        //       style={{ height: 120, backgroundColor: 'red' }}
-        //     >
-        //       {bottomActions && (
-        //         <ScrapbookDetails
-        //           item={item}
-        //           scrollY={scrollY}
-        //           topEdge={topEdge}
-        //         />
-        //       )}
-        //     </View>
-        //   </>
-        // )}
         data={images}
-        renderItem={({ item, index }) => (
+        renderItem={({ item, i }) => (
           <>
-            {!index ? (
-              <Wrapper>
+            {!i ? (
+              <View style={{ width: '100%', padding: 8 }}>
                 <SharedElement id={`${id}.images`}>
-                  {/* @ts-ignore */}
-                  <FitImage source={{ uri: item }} />
+                  <Image
+                    style={{ height: 260, borderRadius: 16 }}
+                    // @ts-ignore
+                    source={{ uri: item }}
+                  />
                 </SharedElement>
-              </Wrapper>
+              </View>
             ) : (
               <>
-                <Wrapper>
-                  {/* @ts-ignore */}
-                  <FitImage source={{ uri: item }} />
-                </Wrapper>
+                <View style={{ width: '100%', padding: 10 }}>
+                  {/* <FitImage
+                    borderRadius={16}
+                    
+                    // @ts-ignore
+                    source={{ uri: item }}
+                  /> */}
+                  <Image
+                    borderRadius={16}
+                    style={{
+                      width: '100%',
+                      height: index % 3 === 0 ? 130 : 205,
+                      borderRadius: 16,
+                    }}
+                    // @ts-ignore
+                    source={{ uri: item }}
+                  />
+                </View>
               </>
             )}
           </>
         )}
       />
       {<ScrapbookDetails item={item} scrollY={scrollY} />}
-    </View>
+    </SafeAreaView>
   );
 }
-
-// Styles
-const Wrapper = styled(View)`
-  width: 98%;
-  margin: 0 auto 0 auto;
-  padding-bottom: 10px;
-`;

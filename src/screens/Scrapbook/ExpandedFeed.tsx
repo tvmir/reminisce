@@ -2,7 +2,6 @@ import React from 'react';
 import { View, TouchableOpacity } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import ScrapbookImageList from '../../ui/components/Scrapbook/ScrapbookImageList';
-import ScrapbookDetails from '../../ui/components/Modal/Scrapbook/ScrapbookDetails';
 
 export default function ExpandedFeed({ route, navigation }: any) {
   const { item } = route.params;

@@ -46,6 +46,7 @@ export const signup = (
   name: string,
   username: string,
   bio: string,
+  location: string,
   followers_count: number,
   following_count: number,
   navigation: NativeStackNavigationProp<RootStackParamList, 'Signup'>
@@ -66,6 +67,7 @@ export const signup = (
         emailVerified: user.emailVerified,
         createdAt: user.metadata.creationTime,
         bio,
+        location,
         followers_count,
         following_count,
         // bio,

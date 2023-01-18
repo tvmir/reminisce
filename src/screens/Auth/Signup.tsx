@@ -31,6 +31,7 @@ export default function Signup({ navigation }: SignupProps) {
 
   // Initial empty variables
   const bio = '';
+  const location = '';
   const followers_count = 0;
   const following_count = 0;
 
@@ -89,6 +90,7 @@ export default function Signup({ navigation }: SignupProps) {
               name,
               username,
               bio,
+              location,
               followers_count,
               following_count,
               navigation

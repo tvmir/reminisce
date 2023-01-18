@@ -66,7 +66,7 @@ export default function ScrapbookDetails({ item }: any) {
         <Animated.Text
           style={[{ paddingHorizontal: 24, fontSize: 12, color: '#e0e0e0' }]}
         >
-          {item.location}
+          {item.location.name || ''}
         </Animated.Text>
         <Animatable.View
           style={{

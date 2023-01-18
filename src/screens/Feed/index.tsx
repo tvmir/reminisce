@@ -26,7 +26,7 @@ interface FeedProps {
 export default function Feed({ navigation }: any) {
   const dispatch = useAppDispatch();
   const scrapbook = useAppSelector((state) => state.scrapbooks.scrapbooks);
-  const [scrapbooks, setScrapbooks] = useState<DocumentData[] | undefined>([]);
+  const [scrapbooks, setScrapbooks] = useState<any>();
   const bottomTabBarHeight = useBottomTabBarHeight();
   const [refreshing, setRefreshing] = useState<boolean>(true);
   const ref = React.useRef(null);
@@ -34,7 +34,7 @@ export default function Feed({ navigation }: any) {
 
   useEffect(() => {
     dispatch(fetchScrapbooks())
-      .then(() => setScrapbooks(scrapbook))
+      .then(() => setScrapbooks(scrapbook?.map((item: DocumentData) => item)))
       .then(() => setRefreshing(false));
   }, [refreshing]);
 
@@ -50,7 +50,8 @@ export default function Feed({ navigation }: any) {
         decelerationRate={'normal'}
         keyExtractor={(item) => item.id}
         data={scrapbooks}
-        renderItem={({ item }) => {
+        renderItem={({ item, index }) => {
+          // const bg = index % 2 === 0 ? '#c06262' : '#3d8c96';
           return (
             <View style={{ flex: 1 }}>
               <SharedElement id={`${item.id}.images`}>
@@ -62,7 +63,9 @@ export default function Feed({ navigation }: any) {
                       flex: 1,
                       backgroundColor: '#272727',
                       height:
-                        Dimensions.get('window').height / 1.719 +
+                        // 1.719 for iPhone XS
+                        // 1.69 for iPhone 13 Pro
+                        Dimensions.get('window').height / 1.69 +
                         bottomTabBarHeight,
                       borderRadius: 20,
                     }}

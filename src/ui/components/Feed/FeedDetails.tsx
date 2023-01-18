@@ -97,15 +97,16 @@ export default function FeedDetails({ item, navigation }: FeedCardProps) {
             <View style={{ flexDirection: 'row' }}>
               <Text
                 numberOfLines={1}
-                adjustsFontSizeToFit
+                // adjustsFontSizeToFit
                 style={{
                   marginTop: 2,
                   color: 'white',
                   fontSize: 10,
                   opacity: 0.9,
+                  width: '75%',
                 }}
               >
-                {item.location}
+                {item.location.name}
               </Text>
               <Text
                 numberOfLines={1}
@@ -114,7 +115,7 @@ export default function FeedDetails({ item, navigation }: FeedCardProps) {
                   marginTop: 2,
                   color: 'white',
                   fontSize: 10,
-                  paddingHorizontal: 3,
+                  paddingHorizontal: 1,
                   opacity: 0.9,
                 }}
               >
@@ -136,27 +137,26 @@ export default function FeedDetails({ item, navigation }: FeedCardProps) {
           </View>
         </View>
 
-        <View
-          style={{
-            flexDirection: 'row',
-            paddingBottom: 32,
-            paddingRight: 8,
-          }}
-        >
+        <View style={{ backgroundColor: '#fff' }}>
           <TouchableOpacity
-            style={{
-              flexDirection: 'row',
-              alignItems: 'flex-end',
-            }}
             onPress={() =>
               updateLikeCount(item.id, currentUser?.uid, isLiked, setIsLiked)
             }
             activeOpacity={0.8}
+            style={{
+              backgroundColor: '#fff',
+              opacity: 0.8,
+              paddingLeft: 12,
+              paddingTop: 14,
+              height: 47,
+              width: 47,
+              borderRadius: 30,
+              position: 'absolute',
+              bottom: 80,
+              right: 10,
+            }}
           >
-            <Fontisto color="white" name="heart-alt" size={26} />
-            <Text style={{ color: 'white', paddingHorizontal: 6 }}>
-              {isLiked.counter}
-            </Text>
+            <Fontisto name="heart-alt" size={20} />
           </TouchableOpacity>
         </View>
       </View>
