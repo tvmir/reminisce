@@ -82,7 +82,7 @@ export default function ProfileCardDetails({ item, navigation }: any) {
                   numberOfLines={1}
                   style={{ fontSize: 12, color: '#8e8e8e' }}
                 >
-                  {item.location}
+                  {item.location.name}
                 </Text>
               </View>
               <Entypo name="dots-three-horizontal" size={12} color="#d3d6d9" />

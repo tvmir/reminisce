@@ -40,7 +40,7 @@ export const writeScrapbook = async (
   name: string,
   images: string[],
   description: string,
-  location: string,
+  location: object,
   tags: string[],
   navigation: NativeStackNavigationProp<RootStackParamList, 'Post'>
 ) => {
@@ -189,5 +189,57 @@ export const detachCommentsListener = () => {
   if (commentsListener != null) {
     commentsListener();
     commentsListener = null;
+  }
+};
+
+// Adding a reply to a comment
+export const writeReply = async (
+  sid: string,
+  uid: string,
+  cid: string,
+  reply: string
+) => {
+  const commentsRef = doc(db, 'scrapbooks', sid);
+  const repliesRef = doc(commentsRef, 'comments', cid);
+  await addDoc(collection(repliesRef, 'replies'), {
+    uid,
+    cid,
+    reply,
+    createdAt: serverTimestamp(),
+  }).then(() => {
+    console.log('Reply has been sent');
+  });
+  // updateCommentCount(sid);
+};
+
+let repliesListener: any = null;
+
+// Fetching replies of a given comment
+export const fetchReplies = async (
+  sid: string,
+  cid: string,
+  setReplies: React.Dispatch<React.SetStateAction<any>>
+) => {
+  const commentsRef = doc(db, 'scrapbooks', sid);
+  const repliesRef = doc(commentsRef, 'comments', cid);
+  const q = query(
+    collection(repliesRef, 'replies'),
+    orderBy('createdAt', 'desc')
+  );
+
+  repliesListener = onSnapshot(q, (querySnapshot) => {
+    if (querySnapshot.docChanges().length === 0) return;
+    let reply = querySnapshot.docs.map((value) => {
+      return { id: value.id, ...value.data() };
+    });
+    setReplies(reply);
+  });
+};
+
+export const detachRepliesListener = () => {
+  console.log('Detaching replies listener...');
+  if (repliesListener != null) {
+    repliesListener();
+    repliesListener = null;
   }
 };

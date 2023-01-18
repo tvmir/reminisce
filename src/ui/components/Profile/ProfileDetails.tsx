@@ -147,6 +147,7 @@ export default function ProfileDetails({ user, navigation, me = true }: any) {
                   field: {
                     name: 'name',
                     bio: 'bio',
+                    location: 'location',
                   },
                   value: currentUser,
                 })

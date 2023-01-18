@@ -80,7 +80,7 @@ export default function ScrapbookSearchCard({ item, navigation }: any) {
                   numberOfLines={1}
                   style={{ fontSize: 12, color: '#8e8e8e' }}
                 >
-                  {item.location}
+                  {item.location.name}
                 </Text>
               </View>
             </View>

@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Image,
   TextInput,
-  Button,
   Keyboard,
   TouchableWithoutFeedback,
   useWindowDimensions,
@@ -11,13 +10,16 @@ import {
   Text,
   KeyboardAvoidingView,
   ScrollView,
+  LogBox,
 } from 'react-native';
-import styled from 'styled-components/native';
 import { RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../utils/types';
 import { writeScrapbook } from '../../contexts/services/scrapbook';
 import Header from '../../ui/components/Extra/Header';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+// @ts-ignore
+import { MAPS_API_KEY } from '@env';
 
 interface PostProps {
   route: RouteProp<{ params: { images: string[] } }, 'params'>;
@@ -28,12 +30,16 @@ export default function Post({ route, navigation }: PostProps) {
   const { images } = route.params;
   const [name, setName] = useState<string>('');
   const [description, setDescription] = useState<string>('');
-  const [location, setLocation] = useState<string>('');
+  const [location, setLocation] = useState<{}>({});
   const [tags, setTags] = useState<string[]>([]);
+
+  useEffect(() => {
+    LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
+  }, []);
 
   return (
     <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView keyboardShouldPersistTaps="handled">
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View style={{ flex: 1 }}>
             <Header
@@ -92,14 +98,65 @@ export default function Post({ route, navigation }: PostProps) {
                   keyboardAppearance="dark"
                 />
 
-                {/* TODO: Replace this with Google Places API (Autocomplete) */}
                 <Text style={styles.text}>Location</Text>
-                <TextInput
-                  style={styles.input}
+
+                <GooglePlacesAutocomplete
                   placeholder="Where was this taken?"
-                  placeholderTextColor="#959595"
-                  onChangeText={(text) => setLocation(text)}
-                  keyboardAppearance="dark"
+                  minLength={2}
+                  keyboardShouldPersistTaps="handled"
+                  listViewDisplayed={false}
+                  nearbyPlacesAPI="GooglePlacesSearch"
+                  debounce={400}
+                  styles={{
+                    listView: {
+                      borderRadius: 6,
+                      borderBottomColor: '#c73131',
+                    },
+                    row: {
+                      backgroundColor: '#050505',
+                    },
+                    description: {
+                      color: '#fff',
+                      fontSize: 12,
+                      right: 10,
+                    },
+                  }}
+                  query={{
+                    key: MAPS_API_KEY,
+                    language: 'en',
+                  }}
+                  fetchDetails={true}
+                  onPress={(data, details = null) => {
+                    setLocation({
+                      name: data.description,
+                      lat: details?.geometry.location.lat,
+                      lng: details?.geometry.location.lng,
+                    });
+
+                    // console.log({
+                    //   name: data.description,
+                    //   lat: details?.geometry.location.lat,
+                    //   lng: details?.geometry.location.lng,
+                    // });
+                  }}
+                  enablePoweredByContainer={false}
+                  textInputProps={{
+                    placeholderTextColor: '#959595',
+                    style: {
+                      width: '100%',
+                      borderWidth: 1,
+                      borderColor: '#1F1E1E',
+                      marginBottom: 15,
+                      marginTop: 5,
+                      height: 42,
+                      textAlignVertical: 'top',
+                      color: '#fff',
+                      alignItems: 'stretch',
+                      flexShrink: 1,
+                      borderRadius: 4,
+                      paddingLeft: 8,
+                    },
+                  }}
                 />
                 <Text style={{ color: 'white', fontWeight: '500' }}>Tags</Text>
                 <TextInput

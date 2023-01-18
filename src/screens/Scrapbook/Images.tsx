@@ -97,7 +97,7 @@ export default function Images({ navigation, route }: LoadProps) {
       />
       <DraggableFlatList
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ height: height + 100 }}
+        // contentContainerStyle={{ height: height + 100 }}
         data={images}
         renderItem={({ item, drag, isActive }) => (
           <>

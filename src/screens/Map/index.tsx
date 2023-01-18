@@ -2,19 +2,19 @@ import React, { useEffect, useRef, useState } from 'react';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { mapNightTheme, mapDarkTheme } from '../../ui/shared/MapTheme';
 import * as Locaiton from 'expo-location';
-import { markers } from './mockData';
-import Animated, { call, useCode, Extrapolate } from 'react-native-reanimated';
+import Animated, { call, useCode } from 'react-native-reanimated';
 // @ts-ignore
 import nearBy from '../../../assets/gray_i.png';
 // @ts-ignore
 import current from '../../../assets/curr_i.png';
-import { Dimensions, Image, Platform, Text, View } from 'react-native';
-
-// APIs that I'll need:
-// - Places Autocomplete
-// - Geocoding: Get the coordinates based on the name of the location
-// - Reverse Geocoding: Get the name of the location based on the coordinates
-// - Directions: Get the directions from the current location to the location of the scrapbook
+import { Dimensions, Image, LogBox, Platform, Text, View } from 'react-native';
+import {
+  useAppDispatch,
+  useAppSelector,
+  useUserQuery,
+} from '../../utils/hooks';
+import MapCard from '../../ui/components/Map/MapCard';
+import { fetchScrapbooks } from '../../contexts/slices/scrapbooks/scrapbooksSlice';
 
 // constants
 const nearByIndicator = Image.resolveAssetSource(nearBy).uri;
@@ -25,11 +25,20 @@ const SPACING = width * 0.15;
 
 export default function Map() {
   const [location, setLocation] = useState<any>(null);
-  const [markerState, setMarkerState] = useState(markers);
   const mapRef = useRef<any>(null);
   const scrollViewRef = useRef<any>(null);
   const scrollX = useRef(new Animated.Value(0)).current;
   let scrollIndex = 0;
+  const dispatch = useAppDispatch();
+  const scrapbook = useAppSelector((state) => state.scrapbooks.scrapbooks);
+
+  useEffect(() => {
+    dispatch(fetchScrapbooks());
+  }, []);
+
+  const user = scrapbook?.map((_: any, index: any) => {
+    return useUserQuery(scrapbook[index]?.uid).data;
+  });
 
   // Getting the users' current location
   useEffect(() => {
@@ -42,16 +51,24 @@ export default function Map() {
 
       let currentLocation = await Locaiton.getCurrentPositionAsync({});
       setLocation(currentLocation);
-      console.log('LOCATION: ');
-      console.log(currentLocation);
+      // console.log('LOCATION: ');
+      // console.log(currentLocation);
     })();
   }, []);
+
+  // Getting the coordinates of the scrapbooks and setting them as markers
+  const coordinates = scrapbook?.map((marker) => {
+    return {
+      latitude: marker.location.lat,
+      longitude: marker.location.lng,
+    };
+  });
 
   // Setting the markers on the map based on the scrapbook's location
   useCode(() => {
     return call([scrollX], ([value]) => {
       let index = Math.floor(value / CARD_WIDTH + 0.2);
-      if (index >= markerState.length) index = markerState.length - 1;
+      if (index >= scrapbook?.length!) index = scrapbook?.length! - 1;
       if (index <= 0) index = 0;
 
       // @ts-ignore
@@ -60,12 +77,12 @@ export default function Map() {
       const regionTimeout = setTimeout(() => {
         if (scrollIndex !== index) {
           scrollIndex = index;
-          const { coordinates } = markerState[index];
+          const coords = coordinates![index];
           mapRef?.current?.animateToRegion(
             {
-              ...coordinates,
-              latitudeDelta: 0.05,
-              longitudeDelta: 0.05,
+              ...coords,
+              latitudeDelta: 0.06,
+              longitudeDelta: 0.06,
             },
             300
           );
@@ -74,36 +91,11 @@ export default function Map() {
     });
   }, [scrollX]);
 
-  // const interpolations = markerState.map((marker, index) => {
-  //   const inputRange = [
-  //     (index - 1) * CARD_WIDTH,
-  //     index * CARD_WIDTH,
-  //     (index + 1) * CARD_WIDTH,
-  //   ];
-
-  //   const scale = scrollX.interpolate({
-  //     inputRange,
-  //     outputRange: [1, 1.2, 1],
-  //     extrapolate: Extrapolate.CLAMP,
-  //   });
-
-  //   const color = scrollX.interpolate({
-  //     inputRange,
-  //     outputRange: ['#934c4c', '#6cb4bc', '#000'],
-  //     extrapolate: Extrapolate.CLAMP,
-  //   });
-
-  //   return { scale, color };
-  // });
-
   const onMarkerPress = (mapEventData: any) => {
-    const markerID = mapEventData._targetInst.return.key;
+    const id = mapEventData._targetInst.return.key;
+    let x = id * CARD_WIDTH + id * 20;
 
-    let x = markerID * CARD_WIDTH + markerID * 20;
-    if (Platform.OS === 'ios') {
-      x = x - SPACING;
-    }
-
+    if (Platform.OS === 'ios') x = x - SPACING;
     scrollViewRef.current.scrollTo({ x: x, y: 0, animated: true });
   };
 
@@ -112,7 +104,7 @@ export default function Map() {
       <MapView
         ref={mapRef}
         provider={PROVIDER_GOOGLE}
-        customMapStyle={mapDarkTheme}
+        customMapStyle={mapNightTheme}
         initialRegion={{
           latitude: location?.coords.latitude
             ? location?.coords.latitude
@@ -120,18 +112,18 @@ export default function Map() {
           longitude: location?.coords.longitude
             ? location?.coords.longitude
             : 55.17555855061869,
-          latitudeDelta: 0.05,
-          longitudeDelta: 0.05,
+          latitudeDelta: 0.03,
+          longitudeDelta: 0.03,
         }}
         showsUserLocation
         // showsMyLocationButton
         style={{ flex: 1 }}
       >
-        {markerState.map((marker, index) => {
+        {scrapbook?.map((_: any, index: any) => {
           return (
             <Marker
               key={index}
-              coordinate={marker.coordinates}
+              coordinate={coordinates![index]}
               onPress={(sb) => onMarkerPress(sb)}
             >
               <Animated.View>
@@ -172,84 +164,12 @@ export default function Map() {
           );
         })}
       </MapView>
-
-      <Animated.ScrollView
-        horizontal
-        pagingEnabled
-        ref={scrollViewRef}
-        onScroll={Animated.event(
-          [{ nativeEvent: { contentOffset: { x: scrollX } } }],
-          { useNativeDriver: true }
-        )}
-        scrollEventThrottle={1}
-        snapToInterval={CARD_WIDTH + 20}
-        snapToAlignment="center"
-        decelerationRate="fast"
-        showsHorizontalScrollIndicator={false}
-        contentInset={{
-          top: 0,
-          left: SPACING,
-          bottom: 0,
-          right: SPACING,
-        }}
-        contentContainerStyle={{
-          paddingHorizontal: Platform.OS === 'android' ? SPACING : 0,
-        }}
-        style={{
-          position: 'absolute',
-          bottom: 0,
-          left: 0,
-          right: 0,
-          paddingVertical: 10,
-        }}
-      >
-        {markerState.map((marker, index) => (
-          <View
-            key={index}
-            style={{
-              backgroundColor: '#000000',
-              borderTopLeftRadius: 16,
-              borderBottomLeftRadius: 16,
-              borderTopRightRadius: 16,
-              borderBottomRightRadius: 16,
-              marginHorizontal: 10,
-              height: 140,
-              width: CARD_WIDTH,
-              overflow: 'hidden',
-              // flexDirection: 'row',
-              // alignItems: 'center',
-            }}
-          >
-            <Image
-              source={{ uri: marker.image }}
-              resizeMode="cover"
-              style={{
-                flex: 5,
-                width: '100%',
-                height: '100%',
-              }}
-            />
-            <View style={{ padding: 10 }}>
-              <Text
-                numberOfLines={1}
-                style={{
-                  fontSize: 14,
-                  fontWeight: 'bold',
-                  color: '#d3d6d9',
-                }}
-              >
-                {marker.title}
-              </Text>
-              <Text
-                numberOfLines={1}
-                style={{ fontSize: 12, color: '#8e8e8e' }}
-              >
-                @{marker.user}
-              </Text>
-            </View>
-          </View>
-        ))}
-      </Animated.ScrollView>
+      <MapCard
+        user={user}
+        scrapbooks={scrapbook}
+        scrollX={scrollX}
+        scrollViewRef={scrollViewRef}
+      />
     </View>
   );
 }

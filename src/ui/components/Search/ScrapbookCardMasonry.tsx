@@ -81,6 +81,7 @@ export default function ScrapbookCardMasonry({ item, index, navigation }: any) {
             <View style={{ flex: 1, paddingVertical: 5 }}>
               <Text
                 numberOfLines={1}
+                adjustsFontSizeToFit
                 style={{
                   fontSize: 14,
                   fontWeight: 'bold',
@@ -93,7 +94,7 @@ export default function ScrapbookCardMasonry({ item, index, navigation }: any) {
                 numberOfLines={1}
                 style={{ fontSize: 12, color: '#8e8e8e' }}
               >
-                {item.location}
+                {item.location.name}
               </Text>
             </View>
           </View>

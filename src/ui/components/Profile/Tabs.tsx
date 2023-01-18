@@ -56,9 +56,8 @@ export default function Tabs({
           >
             Joined {moment(user?.createdAt).format('MMM Do YYYY')}
           </Text>
-          <Text style={{ color: 'white' }}>
-            {user?.bio ? user?.bio : 'No bio'}
-          </Text>
+          <Text style={{ color: 'white' }}>{user?.bio}</Text>
+          <Text style={{ color: 'white' }}>{user?.location}</Text>
         </View>
       ),
     },
