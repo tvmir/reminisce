@@ -103,6 +103,7 @@ export default function Post({ route, navigation }: PostProps) {
                 <GooglePlacesAutocomplete
                   placeholder="Where was this taken?"
                   minLength={2}
+                  // currentLocation={true}
                   keyboardShouldPersistTaps="handled"
                   listViewDisplayed={false}
                   nearbyPlacesAPI="GooglePlacesSearch"
@@ -161,9 +162,9 @@ export default function Post({ route, navigation }: PostProps) {
                 <Text style={{ color: 'white', fontWeight: '500' }}>Tags</Text>
                 <TextInput
                   style={styles.input}
-                  placeholder="comma, separated"
+                  placeholder="comma, space separated"
                   placeholderTextColor="#959595"
-                  onChangeText={(text) => setTags(text.split(','))}
+                  onChangeText={(text) => setTags(text.split(/(?:,| )+/))}
                   keyboardAppearance="dark"
                 />
               </View>

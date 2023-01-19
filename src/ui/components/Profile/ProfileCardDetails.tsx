@@ -14,7 +14,7 @@ export default function ProfileCardDetails({ item, navigation }: any) {
   return (
     <TouchableWithoutFeedback
       style={{ flex: 1 }}
-      onPress={() => navigation.navigate('ExpandedFeed', { item })}
+      onPress={() => navigation.navigate('Scrapbook', { item })}
     >
       <View
         style={{

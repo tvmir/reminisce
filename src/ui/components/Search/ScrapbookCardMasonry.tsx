@@ -24,7 +24,7 @@ export default function ScrapbookCardMasonry({ item, index, navigation }: any) {
           styles.card,
           { width: '100%', height: index % 3 === 0 ? 150 : 215 },
         ]}
-        onPress={() => navigation.navigate('ExpandedFeed', { item })}
+        onPress={() => navigation.navigate('Scrapbook', { item })}
       >
         <View
           style={{

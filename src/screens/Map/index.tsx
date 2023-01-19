@@ -1,4 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, {
+  LegacyRef,
+  MutableRefObject,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { mapNightTheme, mapDarkTheme } from '../../ui/shared/MapTheme';
 import * as Locaiton from 'expo-location';
@@ -7,7 +13,7 @@ import Animated, { call, useCode } from 'react-native-reanimated';
 import nearBy from '../../../assets/gray_i.png';
 // @ts-ignore
 import current from '../../../assets/curr_i.png';
-import { Dimensions, Image, LogBox, Platform, Text, View } from 'react-native';
+import { Dimensions, FlatList, Image, Platform, View } from 'react-native';
 import {
   useAppDispatch,
   useAppSelector,
@@ -15,6 +21,7 @@ import {
 } from '../../utils/hooks';
 import MapCard from '../../ui/components/Map/MapCard';
 import { fetchScrapbooks } from '../../contexts/slices/scrapbooks/scrapbooksSlice';
+import { LocationObject } from 'expo-location';
 
 // constants
 const nearByIndicator = Image.resolveAssetSource(nearBy).uri;
@@ -24,19 +31,18 @@ const CARD_WIDTH = width * 0.65;
 const SPACING = width * 0.15;
 
 export default function Map() {
-  const [location, setLocation] = useState<any>(null);
-  const mapRef = useRef<any>(null);
-  const scrollViewRef = useRef<any>(null);
+  const [location, setLocation] = useState<LocationObject>();
+  const mapRef = useRef<MapView>(null);
+  const scrollRef = useRef<Animated.ScrollView>(null);
   const scrollX = useRef(new Animated.Value(0)).current;
-  let scrollIndex = 0;
-  const dispatch = useAppDispatch();
   const scrapbook = useAppSelector((state) => state.scrapbooks.scrapbooks);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     dispatch(fetchScrapbooks());
   }, []);
 
-  const user = scrapbook?.map((_: any, index: any) => {
+  const user = scrapbook?.map((_: any, index: number) => {
     return useUserQuery(scrapbook[index]?.uid).data;
   });
 
@@ -65,6 +71,7 @@ export default function Map() {
   });
 
   // Setting the markers on the map based on the scrapbook's location
+  let scrollIndex = 0;
   useCode(() => {
     return call([scrollX], ([value]) => {
       let index = Math.floor(value / CARD_WIDTH + 0.2);
@@ -84,7 +91,7 @@ export default function Map() {
               latitudeDelta: 0.06,
               longitudeDelta: 0.06,
             },
-            300
+            250
           );
         }
       }, 10);
@@ -96,22 +103,18 @@ export default function Map() {
     let x = id * CARD_WIDTH + id * 20;
 
     if (Platform.OS === 'ios') x = x - SPACING;
-    scrollViewRef.current.scrollTo({ x: x, y: 0, animated: true });
+    scrollRef?.current?.scrollTo({ x: x, y: 0, animated: true });
   };
 
   return (
-    <View style={{ flex: 1, paddingTop: 40 }}>
+    <View style={{ flex: 1 }}>
       <MapView
         ref={mapRef}
         provider={PROVIDER_GOOGLE}
-        customMapStyle={mapNightTheme}
+        customMapStyle={mapDarkTheme}
         initialRegion={{
-          latitude: location?.coords.latitude
-            ? location?.coords.latitude
-            : 25.098960013248654,
-          longitude: location?.coords.longitude
-            ? location?.coords.longitude
-            : 55.17555855061869,
+          latitude: location?.coords.latitude as number,
+          longitude: location?.coords.longitude as number,
           latitudeDelta: 0.03,
           longitudeDelta: 0.03,
         }}
@@ -168,7 +171,7 @@ export default function Map() {
         user={user}
         scrapbooks={scrapbook}
         scrollX={scrollX}
-        scrollViewRef={scrollViewRef}
+        scrollRef={scrollRef}
       />
     </View>
   );
