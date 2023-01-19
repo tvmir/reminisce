@@ -3,7 +3,7 @@ import { View, TouchableOpacity } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import ScrapbookImageList from '../../ui/components/Scrapbook/ScrapbookImageList';
 
-export default function ExpandedFeed({ route, navigation }: any) {
+export default function Scrapbook({ route, navigation }: any) {
   const { item } = route.params;
 
   return (

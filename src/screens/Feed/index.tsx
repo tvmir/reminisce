@@ -56,7 +56,7 @@ export default function Feed({ navigation }: any) {
             <View style={{ flex: 1 }}>
               <SharedElement id={`${item.id}.images`}>
                 <TouchableWithoutFeedback
-                  onPress={() => navigation.navigate('ExpandedFeed', { item })}
+                  onPress={() => navigation.navigate('Scrapbook', { item })}
                 >
                   <View
                     style={{
@@ -65,7 +65,7 @@ export default function Feed({ navigation }: any) {
                       height:
                         // 1.719 for iPhone XS
                         // 1.69 for iPhone 13 Pro
-                        Dimensions.get('window').height / 1.69 +
+                        Dimensions.get('window').height / 1.719 +
                         bottomTabBarHeight,
                       borderRadius: 20,
                     }}

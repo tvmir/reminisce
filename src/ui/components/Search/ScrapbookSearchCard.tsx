@@ -13,7 +13,7 @@ export default function ScrapbookSearchCard({ item, navigation }: any) {
   return (
     <TouchableWithoutFeedback
       style={{}}
-      onPress={() => navigation.navigate('ExpandedFeed', { item })}
+      onPress={() => navigation.navigate('Scrapbook', { item })}
     >
       <View
         style={{
@@ -27,10 +27,13 @@ export default function ScrapbookSearchCard({ item, navigation }: any) {
             marginBottom: 24,
           }}
         >
-          <ImageWrapper
+          <View
             style={{
               width: CARD_WIDTH + 1,
               height: CARD_HEIGHT,
+              borderRadius: 16,
+              borderWidth: 0.5,
+              borderColor: '#121212',
             }}
           >
             <SharedElement id={`${item.id}.images`}>
@@ -84,7 +87,7 @@ export default function ScrapbookSearchCard({ item, navigation }: any) {
                 </Text>
               </View>
             </View>
-          </ImageWrapper>
+          </View>
         </View>
       </View>
     </TouchableWithoutFeedback>

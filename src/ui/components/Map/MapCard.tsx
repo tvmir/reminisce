@@ -1,5 +1,5 @@
-import { DocumentData } from 'firebase/firestore';
 import React from 'react';
+import { DocumentData } from 'firebase/firestore';
 import { View, Text, Dimensions, Platform, Image } from 'react-native';
 import Animated from 'react-native-reanimated';
 
@@ -11,20 +11,20 @@ interface MapCardProps {
   user: any;
   scrapbooks: DocumentData | undefined;
   scrollX: Animated.Value<number>;
-  scrollViewRef: React.MutableRefObject<any>;
+  scrollRef: React.MutableRefObject<Animated.ScrollView | null>;
 }
 
 export default function MapCard({
   user,
   scrapbooks,
   scrollX,
-  scrollViewRef,
+  scrollRef,
 }: MapCardProps) {
   return (
-    <Animated.FlatList
+    <Animated.ScrollView
       horizontal
       pagingEnabled
-      ref={scrollViewRef}
+      ref={scrollRef}
       onScroll={Animated.event(
         [{ nativeEvent: { contentOffset: { x: scrollX } } }],
         { useNativeDriver: true }
@@ -50,11 +50,11 @@ export default function MapCard({
         right: 0,
         paddingVertical: 10,
       }}
-      // @ts-ignore
-      data={scrapbooks}
-      renderItem={({ item, index }) => {
+    >
+      {scrapbooks?.map((item: any, index: number) => {
         return (
           <View
+            key={index}
             style={{
               backgroundColor: '#000000',
               borderTopLeftRadius: 16,
@@ -96,7 +96,7 @@ export default function MapCard({
             </View>
           </View>
         );
-      }}
-    />
+      })}
+    </Animated.ScrollView>
   );
 }

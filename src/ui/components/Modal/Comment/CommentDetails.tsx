@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, Image, TextInput, FlatList } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, Image, TextInput, FlatList, LogBox } from 'react-native';
 import styled from 'styled-components/native';
 import { useUserQuery } from '../../../../utils/hooks';
 import {
@@ -11,7 +11,7 @@ import { CommentProps } from '.';
 import { theme } from '../../../shared/Theme';
 import moment from 'moment';
 
-moment.locale('en', {
+moment.updateLocale('en', {
   relativeTime: {
     future: 'in %s',
     past: '%s ago',
@@ -39,12 +39,17 @@ export default function CommentDetails({
   handleReplies,
 }: any) {
   const user = useUserQuery(item.uid).data;
-
   const inputRef = React.useRef<any>();
 
   // const [replies, setReplies] = React.useState<string[]>(['yp', 'yp', 'yp']);
   // const [reply, setReply] = React.useState<string>('');
   const [showReplies, setShowReplies] = useState<boolean>(false);
+
+  useEffect(() => {
+    LogBox.ignoreLogs([
+      `undefined is not an object (evaluating '_n7.indexOf')]`,
+    ]);
+  }, []);
 
   return (
     <View style={{ flex: 1, flexDirection: 'row', padding: 10 }}>
@@ -69,7 +74,7 @@ export default function CommentDetails({
             Reply
           </Text>
           <Text style={{ color: '#cfcfcf', fontSize: 11, paddingLeft: 10 }}>
-            {moment(item.createdAt.toDate()).fromNow()}
+            {moment(item.createdAt.toDate()).fromNow(true)}
           </Text>
         </View>
         {replies.length > 0 && (
@@ -127,7 +132,7 @@ export default function CommentDetails({
                               paddingTop: 2,
                             }}
                           >
-                            {moment(item.createdAt.toDate()).fromNow()}
+                            {moment(item.createdAt.toDate()).fromNow(true)}
                           </Text>
                         </View>
                         <Text

@@ -14,10 +14,8 @@ import Signup from '../../screens/Auth/Signup';
 import Edit from '../../screens/Profile/Edit';
 import Modal from '../../ui/components/Modal';
 import UsersProfile from '../../screens/Profile/UsersProfile';
-import ExpandedFeed from '../../screens/Scrapbook/ExpandedFeed';
+import Scrapbook from '../../screens/Scrapbook/';
 import { createSharedElementStackNavigator } from 'react-navigation-shared-element';
-import { Text, TouchableOpacity, View } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 
 // Creating the shared element stack navigator
 const Stack = createSharedElementStackNavigator();
@@ -170,8 +168,8 @@ export default function MainStackNavigator() {
                   };
                 },
               }}
-              name="ExpandedFeed"
-              component={ExpandedFeed}
+              name="Scrapbook"
+              component={Scrapbook}
               sharedElements={(route) => {
                 const { item } = route.params;
                 return [

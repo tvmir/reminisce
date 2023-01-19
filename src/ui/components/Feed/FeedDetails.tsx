@@ -8,6 +8,7 @@ import {
 import { DocumentData } from 'firebase/firestore';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import Fontisto from 'react-native-vector-icons/Fontisto';
+import Octicons from 'react-native-vector-icons/Octicons';
 import moment from 'moment';
 
 interface FeedCardProps {
@@ -97,17 +98,17 @@ export default function FeedDetails({ item, navigation }: FeedCardProps) {
             <View style={{ flexDirection: 'row' }}>
               <Text
                 numberOfLines={1}
-                // adjustsFontSizeToFit
+                adjustsFontSizeToFit
                 style={{
                   marginTop: 2,
                   color: 'white',
                   fontSize: 10,
                   opacity: 0.9,
-                  width: '75%',
                 }}
               >
-                {item.location.name}
+                {moment(item.createdAt.toDate()).fromNow(true)}
               </Text>
+
               <Text
                 numberOfLines={1}
                 adjustsFontSizeToFit
@@ -115,7 +116,7 @@ export default function FeedDetails({ item, navigation }: FeedCardProps) {
                   marginTop: 2,
                   color: 'white',
                   fontSize: 10,
-                  paddingHorizontal: 1,
+                  paddingHorizontal: 3,
                   opacity: 0.9,
                 }}
               >
@@ -123,15 +124,15 @@ export default function FeedDetails({ item, navigation }: FeedCardProps) {
               </Text>
               <Text
                 numberOfLines={1}
-                adjustsFontSizeToFit
                 style={{
                   marginTop: 2,
                   color: 'white',
                   fontSize: 10,
                   opacity: 0.9,
+                  width: '80%',
                 }}
               >
-                {moment(item.createdAt.toDate()).fromNow()}
+                {item.location.name}
               </Text>
             </View>
           </View>
@@ -144,19 +145,31 @@ export default function FeedDetails({ item, navigation }: FeedCardProps) {
             }
             activeOpacity={0.8}
             style={{
-              backgroundColor: '#fff',
-              opacity: 0.8,
-              paddingLeft: 12,
-              paddingTop: 14,
-              height: 47,
-              width: 47,
+              backgroundColor: isLiked.liked ? '#770573' : '#1E1E1E',
+              opacity: 0.9,
+              paddingLeft: 5,
+              paddingTop: 6,
               borderRadius: 30,
               position: 'absolute',
-              bottom: 80,
-              right: 10,
+              bottom: 35,
+              right: 8,
+              width: 60,
+              height: 30,
+              flexDirection: 'row',
             }}
           >
-            <Fontisto name="heart-alt" size={20} />
+            <Octicons color={'#fff'} name="heart-fill" size={20} />
+            {/* <Text
+              style={{
+                color: 'white',
+                // fontSize: 12,
+                paddingHorizontal: 15,
+                paddingTop: 2,
+                fontWeight: '700',
+              }}
+            >
+              {isLiked.counter > 0 ? isLiked.counter : null}
+            </Text> */}
           </TouchableOpacity>
         </View>
       </View>
