@@ -16,6 +16,7 @@ import Modal from '../../ui/components/Modal';
 import UsersProfile from '../../screens/Profile/UsersProfile';
 import Scrapbook from '../../screens/Scrapbook/';
 import { createSharedElementStackNavigator } from 'react-navigation-shared-element';
+import FullView from '../../ui/components/Scrapbook/FullView';
 
 // Creating the shared element stack navigator
 const Stack = createSharedElementStackNavigator();
@@ -175,6 +176,35 @@ export default function MainStackNavigator() {
                 return [
                   {
                     id: `${item.id}.images`,
+                    animation: 'move',
+                  },
+                ];
+              }}
+            />
+            <Stack.Screen
+              options={{
+                headerShown: false,
+                headerTitle: '',
+                headerStyle: {
+                  backgroundColor: theme.colors.background,
+                },
+                headerShadowVisible: false,
+                headerBackTitleVisible: false,
+                cardStyleInterpolator: ({ current: { progress } }: any) => {
+                  return {
+                    cardStyle: {
+                      opacity: progress,
+                    },
+                  };
+                },
+              }}
+              name="FullView"
+              component={FullView}
+              sharedElements={(route) => {
+                const { item } = route.params;
+                return [
+                  {
+                    id: `${item.id}.imagesV`,
                     animation: 'move',
                   },
                 ];

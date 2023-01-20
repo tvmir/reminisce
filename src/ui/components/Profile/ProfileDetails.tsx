@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   View,
   Text,
@@ -7,8 +7,9 @@ import {
   TouchableOpacity,
   StyleSheet,
   Dimensions,
+  ImageBackground,
+  Animated,
 } from 'react-native';
-import Animated from 'react-native-reanimated';
 import styled from 'styled-components/native';
 import {
   horizontalScale,
@@ -24,8 +25,20 @@ import {
 } from '../../../utils/hooks';
 import { auth } from '../../../api/firebase';
 import { BlurView } from 'expo-blur';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-export default function ProfileDetails({ user, navigation, me = true }: any) {
+const { width, height } = Dimensions.get('window');
+const d = (1 + Math.sqrt(5)) / 2;
+const MIN_HEADER_HEIGHT = 64 + 5;
+const MAX_HEADER_HEIGHT = height * (1 - 1 / d);
+const HEADER_DELTA = MAX_HEADER_HEIGHT - MIN_HEADER_HEIGHT;
+
+export default function ProfileDetails({
+  user,
+  navigation,
+  me = true,
+  scrollY,
+}: any) {
   const isFollowing = useFollowingQuery(auth.currentUser?.uid, user?.uid).data;
   const isFollowingMutation = useFollowMutation();
   // TODO: Figure this out
@@ -34,8 +47,6 @@ export default function ProfileDetails({ user, navigation, me = true }: any) {
     followersCount: user?.followers_count,
   });
   const currentUser = useAppSelector((state) => state.currentUser.currentUser);
-
-  const { width } = useWindowDimensions();
 
   const handleFollow = () => {
     if (isFollowing) {
@@ -96,34 +107,121 @@ export default function ProfileDetails({ user, navigation, me = true }: any) {
     }
   };
 
+  const AnimatedImageBackground =
+    Animated.createAnimatedComponent(ImageBackground);
+
   return (
-    <View style={{ paddingBottom: verticalScale(30) }}>
-      <Animated.View style={[{ width, height: 380 }]}>
-        <Image
+    <View style={{ paddingBottom: 30 }}>
+      <Animated.View
+        style={[
+          {
+            // ...StyleSheet.absoluteFillObject,
+            height: MAX_HEADER_HEIGHT + 48,
+          },
+        ]}
+      >
+        <AnimatedImageBackground
           style={{
-            width,
-            height: 380,
+            ...StyleSheet.absoluteFillObject,
+
+            transform: [
+              {
+                scale: scrollY.interpolate({
+                  inputRange: [-MAX_HEADER_HEIGHT, 0],
+                  outputRange: [4, 1],
+                  extrapolateLeft: 'extend',
+                  extrapolateRight: 'clamp',
+                }),
+              },
+            ],
           }}
           source={user?.photoURL ? { uri: user?.photoURL } : undefined}
-        />
-        <LinearGradient
-          style={{ ...StyleSheet.absoluteFillObject }}
-          colors={['#000000', '#00000000', '#000000']}
-          locations={[1, 0.65, 0.9]}
-        />
+        >
+          <Animated.View
+            style={{
+              ...StyleSheet.absoluteFillObject,
+              backgroundColor: 'black',
+              opacity: scrollY.interpolate({
+                inputRange: [-64, 0, HEADER_DELTA],
+                outputRange: [0, 0.2, 1],
+              }),
+            }}
+          />
+
+          <LinearGradient
+            style={{ ...StyleSheet.absoluteFillObject }}
+            colors={['#000000', '#00000000', '#000000']}
+            locations={[1, 0.65, 0.9]}
+          />
+        </AnimatedImageBackground>
       </Animated.View>
-      <BlurView
-        intensity={2}
-        tint="dark"
+      <Animated.View
+        style={[
+          styles.container,
+          {
+            opacity: scrollY.interpolate({
+              inputRange: [HEADER_DELTA - 16, HEADER_DELTA],
+              outputRange: [0, 1],
+              extrapolate: 'clamp',
+            }),
+          },
+        ]}
+      >
+        <Animated.Text
+          style={[
+            styles.title,
+            {
+              opacity: scrollY.interpolate({
+                inputRange: [HEADER_DELTA - 8, HEADER_DELTA - 4],
+                outputRange: [0, 1],
+                extrapolate: 'clamp',
+              }),
+            },
+          ]}
+        >
+          {user?.username}
+        </Animated.Text>
+      </Animated.View>
+
+      <View
         style={{
           position: 'absolute',
           top: 310,
           left: 10,
         }}
       >
-        <HeaderNameText>{user?.name}</HeaderNameText>
-        <UsernameText>@{user?.username}</UsernameText>
-      </BlurView>
+        <Animated.View style={{ flex: 1 }}>
+          <Animated.Text
+            style={{
+              paddingTop: 8,
+              paddingBottom: 3,
+              fontSize: 28,
+              fontWeight: '600',
+              color: 'white',
+              opacity: scrollY.interpolate({
+                inputRange: [-MAX_HEADER_HEIGHT / 2, 0, MAX_HEADER_HEIGHT / 2],
+                outputRange: [0, 1, 0],
+                extrapolate: 'clamp',
+              }),
+            }}
+          >
+            {user?.name}
+          </Animated.Text>
+          <Animated.Text
+            style={{
+              paddingBottom: 10,
+              color: '#8b8e93',
+              opacity: scrollY.interpolate({
+                inputRange: [-MAX_HEADER_HEIGHT / 2, 0, MAX_HEADER_HEIGHT / 2],
+                outputRange: [0, 1, 0],
+                extrapolate: 'clamp',
+              }),
+            }}
+          >
+            @{user?.username}
+          </Animated.Text>
+        </Animated.View>
+      </View>
       <FollowageContainer>
         <FollowageSubContainer>
           <FollowageCount>{user?.followers_count}</FollowageCount>
@@ -199,7 +297,7 @@ const BioText = styled(Text)`
 
 const FollowageContainer = styled(View)`
   flex-direction: row;
-  padding-top: ${verticalScale(10)}px;
+  padding-top: ${verticalScale(20)}px;
   padding-bottom: ${verticalScale(12)}px;
 `;
 
@@ -238,3 +336,28 @@ const ButtonText = styled(Text)`
   color: ${(p) => p.theme.colors.primary};
   font-weight: 500;
 `;
+
+const styles = StyleSheet.create({
+  container: {
+    position: 'absolute',
+    top: 48 / 2 - MIN_HEADER_HEIGHT,
+    left: 0,
+    right: 0,
+    height: MIN_HEADER_HEIGHT,
+    backgroundColor: 'black',
+    paddingTop: 10,
+  },
+  title: {
+    color: 'white',
+    fontSize: 16,
+    textAlign: 'center',
+    fontWeight: '400',
+  },
+  gradient: {
+    position: 'absolute',
+    left: 0,
+    bottom: 0,
+    right: 0,
+    alignItems: 'center',
+  },
+});

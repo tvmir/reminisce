@@ -2,106 +2,109 @@ import React, { useState } from 'react';
 import {
   View,
   Text,
-  FlatList,
   TouchableOpacity,
   StyleSheet,
+  useWindowDimensions,
+  ScrollView,
 } from 'react-native';
 import ProfileCardDetails from './ProfileCardDetails';
 import moment from 'moment';
+import { TabView, SceneMap } from 'react-native-tab-view';
 
-export default function Tabs({
-  user,
-  scrapbooks,
-  refreshing,
-  setRefreshing,
-  navigation,
-}: any) {
-  const [tabIndex, setTabIndex] = useState<number>(0);
+export default function Tabs({ user, scrapbooks, navigation }: any) {
+  // const [tabIndex, setTabIndex] = useState<number>(0);
+  const [index, setIndex] = useState<number>(0);
+  const { width, height } = useWindowDimensions();
 
-  const tabBar = [
-    {
-      title: 'Scrapbooks',
-      component: () => (
-        <View key={'scrapbooks'}>
-          <FlatList
-            numColumns={2}
-            initialNumToRender={4}
-            removeClippedSubviews
-            nestedScrollEnabled
-            showsVerticalScrollIndicator={false}
-            refreshing={refreshing}
-            onRefresh={() => setRefreshing(true)}
-            data={scrapbooks}
-            renderItem={({ item }) => (
-              <ProfileCardDetails item={item} navigation={navigation} />
-            )}
-          />
-        </View>
-      ),
-    },
-    {
-      title: 'About',
-      component: () => (
-        <View key={'about'}>
-          <Text
-            style={{
-              position: 'absolute',
-              top: 215,
-              left: 0,
-              right: 0,
-              textAlign: 'center',
-              color: '#5a5a5a',
-              fontSize: 12,
-            }}
-          >
-            Joined {moment(user?.createdAt).format('MMM Do YYYY')}
-          </Text>
-          <Text style={{ color: 'white' }}>{user?.bio}</Text>
-          <Text style={{ color: 'white' }}>{user?.location}</Text>
-        </View>
-      ),
-    },
-  ];
+  const ProfileCards = () => (
+    <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+      {scrapbooks.map((item: any, index: number) => (
+        <ProfileCardDetails
+          key={index}
+          item={item}
+          navigation={navigation}
+          index={index}
+        />
+      ))}
+    </View>
+  );
+
+  const About = () => (
+    <>
+      <Text
+        style={{
+          position: 'absolute',
+          top: 215,
+          left: 0,
+          right: 0,
+          textAlign: 'center',
+          color: '#5a5a5a',
+          fontSize: 12,
+        }}
+      >
+        Joined {moment(user?.createdAt).format('MMM Do YYYY')}
+      </Text>
+      <Text style={{ color: 'white' }}>{user?.bio}</Text>
+      <Text style={{ color: 'white' }}>{user?.location}</Text>
+    </>
+  );
+
+  const renderScene = SceneMap({
+    scrapbooks: ProfileCards,
+    about: About,
+  });
+
+  const [routes] = useState([
+    { key: 'scrapbooks', title: 'Scrapbooks' },
+    { key: 'about', title: 'About' },
+  ]);
 
   return (
     <>
-      <View
+      <ScrollView
         style={{
-          bottom: 20,
-          alignItems: 'flex-start',
+          bottom: 30,
+          flex: 1,
+        }}
+        contentContainerStyle={{
+          position: 'relative',
+          top: 0,
         }}
       >
-        <View style={{ paddingHorizontal: 10 }}>
-          <View
-            style={{
-              justifyContent: 'space-evenly',
-              flexDirection: 'row',
-            }}
-          >
-            {tabBar.map((tab, i) => {
-              const active = tabIndex === i;
-              return (
-                <TouchableOpacity
-                  key={i}
-                  onPress={() => setTabIndex(i)}
-                  style={{ marginRight: 20 }}
-                >
-                  {active && tab.title === 'Scrapbooks' && (
-                    <View style={styles.sLine} />
-                  )}
-                  {active && tab.title === 'About' && (
-                    <View style={styles.aLine} />
-                  )}
-                  <Text style={active ? styles.activeTabText : styles.tabText}>
-                    {tab.title}
-                  </Text>
-                </TouchableOpacity>
-              );
-            })}
-          </View>
-        </View>
-      </View>
-      {tabBar[tabIndex].component()}
+        <TabView
+          navigationState={{ index, routes }}
+          renderScene={renderScene}
+          onIndexChange={setIndex}
+          initialLayout={{ width: width }}
+          style={{ height: height - 128 }}
+          renderTabBar={(props) => (
+            <View style={{ flexDirection: 'row' }}>
+              {props.navigationState.routes.map((route, i) => {
+                return (
+                  <TouchableOpacity
+                    key={i}
+                    onPress={() => {
+                      props.jumpTo(route.key);
+                    }}
+                    style={styles.tabItem}
+                  >
+                    <Text
+                      style={[
+                        styles.tabTitle,
+                        props.navigationState.index === i
+                          ? { color: '#fff' }
+                          : { color: '#5a5a5a' },
+                      ]}
+                    >
+                      {route.title}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          )}
+        />
+      </ScrollView>
     </>
   );
 }
@@ -126,5 +129,13 @@ const styles = StyleSheet.create({
     width: 40,
     height: 1,
     backgroundColor: '#0FEFFD',
+  },
+  tabItem: {
+    flex: 1,
+    alignItems: 'center',
+    paddingVertical: 10,
+  },
+  tabTitle: {
+    fontSize: 16,
   },
 });
