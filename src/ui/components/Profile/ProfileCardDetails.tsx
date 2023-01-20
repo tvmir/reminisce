@@ -13,7 +13,10 @@ const CARD_HEIGHT = 170;
 export default function ProfileCardDetails({ item, navigation }: any) {
   return (
     <TouchableWithoutFeedback
-      style={{ flex: 1 }}
+      style={{
+        flex: 1,
+        flexDirection: 'row',
+      }}
       onPress={() => navigation.navigate('Scrapbook', { item })}
     >
       <View

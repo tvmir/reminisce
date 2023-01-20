@@ -1,19 +1,22 @@
 import React from 'react';
-import { View, TouchableOpacity } from 'react-native';
+import { TouchableOpacity, useWindowDimensions, View } from 'react-native';
+import FitImage from 'react-native-fit-image';
+import { SharedElement } from 'react-navigation-shared-element';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import ScrapbookImageList from '../../ui/components/Scrapbook/ScrapbookImageList';
 
-export default function Scrapbook({ route, navigation }: any) {
+export default function FullView({ route, navigation }: any) {
   const { item } = route.params;
 
   return (
-    <View style={{ flex: 1 }}>
-      <ScrapbookImageList
-        images={[...item.images]}
-        id={item.id}
-        item={item}
-        navigation={navigation}
-      />
+    <View
+      style={{
+        justifyContent: 'center',
+        paddingTop: 100,
+      }}
+    >
+      <SharedElement id={`${item.id}.imagesV`}>
+        <FitImage source={{ uri: item }} />
+      </SharedElement>
       <TouchableOpacity
         style={{
           alignItems: 'flex-end',

@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   TouchableOpacity,
   View,
   ScrollView,
   LogBox,
   RefreshControl,
+  Animated,
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../utils/types';
@@ -23,6 +24,7 @@ export default function UsersProfile({ route, navigation }: any) {
     (state) => state.userScrapbooks.scrapbooks
   );
   const [refreshing, setRefreshing] = useState<boolean>(true);
+  const scrollY = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
@@ -37,8 +39,12 @@ export default function UsersProfile({ route, navigation }: any) {
   }, [refreshing]);
 
   return (
-    <ScrollView
-      style={{ flex: 1, backgroundColor: 'transparent' }}
+    <Animated.ScrollView
+      scrollEventThrottle={16}
+      onScroll={Animated.event(
+        [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+        { useNativeDriver: true }
+      )}
       showsVerticalScrollIndicator={false}
       refreshControl={
         <RefreshControl
@@ -46,6 +52,7 @@ export default function UsersProfile({ route, navigation }: any) {
           onRefresh={() => setRefreshing(true)}
         />
       }
+      style={{ padding: 4 }}
     >
       <TouchableOpacity
         onPress={() => navigation.goBack()}
@@ -60,7 +67,12 @@ export default function UsersProfile({ route, navigation }: any) {
         <Ionicons name="ios-chevron-back" size={30} color="white" />
       </TouchableOpacity>
       <View style={{ padding: 4 }}>
-        <ProfileDetails user={otherUser} navigation={navigation} me={false} />
+        <ProfileDetails
+          user={otherUser}
+          navigation={navigation}
+          me={false}
+          scrollY={scrollY}
+        />
         <Tabs
           user={user}
           scrapbooks={userScrapbooks}
@@ -69,6 +81,6 @@ export default function UsersProfile({ route, navigation }: any) {
           navigation={navigation}
         />
       </View>
-    </ScrollView>
+    </Animated.ScrollView>
   );
 }

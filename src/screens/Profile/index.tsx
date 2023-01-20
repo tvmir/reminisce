@@ -1,17 +1,20 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Button, View, ScrollView, LogBox, RefreshControl } from 'react-native';
+import {
+  Button,
+  View,
+  ScrollView,
+  LogBox,
+  RefreshControl,
+  Animated,
+} from 'react-native';
 import { StackActions } from '@react-navigation/native';
 import { auth } from '../../api/firebase';
 import { useAppDispatch, useAppSelector } from '../../utils/hooks';
-import {
-  horizontalScale,
-  moderateScale,
-  verticalScale,
-} from '../../utils/scale';
 import { fetchCurrentUserScrapbooks } from '../../contexts/slices/scrapbooks/currentUserScrapbooksSlice';
 import ProfileDetails from '../../ui/components/Profile/ProfileDetails';
 import { fetchCurrentUser } from '../../contexts/slices/users/currentUserSlice';
 import Tabs from '../../ui/components/Profile/Tabs';
+// import Animated from 'react-native-reanimated';
 
 export default function Profile({ navigation }: any) {
   const [refreshing, setRefreshing] = useState<boolean>(true);
@@ -46,9 +49,16 @@ export default function Profile({ navigation }: any) {
     );
   }, [refreshing]);
 
+  const scrollY = useRef(new Animated.Value(0)).current;
+
   return (
-    <ScrollView
-      style={{ flex: 1, backgroundColor: 'transparent' }}
+    // <View style={{ flex: 1, backgroundColor: 'transparent' }}>
+    <Animated.ScrollView
+      scrollEventThrottle={16}
+      onScroll={Animated.event(
+        [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+        { useNativeDriver: true }
+      )}
       showsVerticalScrollIndicator={false}
       refreshControl={
         <RefreshControl
@@ -56,19 +66,21 @@ export default function Profile({ navigation }: any) {
           onRefresh={() => setRefreshing(true)}
         />
       }
+      style={{ padding: 4 }}
     >
-      <View style={{ padding: 4 }}>
-        <ProfileDetails user={currentUser} navigation={navigation} me={true} />
-        <Tabs
-          user={currentUser}
-          scrapbooks={currentUserScrapbooks}
-          refreshing={refreshing}
-          setRefreshing={setRefreshing}
-          navigation={navigation}
-        />
-      </View>
-
-      <Button title="Logout" onPress={handleLogout} />
-    </ScrollView>
+      <ProfileDetails
+        user={currentUser}
+        navigation={navigation}
+        me={true}
+        scrollY={scrollY}
+      />
+      <Tabs
+        user={currentUser}
+        scrapbooks={currentUserScrapbooks}
+        refreshing={refreshing}
+        setRefreshing={setRefreshing}
+        navigation={navigation}
+      />
+    </Animated.ScrollView>
   );
 }
