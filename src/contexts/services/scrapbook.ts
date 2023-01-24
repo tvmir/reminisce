@@ -5,6 +5,7 @@ import {
   deleteDoc,
   doc,
   getDoc,
+  getDocs,
   onSnapshot,
   orderBy,
   query,
@@ -12,11 +13,13 @@ import {
   serverTimestamp,
   setDoc,
   updateDoc,
+  where,
 } from 'firebase/firestore';
 import { getDownloadURL } from 'firebase/storage';
 import { auth, db } from '../../api/firebase';
 import { RootStackParamList } from '../../utils/types';
 import { uploadImage } from './storage';
+import { fetchFollowingUsers } from './user';
 
 // Uploading images to Firebase Storage. From there, we can extract the image URL and store it
 // with the rest of the scrapbook details in the database
@@ -42,7 +45,7 @@ export const writeScrapbook = async (
   description: string,
   location: object,
   tags: string[],
-  navigation: NativeStackNavigationProp<RootStackParamList, 'Post'>
+  navigation: any
 ) => {
   const urls = await Promise.all(
     images.map((image) => uploadScrapbookImages(image))
@@ -242,4 +245,22 @@ export const detachRepliesListener = () => {
     repliesListener();
     repliesListener = null;
   }
+};
+
+export const fetchFollowingScrapbooks = async (
+  uid: string = auth.currentUser?.uid!
+) => {
+  const followingUsers = await fetchFollowingUsers(uid);
+  const scrapbooksRef = collection(db, 'scrapbooks');
+  if (followingUsers.length === 0) return [];
+  const q = query(
+    scrapbooksRef,
+    where('uid', 'in', followingUsers),
+    orderBy('createdAt', 'desc')
+  );
+  const scrapbooksSnapshot = await getDocs(q);
+  const scrapbooks = scrapbooksSnapshot.docs.map((doc) => {
+    return { id: doc.id, ...doc.data() };
+  });
+  return scrapbooks;
 };

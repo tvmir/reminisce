@@ -7,7 +7,6 @@ import userScrapbooksReducer from './slices/scrapbooks/userScrapbooksSlice';
 import scrapbooksReducer from './slices/scrapbooks/scrapbooksSlice';
 import modalsReducer from './slices/modals/modalsSlice';
 import scrapbooksSearchReducer from './slices/scrapbooks/searchScrapbooksSlice';
-import locationsReducer from './slices/locations/locationsSlice';
 
 export const store = configureStore({
   reducer: {
@@ -19,7 +18,6 @@ export const store = configureStore({
     scrapbooks: scrapbooksReducer,
     scrapbooksSearch: scrapbooksSearchReducer,
     modal: modalsReducer,
-    locations: locationsReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

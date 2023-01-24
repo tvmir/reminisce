@@ -5,6 +5,7 @@ import {
   getDocs,
   orderBy,
   query,
+  where,
 } from 'firebase/firestore';
 import { db } from '../../../api/firebase';
 import { RootState } from '../../store';

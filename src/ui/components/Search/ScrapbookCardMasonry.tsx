@@ -22,7 +22,7 @@ export default function ScrapbookCardMasonry({ item, index, navigation }: any) {
       <TouchableOpacity
         style={[
           styles.card,
-          { width: '100%', height: index % 3 === 0 ? 150 : 215 },
+          { width: '100%', height: index % 3 === 0 ? 160 : 200 },
         ]}
         onPress={() => navigation.navigate('Scrapbook', { item })}
       >

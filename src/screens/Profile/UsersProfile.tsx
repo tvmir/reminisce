@@ -39,21 +39,7 @@ export default function UsersProfile({ route, navigation }: any) {
   }, [refreshing]);
 
   return (
-    <Animated.ScrollView
-      scrollEventThrottle={16}
-      onScroll={Animated.event(
-        [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-        { useNativeDriver: true }
-      )}
-      showsVerticalScrollIndicator={false}
-      refreshControl={
-        <RefreshControl
-          refreshing={refreshing}
-          onRefresh={() => setRefreshing(true)}
-        />
-      }
-      style={{ padding: 4 }}
-    >
+    <>
       <TouchableOpacity
         onPress={() => navigation.goBack()}
         activeOpacity={0.8}
@@ -66,7 +52,22 @@ export default function UsersProfile({ route, navigation }: any) {
       >
         <Ionicons name="ios-chevron-back" size={30} color="white" />
       </TouchableOpacity>
-      <View style={{ padding: 4 }}>
+
+      <Animated.ScrollView
+        scrollEventThrottle={16}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+          { useNativeDriver: true }
+        )}
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={() => setRefreshing(true)}
+          />
+        }
+        style={{ padding: 4 }}
+      >
         <ProfileDetails
           user={otherUser}
           navigation={navigation}
@@ -80,7 +81,7 @@ export default function UsersProfile({ route, navigation }: any) {
           setRefreshing={setRefreshing}
           navigation={navigation}
         />
-      </View>
-    </Animated.ScrollView>
+      </Animated.ScrollView>
+    </>
   );
 }

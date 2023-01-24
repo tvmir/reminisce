@@ -3,7 +3,7 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import { auth } from '../api/firebase';
 import {
   fetchUsersByID,
-  fetchFollowingUsers,
+  fetchFollowingUser,
   updateFollowCount,
 } from '../contexts/services/user';
 import { AppDispatch, RootState } from '../contexts/store';
@@ -32,7 +32,7 @@ export const useFollowingQuery = (
 ) => {
   return useQuery(
     keys.following(uid, followedUID),
-    () => fetchFollowingUsers(uid, followedUID),
+    () => fetchFollowingUser(uid, followedUID),
     options
   );
 };

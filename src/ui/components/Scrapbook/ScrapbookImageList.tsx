@@ -13,13 +13,21 @@ import { SharedElement } from 'react-navigation-shared-element';
 import ScrapbookDetails from './ScrapbookDetails';
 import MasonryList from '@react-native-seoul/masonry-list';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { DocumentData } from 'firebase/firestore';
+
+interface ScrapbookImageListProps {
+  images: string[];
+  id: string;
+  item: DocumentData;
+  navigation: any;
+}
 
 export default function ScrapbookImageList({
   images,
   id,
   item,
   navigation,
-}: any) {
+}: ScrapbookImageListProps) {
   const scrollY = useRef(new Animated.Value(0)).current;
 
   return (
@@ -75,7 +83,7 @@ export default function ScrapbookImageList({
                   <TouchableWithoutFeedback
                     onPress={() => navigation.navigate('FullView', { item })}
                   >
-                    <SharedElement id={`${id}.imagesV`}>
+                    <SharedElement id={`${id}.imagesView`}>
                       <Image
                         borderRadius={16}
                         style={{

@@ -151,7 +151,7 @@ export default function ProfileDetails({
           <LinearGradient
             style={{ ...StyleSheet.absoluteFillObject }}
             colors={['#000000', '#00000000', '#000000']}
-            locations={[1, 0.65, 0.9]}
+            locations={[1, 0.6, 0.9]}
           />
         </AnimatedImageBackground>
       </Animated.View>

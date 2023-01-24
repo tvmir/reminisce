@@ -1,11 +1,17 @@
 import React from 'react';
-import { TouchableOpacity, useWindowDimensions, View } from 'react-native';
+import {
+  Image,
+  TouchableOpacity,
+  useWindowDimensions,
+  View,
+} from 'react-native';
 import FitImage from 'react-native-fit-image';
 import { SharedElement } from 'react-navigation-shared-element';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 export default function FullView({ route, navigation }: any) {
   const { item } = route.params;
+  const { width } = useWindowDimensions();
 
   return (
     <View
@@ -14,7 +20,7 @@ export default function FullView({ route, navigation }: any) {
         paddingTop: 100,
       }}
     >
-      <SharedElement id={`${item.id}.imagesV`}>
+      <SharedElement id={`${item.id}.imagesView`}>
         <FitImage source={{ uri: item }} />
       </SharedElement>
       <TouchableOpacity

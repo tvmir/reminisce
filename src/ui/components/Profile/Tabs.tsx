@@ -34,7 +34,8 @@ export default function Tabs({ user, scrapbooks, navigation }: any) {
       <Text
         style={{
           position: 'absolute',
-          top: 215,
+          top: 300,
+          // bottom: 2,
           left: 0,
           right: 0,
           textAlign: 'center',
@@ -44,8 +45,34 @@ export default function Tabs({ user, scrapbooks, navigation }: any) {
       >
         Joined {moment(user?.createdAt).format('MMM Do YYYY')}
       </Text>
-      <Text style={{ color: 'white' }}>{user?.bio}</Text>
-      <Text style={{ color: 'white' }}>{user?.location}</Text>
+      <View style={{}}>
+        <Text
+          style={{
+            fontSize: 16,
+            fontWeight: '500',
+            marginTop: 20,
+            marginBottom: 5,
+            color: '#a8a8a8',
+          }}
+        >
+          Bio:
+        </Text>
+        <Text style={{ color: 'white' }}>{user?.bio}</Text>
+      </View>
+      <View>
+        <Text
+          style={{
+            fontSize: 16,
+            fontWeight: '500',
+            marginTop: 20,
+            marginBottom: 5,
+            color: '#a8a8a8',
+          }}
+        >
+          Location:
+        </Text>
+        <Text style={{ color: 'white' }}>{user?.location}</Text>
+      </View>
     </>
   );
 
