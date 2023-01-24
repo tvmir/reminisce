@@ -5,7 +5,7 @@ const theme: Theme = {
   dark: true,
   colors: {
     primary: '#EDEDED',
-    background: '#050505',
+    background: '#000',
     // TODO: Update these colors to match the app's color scheme
     card: '#1C1C1C',
     text: '#EDEDED',

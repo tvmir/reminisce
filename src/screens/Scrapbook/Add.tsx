@@ -19,7 +19,7 @@ import * as MediaLibrary from 'expo-media-library';
 import Header from '../../ui/components/Extra/Header';
 
 interface AddProps {
-  navigation: NativeStackNavigationProp<RootStackParamList, 'Add'>;
+  navigation: any;
 }
 
 export default function Add({ navigation }: AddProps) {
@@ -92,7 +92,7 @@ export default function Add({ navigation }: AddProps) {
 
   return (
     <>
-      <Header title="New Scrapbook" navigation={navigation} />
+      <Header title="New Scrapbook" navigation={navigation} close />
       {isLoading && !image ? (
         <View>
           <ActivityIndicator style={{ paddingTop: 20 }} />

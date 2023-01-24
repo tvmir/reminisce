@@ -23,6 +23,7 @@ import {
   SharedElementSceneComponent,
 } from 'react-navigation-shared-element';
 import { auth } from '../../api/firebase';
+import Add from '../../screens/Scrapbook/Add';
 
 interface TabProps {
   navigation: NativeStackNavigationProp<RootStackParamList, 'Home'>;
@@ -52,6 +53,7 @@ const NotificationsStack = wrapInSharedElementStack(
   'NotificationsStack'
 );
 const ProfileStack = wrapInSharedElementStack(Profile, 'ProfileStack');
+// const AddStack = wrapInSharedElementStack(Add, 'AddStack');
 
 // Creating the bottom tab navigator
 const Tab = createBottomTabNavigator<BottomTabParamList>();
@@ -71,6 +73,10 @@ export default function Home({ navigation }: TabProps) {
     dispatch(fetchCurrentUserScrapbooks(auth.currentUser?.uid));
   }, []);
 
+  const FillInComponent = () => {
+    return null;
+  };
+
   return (
     <Tab.Navigator
       initialRouteName="Feed"
@@ -89,7 +95,7 @@ export default function Home({ navigation }: TabProps) {
         name="Feed"
         component={FeedStack}
         options={{
-          // headerShown: false,
+          headerShown: false,
           headerTitle: '',
           headerStyle: {
             backgroundColor: theme.colors.background,
@@ -97,26 +103,8 @@ export default function Home({ navigation }: TabProps) {
             shadowOpacity: 0,
             borderBottomWidth: 0,
           },
-          headerLeft: () => <TextLogo>reminisce</TextLogo>,
-          headerRight: () => (
-            <>
-              <AddBtn
-                onPress={() => navigation.navigate('Add')}
-                activeOpacity={0.8}
-              >
-                <AntDesign name="pluscircleo" size={25} color="white" />
-              </AddBtn>
-              <MessageBtn activeOpacity={0.8}>
-                <Ionicons
-                  name="ios-chatbubble-outline"
-                  size={27}
-                  color="white"
-                />
-              </MessageBtn>
-            </>
-          ),
           tabBarIcon: ({ focused, color, size }) => (
-            <Octicons
+            <Feather
               name={'home'}
               color={focused ? '#0FEFFD' : color}
               size={size}
@@ -140,6 +128,40 @@ export default function Home({ navigation }: TabProps) {
         }}
       />
       <Tab.Screen
+        name="AddFC"
+        component={FillInComponent}
+        listeners={({ navigation }) => ({
+          tabPress: (e) => {
+            e.preventDefault();
+            navigation.navigate('Add');
+          },
+        })}
+        options={{
+          headerShown: false,
+          tabBarIcon: ({ focused, color, size }) => (
+            <Feather
+              name={'plus'}
+              color={focused ? '#0FEFFD' : color}
+              size={size + 4}
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Notifications"
+        component={NotificationsStack}
+        options={{
+          headerShown: false,
+          tabBarIcon: ({ focused, color, size }) => (
+            <Ionicons
+              name={'ios-notifications-outline'}
+              color={focused ? '#0FEFFD' : color}
+              size={size}
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
         name="Map"
         component={MapStack}
         options={{
@@ -148,27 +170,13 @@ export default function Home({ navigation }: TabProps) {
             <Feather
               name={'map-pin'}
               color={focused ? '#0FEFFD' : color}
-              size={size - 2}
+              size={size - 3}
             />
           ),
         }}
       />
-      {/* TODO: Contemplating whether I should keep Notifications in the Tab bar or put it in place of 'Add Scrapbook' */}
+
       {/* <Tab.Screen
-        name="Notifications"
-        component={NotificationsStack}
-        options={{
-          headerShown: false,
-          tabBarIcon: ({ focused, color }) => (
-            <Ionicons
-              name={focused ? 'ios-notifications' : 'ios-notifications-outline'}
-              color={color}
-              size={26}
-            />
-          ),
-        }}
-      /> */}
-      <Tab.Screen
         name="Profile"
         component={ProfileStack}
         options={{
@@ -179,27 +187,9 @@ export default function Home({ navigation }: TabProps) {
               color={focused ? '#0FEFFD' : color}
               size={size}
             />
-            // <View
-            //   style={{
-            //     backgroundColor: '#656565',
-            //     overflow: 'hidden',
-            //     width: size,
-            //     height: size,
-            //     borderRadius: size / 2,
-            //   }}
-            // >
-            //   <Image
-            //     source={
-            //       currentUser?.photoURL
-            //         ? { uri: currentUser?.photoURL }
-            //         : undefined
-            //     }
-            //     style={{ width: size, height: size, borderRadius: size / 2 }}
-            //   />
-            // </View>
           ),
         }}
-      />
+      /> */}
     </Tab.Navigator>
   );
 }

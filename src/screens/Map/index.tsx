@@ -6,14 +6,18 @@ import React, {
   useState,
 } from 'react';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-import { mapNightTheme, mapDarkTheme } from '../../ui/shared/MapTheme';
+import {
+  mapNightTheme,
+  mapDarkTheme,
+  customMapTheme,
+} from '../../ui/shared/MapTheme';
 import * as Locaiton from 'expo-location';
 import Animated, { call, useCode } from 'react-native-reanimated';
 // @ts-ignore
 import nearBy from '../../../assets/gray_i.png';
 // @ts-ignore
 import current from '../../../assets/curr_i.png';
-import { Dimensions, FlatList, Image, Platform, View } from 'react-native';
+import { Dimensions, Image, Platform, View } from 'react-native';
 import {
   useAppDispatch,
   useAppSelector,
@@ -91,7 +95,7 @@ export default function Map() {
               latitudeDelta: 0.06,
               longitudeDelta: 0.06,
             },
-            250
+            300
           );
         }
       }, 10);
@@ -111,7 +115,7 @@ export default function Map() {
       <MapView
         ref={mapRef}
         provider={PROVIDER_GOOGLE}
-        customMapStyle={mapDarkTheme}
+        customMapStyle={customMapTheme}
         initialRegion={{
           latitude: location?.coords.latitude as number,
           longitude: location?.coords.longitude as number,
@@ -122,7 +126,7 @@ export default function Map() {
         // showsMyLocationButton
         style={{ flex: 1 }}
       >
-        {scrapbook?.map((_: any, index: any) => {
+        {scrapbook?.map((_: any, index: number) => {
           return (
             <Marker
               key={index}

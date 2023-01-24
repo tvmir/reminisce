@@ -17,6 +17,10 @@ import UsersProfile from '../../screens/Profile/UsersProfile';
 import Scrapbook from '../../screens/Scrapbook/';
 import { createSharedElementStackNavigator } from 'react-navigation-shared-element';
 import FullView from '../../ui/components/Scrapbook/FullView';
+import { CardStyleInterpolators } from '@react-navigation/stack';
+import Profile from '../../screens/Profile';
+import MainDrawer from '../Drawer';
+import { createDrawerNavigator } from '@react-navigation/drawer';
 
 // Creating the shared element stack navigator
 const Stack = createSharedElementStackNavigator();
@@ -80,6 +84,7 @@ export default function MainStackNavigator() {
               name="Home"
               component={Home}
             />
+
             <Stack.Screen
               options={{
                 headerStyle: {
@@ -92,6 +97,7 @@ export default function MainStackNavigator() {
                 headerShown: false,
                 headerShadowVisible: false,
                 headerBackTitleVisible: false,
+                cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS,
               }}
               name="Add"
               component={Add}
@@ -141,13 +147,24 @@ export default function MainStackNavigator() {
               options={{
                 headerShown: false,
                 headerTitle: '',
-                // animation: 'slide_from_bottom',
                 headerStyle: {
                   backgroundColor: theme.colors.background,
                 },
                 headerShadowVisible: false,
                 headerBackTitleVisible: false,
-                // headerTitle: 'Edit Profile',
+              }}
+              name="Profile"
+              component={Profile}
+            />
+            <Stack.Screen
+              options={{
+                headerShown: false,
+                headerTitle: '',
+                headerStyle: {
+                  backgroundColor: theme.colors.background,
+                },
+                headerShadowVisible: false,
+                headerBackTitleVisible: false,
               }}
               name="UsersProfile"
               component={UsersProfile}
@@ -204,7 +221,7 @@ export default function MainStackNavigator() {
                 const { item } = route.params;
                 return [
                   {
-                    id: `${item.id}.imagesV`,
+                    id: `${item.id}.imagesView`,
                     animation: 'move',
                   },
                 ];

@@ -1,9 +1,11 @@
 import { auth, db } from '../../api/firebase';
 import { getDownloadURL } from 'firebase/storage';
 import {
+  collection,
   deleteDoc,
   doc,
   getDoc,
+  getDocs,
   runTransaction,
   setDoc,
   updateDoc,
@@ -37,7 +39,7 @@ export const uploadProfilePicture = async (image: string) => {
 
 // Updating a user's profile picture
 export const updateProfilePicture = async (photoURL: string) => {
-  const scrapbookUserRef = doc(db, 'users', auth.currentUser?.uid!!);
+  const scrapbookUserRef = doc(db, 'users', auth.currentUser?.uid!);
   await updateDoc(scrapbookUserRef, {
     photoURL,
   })
@@ -54,7 +56,7 @@ export const updateUserDetails = async (field: any, text: string) => {
   let docField: any = {};
   docField[field] = text;
 
-  const scrapbookUserRef = doc(db, 'users', auth.currentUser?.uid!!);
+  const scrapbookUserRef = doc(db, 'users', auth.currentUser?.uid!);
   await updateDoc(scrapbookUserRef, docField)
     .then(() => {
       console.log('User details have been updated successfully');
@@ -75,8 +77,8 @@ export const fetchUsersByID = async (uid: string) => {
   }
 };
 
-// Fetching followed users
-export const fetchFollowingUsers = async (uid: any, followedUID: string) => {
+// Fetching followed user by their UID
+export const fetchFollowingUser = async (uid: string, followedUID: string) => {
   const userRef = doc(db, 'users', uid!);
   const followedUserRef = doc(userRef, 'following', followedUID!);
   const followingDoc = await getDoc(followedUserRef);
@@ -84,10 +86,21 @@ export const fetchFollowingUsers = async (uid: any, followedUID: string) => {
   return followingDoc.exists();
 };
 
+// Fetching all followed users (for the feed screen)
+export const fetchFollowingUsers = async (uid: string) => {
+  const userRef = doc(db, 'users', uid!);
+  const followingCollection = await getDocs(collection(userRef, 'following'));
+  const followingUsers = followingCollection.docs.map((doc) => doc.id);
+
+  return followingUsers;
+};
+
+// export const fetch
+
 // Updating the followers and following simultaneously (by adding or removing it from their respective subcollections)
 export const updateFollow = async ({ followedUID, isFollowing }: any) => {
   // following
-  const followingUserRef = doc(db, 'users', auth.currentUser?.uid!!);
+  const followingUserRef = doc(db, 'users', auth.currentUser?.uid!);
   const followingRef = doc(followingUserRef, 'following', followedUID!);
 
   // followers
@@ -95,7 +108,7 @@ export const updateFollow = async ({ followedUID, isFollowing }: any) => {
   const followersRef = doc(
     followerUserRef,
     'followers',
-    auth.currentUser?.uid!!!
+    auth.currentUser?.uid!
   );
 
   if (isFollowing) {
