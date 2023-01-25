@@ -92,6 +92,7 @@ export default function Images({ navigation, route }: LoadProps) {
       <Header
         title="New Scrapbook"
         navigation={navigation}
+        close={false}
         onSave={() => navigation.navigate('Post', { images } as any)}
         text="Next"
       />

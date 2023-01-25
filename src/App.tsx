@@ -5,6 +5,7 @@ import MainStackNavigator from './navigation/Stack';
 import { useFonts } from 'expo-font';
 import { QueryClientProvider } from 'react-query';
 import { queryClient } from './api/client';
+import MainDrawer from './navigation/Drawer';
 
 export default function App() {
   // Loading custom fonts
@@ -17,7 +18,7 @@ export default function App() {
     <ThemeProvider theme={theme}>
       <QueryClientProvider client={queryClient}>
         <NavigationContainer theme={theme}>
-          <MainStackNavigator />
+          <MainDrawer />
         </NavigationContainer>
       </QueryClientProvider>
     </ThemeProvider>

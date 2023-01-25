@@ -7,7 +7,8 @@ import {
   query,
   where,
 } from 'firebase/firestore';
-import { db } from '../../../api/firebase';
+import { auth, db } from '../../../api/firebase';
+import { fetchFollowingUsers } from '../../services/user';
 import { RootState } from '../../store';
 
 interface ScrapbookData {

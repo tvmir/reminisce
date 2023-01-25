@@ -19,11 +19,166 @@ import { createSharedElementStackNavigator } from 'react-navigation-shared-eleme
 import FullView from '../../ui/components/Scrapbook/FullView';
 import { CardStyleInterpolators } from '@react-navigation/stack';
 import Profile from '../../screens/Profile';
-import MainDrawer from '../Drawer';
-import { createDrawerNavigator } from '@react-navigation/drawer';
 
 // Creating the shared element stack navigator
 const Stack = createSharedElementStackNavigator();
+
+// Where all screens are except auth screens
+const AppScreens = () => (
+  <Stack.Navigator>
+    <Stack.Screen
+      options={{
+        headerShown: false,
+        headerBackTitleVisible: false,
+      }}
+      name="Home"
+      component={Home}
+    />
+
+    <Stack.Screen
+      options={{
+        headerStyle: {
+          backgroundColor: theme.colors.background,
+        },
+        headerTitleStyle: {
+          fontWeight: 'bold',
+          color: theme.colors.primary,
+        },
+        headerShown: false,
+        headerShadowVisible: false,
+        headerBackTitleVisible: false,
+        cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS,
+      }}
+      name="Add"
+      component={Add}
+    />
+    <Stack.Screen
+      options={({}) => ({
+        headerStyle: {
+          backgroundColor: theme.colors.background,
+        },
+        headerTitleStyle: {
+          fontWeight: 'bold',
+        },
+        headerShown: false,
+        headerShadowVisible: false,
+        headerBackTitle: '',
+        animationEnabled: false,
+      })}
+      name="Images"
+      component={Images}
+    />
+    <Stack.Screen
+      options={{
+        headerShown: false,
+        headerStyle: {
+          backgroundColor: theme.colors.background,
+        },
+        headerShadowVisible: false,
+        headerBackTitleVisible: false,
+      }}
+      name="Post"
+      component={Post}
+    />
+    <Stack.Screen
+      options={{
+        headerShown: false,
+        headerStyle: {
+          backgroundColor: theme.colors.background,
+        },
+        headerShadowVisible: false,
+        headerBackTitleVisible: false,
+        headerTitle: 'Edit Profile',
+      }}
+      name="EditProfile"
+      component={Edit}
+    />
+    <Stack.Screen
+      options={{
+        headerShown: false,
+        headerTitle: '',
+        headerStyle: {
+          backgroundColor: theme.colors.background,
+        },
+        headerShadowVisible: false,
+        headerBackTitleVisible: false,
+      }}
+      name="Profile"
+      component={Profile}
+    />
+    <Stack.Screen
+      options={{
+        headerShown: false,
+        headerTitle: '',
+        headerStyle: {
+          backgroundColor: theme.colors.background,
+        },
+        headerShadowVisible: false,
+        headerBackTitleVisible: false,
+      }}
+      name="UsersProfile"
+      component={UsersProfile}
+    />
+    <Stack.Screen
+      options={{
+        headerShown: false,
+        headerTitle: '',
+        headerStyle: {
+          backgroundColor: theme.colors.background,
+        },
+        headerShadowVisible: false,
+        headerBackTitleVisible: false,
+        cardStyleInterpolator: ({ current: { progress } }: any) => {
+          return {
+            cardStyle: {
+              opacity: progress,
+            },
+          };
+        },
+      }}
+      name="Scrapbook"
+      component={Scrapbook}
+      sharedElements={(route) => {
+        const { item } = route.params;
+        return [
+          {
+            id: `${item.id}.images`,
+            animation: 'move',
+          },
+        ];
+      }}
+    />
+    <Stack.Screen
+      options={{
+        headerShown: false,
+        headerTitle: '',
+        headerStyle: {
+          backgroundColor: theme.colors.background,
+        },
+        headerShadowVisible: false,
+        headerBackTitleVisible: false,
+        cardStyleInterpolator: ({ current: { progress } }: any) => {
+          return {
+            cardStyle: {
+              opacity: progress,
+            },
+          };
+        },
+      }}
+      name="FullView"
+      component={FullView}
+      sharedElements={(route) => {
+        const { item } = route.params;
+        return [
+          {
+            id: `${item.id}.imagesView`,
+            animation: 'move',
+          },
+        ];
+      }}
+    />
+  </Stack.Navigator>
+);
 
 export default function MainStackNavigator() {
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
@@ -75,159 +230,7 @@ export default function MainStackNavigator() {
         </Stack.Navigator>
       ) : (
         <Provider store={store}>
-          <Stack.Navigator>
-            <Stack.Screen
-              options={{
-                headerShown: false,
-                headerBackTitleVisible: false,
-              }}
-              name="Home"
-              component={Home}
-            />
-
-            <Stack.Screen
-              options={{
-                headerStyle: {
-                  backgroundColor: theme.colors.background,
-                },
-                headerTitleStyle: {
-                  fontWeight: 'bold',
-                  color: theme.colors.primary,
-                },
-                headerShown: false,
-                headerShadowVisible: false,
-                headerBackTitleVisible: false,
-                cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS,
-              }}
-              name="Add"
-              component={Add}
-            />
-            <Stack.Screen
-              options={({}) => ({
-                headerStyle: {
-                  backgroundColor: theme.colors.background,
-                },
-                headerTitleStyle: {
-                  fontWeight: 'bold',
-                },
-                headerShown: false,
-                headerShadowVisible: false,
-                headerBackTitle: '',
-                animationEnabled: false,
-              })}
-              name="Images"
-              component={Images}
-            />
-            <Stack.Screen
-              options={{
-                headerShown: false,
-                headerStyle: {
-                  backgroundColor: theme.colors.background,
-                },
-                headerShadowVisible: false,
-                headerBackTitleVisible: false,
-              }}
-              name="Post"
-              component={Post}
-            />
-            <Stack.Screen
-              options={{
-                headerShown: false,
-                headerStyle: {
-                  backgroundColor: theme.colors.background,
-                },
-                headerShadowVisible: false,
-                headerBackTitleVisible: false,
-                headerTitle: 'Edit Profile',
-              }}
-              name="EditProfile"
-              component={Edit}
-            />
-            <Stack.Screen
-              options={{
-                headerShown: false,
-                headerTitle: '',
-                headerStyle: {
-                  backgroundColor: theme.colors.background,
-                },
-                headerShadowVisible: false,
-                headerBackTitleVisible: false,
-              }}
-              name="Profile"
-              component={Profile}
-            />
-            <Stack.Screen
-              options={{
-                headerShown: false,
-                headerTitle: '',
-                headerStyle: {
-                  backgroundColor: theme.colors.background,
-                },
-                headerShadowVisible: false,
-                headerBackTitleVisible: false,
-              }}
-              name="UsersProfile"
-              component={UsersProfile}
-            />
-            <Stack.Screen
-              options={{
-                headerShown: false,
-                headerTitle: '',
-                headerStyle: {
-                  backgroundColor: theme.colors.background,
-                },
-                headerShadowVisible: false,
-                headerBackTitleVisible: false,
-                cardStyleInterpolator: ({ current: { progress } }: any) => {
-                  return {
-                    cardStyle: {
-                      opacity: progress,
-                    },
-                  };
-                },
-              }}
-              name="Scrapbook"
-              component={Scrapbook}
-              sharedElements={(route) => {
-                const { item } = route.params;
-                return [
-                  {
-                    id: `${item.id}.images`,
-                    animation: 'move',
-                  },
-                ];
-              }}
-            />
-            <Stack.Screen
-              options={{
-                headerShown: false,
-                headerTitle: '',
-                headerStyle: {
-                  backgroundColor: theme.colors.background,
-                },
-                headerShadowVisible: false,
-                headerBackTitleVisible: false,
-                cardStyleInterpolator: ({ current: { progress } }: any) => {
-                  return {
-                    cardStyle: {
-                      opacity: progress,
-                    },
-                  };
-                },
-              }}
-              name="FullView"
-              component={FullView}
-              sharedElements={(route) => {
-                const { item } = route.params;
-                return [
-                  {
-                    id: `${item.id}.imagesView`,
-                    animation: 'move',
-                  },
-                ];
-              }}
-            />
-          </Stack.Navigator>
+          <AppScreens />
           <Modal />
         </Provider>
       )}

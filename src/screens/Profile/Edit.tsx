@@ -77,6 +77,7 @@ export default function Edit({ route, navigation }: any) {
             <Header
               title="Edit Profile"
               navigation={navigation}
+              close={false}
               onSave={editDetails}
               text="Done"
             />
