@@ -45,6 +45,7 @@ export default function Post({ route, navigation }: PostProps) {
             <Header
               title="New Scrapbook"
               navigation={navigation}
+              close={false}
               onSave={() =>
                 writeScrapbook(
                   name,

@@ -314,7 +314,7 @@ const FollowageCount = styled(Text)`
 `;
 
 const FollowageDesc = styled(Text)`
-  color: gray;
+  color: #808080;
   font-size: ${moderateScale(13)}px;
   font-weight: 400;
 `;

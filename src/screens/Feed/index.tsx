@@ -20,15 +20,12 @@ import { useScrollToTop } from '@react-navigation/native';
 import { fetchFollowingScrapbooks } from '../../contexts/services/scrapbook';
 import { SceneMap, TabView } from 'react-native-tab-view';
 import MainFeed from '../../ui/components/Feed/MainFeed';
-import { auth } from '../../api/firebase';
-import { fetchCurrentUser } from '../../contexts/slices/users/currentUserSlice';
 
 interface FeedProps {
   navigation: any;
 }
 
 export default function Feed({ navigation }: any) {
-  const { width, height } = useWindowDimensions();
   const dispatch = useAppDispatch();
   const scrapbook = useAppSelector((state) => state.scrapbooks.scrapbooks);
   const [forYouScrapbooks, setForYouScrapbooks] = useState<
@@ -157,7 +154,6 @@ export default function Feed({ navigation }: any) {
         navigationState={{ index, routes }}
         renderScene={renderScene}
         onIndexChange={setIndex}
-        // initialLayout={{ width: width }}
         renderTabBar={(props) => (
           <View style={{ flexDirection: 'row' }}>
             {props.navigationState.routes.map((route, i) => {
@@ -186,7 +182,7 @@ export default function Feed({ navigation }: any) {
         )}
       />
       <TouchableOpacity
-        onPress={() => navigation.navigate('Profile')}
+        onPress={() => navigation.openDrawer()}
         style={{
           backgroundColor: '#656565',
           position: 'absolute',

@@ -28,21 +28,13 @@ export default function Profile({ navigation }: any) {
     (state) => state.currentUserScrapbooks.scrapbooks
   );
 
-  const handleLogout = () => {
-    auth
-      .signOut()
-      .then(() => {
-        navigation.dispatch(StackActions.replace('Login'));
-      })
-      .catch((err) => {
-        console.log(err.code, err.message);
-      });
-  };
-
   useEffect(() => {
     dispatch(fetchCurrentUser(auth.currentUser?.uid)).then(() =>
       setRefreshing(false)
     );
+  }, [refreshing]);
+
+  useEffect(() => {
     dispatch(fetchCurrentUserScrapbooks(currentUser?.uid)).then(() =>
       setRefreshing(false)
     );
@@ -93,7 +85,6 @@ export default function Profile({ navigation }: any) {
           setRefreshing={setRefreshing}
           navigation={navigation}
         />
-        <Button title="Logout" onPress={handleLogout} />
       </Animated.ScrollView>
     </>
   );
