@@ -26,7 +26,7 @@ export interface CommentProps {
 
 export default function Comment({ item }: CommentProps) {
   const [comment, setComment] = useState<string>('');
-  const [comments, setComments] = useState<any[]>([]);
+  const [comments, setComments] = useState<DocumentData[]>([]);
   const currentUser = useAppSelector((state) => state.currentUser.currentUser);
   const [reply, setReply] = useState<string>('');
   const [replies, setReplies] = useState<any[]>([]);
@@ -57,7 +57,7 @@ export default function Comment({ item }: CommentProps) {
     }
   };
 
-  console.log('REPLIES', replies);
+  // console.log('REPLIES', replies);
 
   // const handleReplies = () => {
   //   if (reply.length > 0) {

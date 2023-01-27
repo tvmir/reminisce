@@ -24,8 +24,10 @@ import {
   useFollowingQuery,
 } from '../../../utils/hooks';
 import { auth } from '../../../api/firebase';
-import { BlurView } from 'expo-blur';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { DocumentData } from 'firebase/firestore';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../../utils/types';
+import { useNavigation } from '@react-navigation/native';
 
 const { width, height } = Dimensions.get('window');
 const d = (1 + Math.sqrt(5)) / 2;
@@ -33,20 +35,21 @@ const MIN_HEADER_HEIGHT = 64 + 5;
 const MAX_HEADER_HEIGHT = height * (1 - 1 / d);
 const HEADER_DELTA = MAX_HEADER_HEIGHT - MIN_HEADER_HEIGHT;
 
+interface ProfileDetailsProps {
+  user: DocumentData | undefined;
+  me: boolean;
+  scrollY: any;
+}
+
 export default function ProfileDetails({
   user,
-  navigation,
   me = true,
   scrollY,
-}: any) {
-  const isFollowing = useFollowingQuery(auth.currentUser?.uid, user?.uid).data;
+}: ProfileDetailsProps) {
+  const isFollowing = useFollowingQuery(auth.currentUser?.uid!, user?.uid).data;
   const isFollowingMutation = useFollowMutation();
-  // TODO: Figure this out
-  const [count, setCount] = useState<any>({
-    followingCount: user?.following_count,
-    followersCount: user?.followers_count,
-  });
   const currentUser = useAppSelector((state) => state.currentUser.currentUser);
+  const navigation = useNavigation();
 
   const handleFollow = () => {
     if (isFollowing) {
@@ -241,6 +244,7 @@ export default function ProfileDetails({
             </View>
             <EditProfileButton
               onPress={() =>
+                // @ts-ignore
                 navigation.navigate('EditProfile', {
                   field: {
                     name: 'name',

@@ -1,12 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
-  Button,
   LogBox,
   RefreshControl,
   Animated,
   TouchableOpacity,
 } from 'react-native';
-import { StackActions } from '@react-navigation/native';
 import { auth } from '../../api/firebase';
 import { useAppDispatch, useAppSelector } from '../../utils/hooks';
 import { fetchCurrentUserScrapbooks } from '../../contexts/slices/scrapbooks/currentUserScrapbooksSlice';
@@ -14,8 +12,12 @@ import ProfileDetails from '../../ui/components/Profile/ProfileDetails';
 import { fetchCurrentUser } from '../../contexts/slices/users/currentUserSlice';
 import Tabs from '../../ui/components/Profile/Tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../utils/types';
 
-export default function Profile({ navigation }: any) {
+export default function Profile({
+  navigation,
+}: NativeStackScreenProps<RootStackParamList>) {
   const [refreshing, setRefreshing] = useState<boolean>(true);
   const dispatch = useAppDispatch();
 
@@ -72,18 +74,11 @@ export default function Profile({ navigation }: any) {
         }
         style={{ padding: 4 }}
       >
-        <ProfileDetails
-          user={currentUser}
-          navigation={navigation}
-          me={true}
-          scrollY={scrollY}
-        />
+        <ProfileDetails user={currentUser} me={true} scrollY={scrollY} />
         <Tabs
           user={currentUser}
           scrapbooks={currentUserScrapbooks}
-          refreshing={refreshing}
-          setRefreshing={setRefreshing}
-          navigation={navigation}
+          navigation={navigation as any}
         />
       </Animated.ScrollView>
     </>

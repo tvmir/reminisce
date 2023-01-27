@@ -5,13 +5,13 @@ import MainStackNavigator from '../Stack';
 import DrawerDetails from '../../ui/components/Drawer/DrawerDetails';
 import { Provider } from 'react-redux';
 import { store } from '../../contexts/store';
-import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
+import { getFocusedRouteNameFromRoute, Route } from '@react-navigation/native';
 
 const Drawer = createDrawerNavigator();
 const sideMenuDisabledScreens = ['Login', 'Signup'];
 
 export default function MainDrawer() {
-  const isSideMenuDisabled = (route: any) => {
+  const isSideMenuDisabled = (route: Partial<Route<string>>) => {
     const routeName = getFocusedRouteNameFromRoute(route) ?? 'Login';
     return sideMenuDisabledScreens.includes(routeName);
   };

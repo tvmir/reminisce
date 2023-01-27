@@ -18,19 +18,29 @@ import {
   uploadProfilePicture,
 } from '../../contexts/services/user';
 import { useAppSelector } from '../../utils/hooks';
-import {
-  horizontalScale,
-  moderateScale,
-  verticalScale,
-} from '../../utils/scale';
 import Header from '../../ui/components/Extra/Header';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 // @ts-ignore
 import { MAPS_API_KEY } from '@env';
+import { RouteProp } from '@react-navigation/native';
+import { DocumentData } from 'firebase/firestore';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../utils/types';
 
-export default function Edit({ route, navigation }: any) {
+interface EditProps {
+  route: RouteProp<
+    { params: { field: DocumentData; value: DocumentData } },
+    'params'
+  >;
+  navigation: NativeStackScreenProps<RootStackParamList>;
+}
+
+export default function Edit({ route, navigation }: EditProps) {
   const { field, value } = route.params;
   const currentUser = useAppSelector((state) => state.currentUser.currentUser);
+  const [inputBio, setInputBio] = useState<string>(value.bio);
+  const [inputName, setInputName] = useState<string>(value.name);
+  const [inputLocation, setInputLocation] = useState<string>(value.location);
 
   const editProfilePicture = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -45,25 +55,12 @@ export default function Edit({ route, navigation }: any) {
     }
   };
 
-  const [inputBio, setInputBio] = useState<string>(value.bio);
-  const [inputName, setInputName] = useState<string>(value.name);
-  const [inputLocation, setInputLocation] = useState<string>(value.location);
-
   const editDetails = () => {
-    if (field.name)
-      updateUserDetails(field.name, inputName).then(() => {
-        navigation.goBack;
-      });
+    if (field.name) updateUserDetails(field.name, inputName);
 
-    if (field.bio)
-      updateUserDetails(field.bio, inputBio).then(() => {
-        navigation.goBack();
-      });
+    if (field.bio) updateUserDetails(field.bio, inputBio);
 
-    if (field.location)
-      updateUserDetails(field.location, inputLocation).then(() => {
-        navigation.goBack();
-      });
+    if (field.location) updateUserDetails(field.location, inputLocation);
   };
 
   return (
@@ -84,7 +81,7 @@ export default function Edit({ route, navigation }: any) {
             <View style={{ alignItems: 'center', marginTop: 25 }}>
               <TouchableOpacity
                 style={{
-                  backgroundColor: '#656565',
+                  backgroundColor: '#272727',
                   height: 120,
                   width: 120,
                   borderRadius: 60,

@@ -11,8 +11,9 @@ import { useAppDispatch, useAppSelector } from '../../../utils/hooks';
 import { commentModal } from '../../../contexts/slices/modals/modalsSlice';
 import * as Sharing from 'expo-sharing';
 import * as ImageManipulator from 'expo-image-manipulator';
+import { DocumentData } from 'firebase/firestore';
 
-export default function ScrapbookDetails({ item }: any) {
+export default function ScrapbookDetails({ item }: DocumentData) {
   const dispatch = useAppDispatch();
   const [isLiked, setIsLiked] = useState({
     liked: false,

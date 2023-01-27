@@ -3,36 +3,27 @@ import styled from 'styled-components/native';
 import { fetchCurrentUser } from '../../contexts/slices/users/currentUserSlice';
 import { fetchCurrentUserScrapbooks } from '../../contexts/slices/scrapbooks/currentUserScrapbooksSlice';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Profile from '../../screens/Profile';
 import Feather from 'react-native-vector-icons/Feather';
-import Octicons from 'react-native-vector-icons/Octicons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Search from '../../screens/Search';
 import Notifications from '../../screens/Notifications';
 import Feed from '../../screens/Feed';
 import { theme } from '../../ui/shared/Theme';
-import { BottomTabParamList, RootStackParamList } from '../../utils/types';
-import { Image, LogBox, Text, TouchableOpacity, View } from 'react-native';
+import { BottomTabParamList } from '../../utils/types';
+import { LogBox, Text, TouchableOpacity } from 'react-native';
 import { horizontalScale, verticalScale } from '../../utils/scale';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import { useAppDispatch, useAppSelector } from '../../utils/hooks';
+import { useAppDispatch } from '../../utils/hooks';
 import Map from '../../screens/Map';
 import {
   createSharedElementStackNavigator,
   SharedElementSceneComponent,
 } from 'react-navigation-shared-element';
 import { auth } from '../../api/firebase';
-import Add from '../../screens/Scrapbook/Add';
-
-interface TabProps {
-  navigation: NativeStackNavigationProp<RootStackParamList, 'Home'>;
-}
 
 const wrapInSharedElementStack = (
   Screen: SharedElementSceneComponent<any>,
   name: string
-): ComponentType<any> => {
+): ComponentType => {
   const SharedStack = createSharedElementStackNavigator();
   return () => (
     <SharedStack.Navigator
@@ -52,13 +43,11 @@ const NotificationsStack = wrapInSharedElementStack(
   Notifications,
   'NotificationsStack'
 );
-const ProfileStack = wrapInSharedElementStack(Profile, 'ProfileStack');
-// const AddStack = wrapInSharedElementStack(Add, 'AddStack');
 
 // Creating the bottom tab navigator
 const Tab = createBottomTabNavigator<BottomTabParamList>();
 
-export default function Home({ navigation }: TabProps) {
+export default function Home() {
   const dispatch = useAppDispatch();
 
   useEffect(() => {

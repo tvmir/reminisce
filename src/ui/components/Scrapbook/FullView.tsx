@@ -1,17 +1,18 @@
 import React from 'react';
-import {
-  Image,
-  TouchableOpacity,
-  useWindowDimensions,
-  View,
-} from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 import FitImage from 'react-native-fit-image';
 import { SharedElement } from 'react-navigation-shared-element';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { RouteProp, useNavigation } from '@react-navigation/native';
+import { DocumentData } from 'firebase/firestore';
 
-export default function FullView({ route, navigation }: any) {
+interface FullViewProps {
+  route: RouteProp<{ params: { item: DocumentData } }, 'params'>;
+}
+
+export default function FullView({ route }: FullViewProps) {
   const { item } = route.params;
-  const { width } = useWindowDimensions();
+  const navigation = useNavigation();
 
   return (
     <View
@@ -21,6 +22,7 @@ export default function FullView({ route, navigation }: any) {
       }}
     >
       <SharedElement id={`${item.id}.imagesView`}>
+        {/* @ts-ignore */}
         <FitImage source={{ uri: item }} />
       </SharedElement>
       <TouchableOpacity

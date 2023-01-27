@@ -8,10 +8,10 @@ const CARD_WIDTH = width * 0.65;
 const SPACING = width * 0.15;
 
 interface MapCardProps {
-  user: any;
+  user: DocumentData | undefined;
   scrapbooks: DocumentData | undefined;
   scrollX: Animated.Value<number>;
-  scrollRef: React.MutableRefObject<Animated.ScrollView | null>;
+  scrollRef: React.MutableRefObject<Animated.ScrollView>;
 }
 
 export default function MapCard({
@@ -51,7 +51,7 @@ export default function MapCard({
         paddingVertical: 10,
       }}
     >
-      {scrapbooks?.map((item: any, index: number) => {
+      {scrapbooks?.map((item: DocumentData, index: number) => {
         return (
           <View
             key={index}
@@ -91,7 +91,7 @@ export default function MapCard({
                 numberOfLines={1}
                 style={{ fontSize: 12, color: '#8e8e8e' }}
               >
-                @{user[index].username}
+                @{user![index].username}
               </Text>
             </View>
           </View>

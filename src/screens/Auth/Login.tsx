@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { onAuthStateChanged, signInWithEmailAndPassword } from 'firebase/auth';
+import { onAuthStateChanged } from 'firebase/auth';
 import {
   Keyboard,
   KeyboardAvoidingView,
@@ -8,17 +8,10 @@ import {
   TouchableWithoutFeedback,
   View,
   StyleSheet,
-  ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import styled from 'styled-components/native';
 import { auth } from '../../api/firebase';
-import { LoginButton } from '../../ui/shared/Button';
-import {
-  horizontalScale,
-  moderateScale,
-  verticalScale,
-} from '../../utils/scale';
+
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../utils/types';
 import { login } from '../../contexts/slices/users/currentUserSlice';
@@ -41,142 +34,141 @@ export default function Login({ navigation }: LoginProps) {
   }, []);
 
   return (
-    <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
-      <ScrollView
-        contentContainerStyle={{
-          paddingTop: 100,
-        }}
-        showsVerticalScrollIndicator={false}
-      >
-        <TouchableWithoutFeedback
-          onPress={Keyboard.dismiss}
-          style={{ flex: 1 }}
-        >
-          <View style={{ flex: 1 }}>
+    <KeyboardAvoidingView
+      behavior="padding"
+      style={{ flex: 1, paddingTop: 100 }}
+    >
+      {/* <ScrollView
+        // style={{ flex: 1 }}
+        contentContainerStyle={{ paddingTop: 100 }}
+      > */}
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss} style={{ flex: 1 }}>
+        <View style={{ flex: 1 }}>
+          <View
+            style={{
+              paddingTop: 100,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
             <Text
               style={{
-                color: 'white',
+                color: '#fff',
+                fontFamily: 'Montserrat',
+                textAlign: 'center',
                 fontSize: 32,
-                fontWeight: 'bold',
-                paddingHorizontal: 20,
               }}
             >
-              Login
+              reminisce
             </Text>
+          </View>
 
-            <View style={{ alignItems: 'center', marginTop: 50, flex: 1 }}>
-              <View style={{ padding: 10, width: '90%' }}>
-                <Text style={styles.text}>Email</Text>
+          <View style={{ alignItems: 'center', flex: 1, paddingTop: 30 }}>
+            <View style={{ padding: 10, width: '99%' }}>
+              {/* <Text style={styles.text}>Email</Text> */}
+              <TextInput
+                style={styles.input}
+                placeholderTextColor="#777777"
+                placeholder="Enter your email"
+                keyboardType="email-address"
+                autoCapitalize="none"
+                keyboardAppearance="dark"
+                onChangeText={setEmail}
+              />
+              <View>
+                {/* <Text style={styles.text}>Password</Text> */}
                 <TextInput
                   style={styles.input}
-                  placeholderTextColor="#959595"
-                  keyboardType="email-address"
+                  secureTextEntry
+                  placeholderTextColor="#777777"
+                  placeholder="Enter your password"
+                  keyboardType="default"
                   autoCapitalize="none"
                   keyboardAppearance="dark"
-                  onChangeText={setEmail}
+                  onChangeText={setPassword}
                 />
-                <View>
-                  <Text style={styles.text}>Password</Text>
-                  <TextInput
-                    style={styles.input}
-                    secureTextEntry
-                    placeholderTextColor="#959595"
-                    keyboardType="default"
-                    autoCapitalize="none"
-                    keyboardAppearance="dark"
-                    onChangeText={setPassword}
-                  />
-                </View>
-              </View>
-
-              <Text
-                style={{
-                  position: 'absolute',
-                  top: 165,
-                  right: 31,
-                  color: '#10f0fe',
-                }}
-              >
-                Forgot Passoword?
-              </Text>
-
-              <View style={{ paddingTop: 30, width: '60%' }}>
-                <TouchableOpacity
-                  onPress={() => login(email, password)}
-                  activeOpacity={0.8}
-                  style={{
-                    backgroundColor: '#101010',
-                    borderWidth: 1,
-                    borderColor: '#1F1E1E',
-                    borderRadius: 6,
-                    height: 40,
-                  }}
-                >
-                  <Text
-                    style={{
-                      color: 'white',
-                      textAlign: 'center',
-                      top: 8,
-                      fontSize: 16,
-                    }}
-                  >
-                    Login
-                  </Text>
-                </TouchableOpacity>
-              </View>
-
-              <View
-                style={{
-                  flexDirection: 'row',
-                  paddingTop: 320,
-                }}
-              >
-                <Text
-                  style={{ color: '#747980', fontSize: 12, fontWeight: '500' }}
-                >
-                  Don't have an account?
-                </Text>
-                <Text
-                  style={{ fontSize: 12, color: '#10f0fe', paddingLeft: 5 }}
-                  onPress={() => navigation.push('Signup')}
-                >
-                  Signup
-                </Text>
               </View>
             </View>
+
+            {/* <Text
+              style={{
+                position: 'absolute',
+                top: 165,
+                right: 31,
+                color: '#10f0fe',
+                fontSize: 12,
+              }}
+            >
+              Forgot Passoword?
+            </Text> */}
+
+            <View style={{ paddingTop: 20, padding: 10, width: '99%' }}>
+              <TouchableOpacity
+                onPress={() => login(email, password)}
+                activeOpacity={0.8}
+                style={{
+                  backgroundColor: '#edecec',
+                  borderWidth: 1,
+                  borderColor: '#1F1E1E',
+                  borderRadius: 48,
+                  height: 50,
+                }}
+              >
+                <Text
+                  style={{
+                    color: 'black',
+                    textAlign: 'center',
+                    top: 14,
+                    fontSize: 18,
+                    fontWeight: '500',
+                  }}
+                >
+                  Log In
+                </Text>
+              </TouchableOpacity>
+            </View>
+
+            <View
+              style={{
+                flexDirection: 'row',
+                paddingTop: 250,
+              }}
+            >
+              <Text
+                style={{ color: '#747980', fontSize: 12, fontWeight: '500' }}
+              >
+                Don't have an account?
+              </Text>
+              <Text
+                style={{ fontSize: 12, color: '#10f0fe', paddingLeft: 5 }}
+                onPress={() => navigation.push('Signup')}
+              >
+                Sign Up
+              </Text>
+            </View>
           </View>
-        </TouchableWithoutFeedback>
-      </ScrollView>
+        </View>
+      </TouchableWithoutFeedback>
+      {/* </ScrollView> */}
     </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
   input: {
-    borderWidth: 1,
+    borderWidth: 0.5,
+    backgroundColor: '#0c0c0c',
     borderColor: '#1F1E1E',
     marginBottom: 15,
     marginTop: 5,
-    height: 42,
+    height: 50,
     textAlignVertical: 'top',
     color: '#fff',
     alignItems: 'stretch',
     flexShrink: 1,
     borderRadius: 4,
     paddingLeft: 8,
-  },
-  inputBio: {
-    borderWidth: 1,
-    borderColor: '#1F1E1E',
-    marginBottom: 15,
-    marginTop: 5,
-    height: 100,
-    textAlignVertical: 'top',
-    color: '#fff',
-    alignItems: 'stretch',
-    flexShrink: 1,
-    borderRadius: 4,
-    paddingLeft: 8,
+    fontSize: 16,
   },
   text: {
     color: '#fff',

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Image, Text, TouchableOpacity } from 'react-native';
+import { View, Image, Text, TouchableOpacity } from 'react-native';
 import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -36,18 +36,27 @@ export default function DrawerDetails(props: any) {
                 onPress={() => {
                   props.navigation.navigate('Profile');
                 }}
+                style={{
+                  height: 120,
+                  width: 120,
+                  borderRadius: 60,
+                  borderWidth: 1,
+                  backgroundColor: '#272727',
+                }}
               >
-                {currentUser?.photoURL.length > 0 ? (
-                  <Image
-                    style={{
-                      height: 120,
-                      width: 120,
-                      borderRadius: 60,
-                      borderWidth: 1,
-                    }}
-                    source={{ uri: currentUser?.photoURL }}
-                  />
-                ) : null}
+                <Image
+                  style={{
+                    height: 120,
+                    width: 120,
+                    borderRadius: 60,
+                    borderWidth: 1,
+                  }}
+                  source={
+                    currentUser?.photoURL
+                      ? { uri: currentUser?.photoURL }
+                      : undefined
+                  }
+                />
               </TouchableOpacity>
               <View style={{}}>
                 <Text
@@ -138,7 +147,7 @@ export default function DrawerDetails(props: any) {
 
             <DrawerItem
               icon={({ color, size }) => (
-                <Ionicons name="settings-outline" color={'#fff'} size={28} />
+                <Ionicons name="settings-outline" color={'#fff'} size={26} />
               )}
               label={({ color }) => (
                 <Text style={{ color: '#ededed' }}>Settings</Text>
@@ -159,6 +168,7 @@ export default function DrawerDetails(props: any) {
         }}
       >
         <DrawerItem
+          style={{ marginBottom: 35 }}
           icon={({ color, size }) => (
             <MaterialCommunityIcons
               name="exit-to-app"
@@ -166,7 +176,7 @@ export default function DrawerDetails(props: any) {
               size={28}
             />
           )}
-          label={({ color }) => <Text style={{ color: '#fff' }}>Sign out</Text>}
+          label={({ color }) => <Text style={{ color: '#fff' }}>Sign Out</Text>}
           onPress={() => {
             props.navigation.closeDrawer();
             signout();

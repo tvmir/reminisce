@@ -46,7 +46,7 @@ export default function Map() {
     dispatch(fetchScrapbooks());
   }, []);
 
-  const user = scrapbook?.map((_: any, index: number) => {
+  const user = scrapbook?.map((_, index: number) => {
     return useUserQuery(scrapbook[index]?.uid).data;
   });
 
@@ -126,7 +126,7 @@ export default function Map() {
         // showsMyLocationButton
         style={{ flex: 1 }}
       >
-        {scrapbook?.map((_: any, index: number) => {
+        {scrapbook?.map((_, index: number) => {
           return (
             <Marker
               key={index}

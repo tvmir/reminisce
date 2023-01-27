@@ -10,7 +10,6 @@ export default function Modal() {
   const dispatch = useAppDispatch();
   const modal = useAppSelector((state) => state.modal);
   const bottomSheetModalRef = useRef<BottomSheet>(null);
-  // console.log({ modal });
 
   useEffect(() => {
     if (modal.isOpen && bottomSheetModalRef.current) {

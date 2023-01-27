@@ -5,9 +5,7 @@ import {
   TextInput,
   Keyboard,
   TouchableWithoutFeedback,
-  useWindowDimensions,
   StyleSheet,
-  Text,
   KeyboardAvoidingView,
   ScrollView,
   LogBox,
@@ -61,14 +59,14 @@ export default function Post({ route, navigation }: PostProps) {
 
             <View style={{ alignItems: 'center', marginTop: 15 }}>
               <View style={{ padding: 10, width: '90%' }}>
-                <Text style={styles.text}>Cover</Text>
+                {/* <Text style={styles.text}>Cover</Text> */}
               </View>
               <View
                 style={{
                   backgroundColor: '#656565',
-                  height: 120,
-                  width: 180,
-                  borderRadius: 6,
+                  height: 140,
+                  width: 200,
+                  borderRadius: 8,
                   overflow: 'hidden',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -76,30 +74,35 @@ export default function Post({ route, navigation }: PostProps) {
                 }}
               >
                 <Image
-                  style={{ height: 120, width: 180, position: 'absolute' }}
+                  style={{
+                    height: 140,
+                    width: 200,
+                    position: 'absolute',
+                    borderRadius: 8,
+                  }}
                   source={{ uri: images[0] }}
                 />
               </View>
               <View style={{ padding: 10, width: '90%' }}>
-                <Text style={styles.text}>Name</Text>
+                {/* <Text style={styles.text}>Name</Text> */}
                 <TextInput
                   style={styles.input}
-                  placeholder="Name your scrapbook..."
-                  placeholderTextColor="#959595"
+                  placeholder="Name your scrapbook"
+                  placeholderTextColor="#777777"
                   onChangeText={(text) => setName(text)}
                   keyboardAppearance="dark"
                 />
-                <Text style={styles.text}>Description</Text>
+                {/* <Text style={styles.text}>Description</Text> */}
                 <TextInput
                   style={styles.inputDesc}
-                  placeholder="Write a description..."
-                  placeholderTextColor="#edededb2"
+                  placeholder="Add a description"
+                  placeholderTextColor="#777777"
                   multiline={true}
                   onChangeText={(text) => setDescription(text)}
                   keyboardAppearance="dark"
                 />
 
-                <Text style={styles.text}>Location</Text>
+                {/* <Text style={styles.text}>Location</Text> */}
 
                 <GooglePlacesAutocomplete
                   placeholder="Where was this taken?"
@@ -143,28 +146,30 @@ export default function Post({ route, navigation }: PostProps) {
                   }}
                   enablePoweredByContainer={false}
                   textInputProps={{
-                    placeholderTextColor: '#959595',
+                    placeholderTextColor: '#777777',
                     style: {
                       width: '100%',
-                      borderWidth: 1,
+                      borderWidth: 0.5,
+                      backgroundColor: '#0c0c0c',
                       borderColor: '#1F1E1E',
                       marginBottom: 15,
                       marginTop: 5,
-                      height: 42,
+                      height: 50,
                       textAlignVertical: 'top',
                       color: '#fff',
                       alignItems: 'stretch',
                       flexShrink: 1,
                       borderRadius: 4,
                       paddingLeft: 8,
+                      fontSize: 15,
                     },
                   }}
                 />
-                <Text style={{ color: 'white', fontWeight: '500' }}>Tags</Text>
+                {/* <Text style={{ color: 'white', fontWeight: '500' }}>Tags</Text> */}
                 <TextInput
                   style={styles.input}
-                  placeholder="comma, space separated"
-                  placeholderTextColor="#959595"
+                  placeholder="Tags (separate with commas and spaces)"
+                  placeholderTextColor="#777777"
                   onChangeText={(text) => setTags(text.split(/(?:,| )+/))}
                   keyboardAppearance="dark"
                 />
@@ -180,20 +185,23 @@ export default function Post({ route, navigation }: PostProps) {
 // Styles
 const styles = StyleSheet.create({
   input: {
-    borderWidth: 1,
+    borderWidth: 0.5,
+    backgroundColor: '#0c0c0c',
     borderColor: '#1F1E1E',
     marginBottom: 15,
     marginTop: 5,
-    height: 42,
+    height: 50,
     textAlignVertical: 'top',
     color: '#fff',
     alignItems: 'stretch',
     flexShrink: 1,
     borderRadius: 4,
     paddingLeft: 8,
+    fontSize: 15,
   },
   inputDesc: {
-    borderWidth: 1,
+    borderWidth: 0.5,
+    backgroundColor: '#0c0c0c',
     borderColor: '#1F1E1E',
     marginBottom: 15,
     marginTop: 5,
@@ -204,6 +212,7 @@ const styles = StyleSheet.create({
     flexShrink: 1,
     borderRadius: 4,
     paddingLeft: 8,
+    fontSize: 15,
   },
   text: {
     color: '#fff',

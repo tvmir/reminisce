@@ -9,7 +9,7 @@ import {
 import { SharedElement } from 'react-navigation-shared-element';
 import FeedDetails from './FeedDetails';
 
-export default function MainFeed({ item, navigation, index }: any) {
+export default function MainFeed({ item, navigation }: any) {
   const bottomTabBarHeight = useBottomTabBarHeight();
   // const bg = index % 2 === 0 ? '#c06262' : '#3d8c96';
   return (
@@ -24,8 +24,8 @@ export default function MainFeed({ item, navigation, index }: any) {
               backgroundColor: '#272727',
               height:
                 // 1.665 for iPhone XS
-                // 1.69 for iPhone 13 Pro
-                Dimensions.get('window').height / 1.665 + bottomTabBarHeight,
+                // 1.6 for iPhone 13 Pro
+                Dimensions.get('window').height / 1.6335 + bottomTabBarHeight,
               borderRadius: 16,
             }}
           >
@@ -36,7 +36,7 @@ export default function MainFeed({ item, navigation, index }: any) {
           </View>
         </TouchableWithoutFeedback>
       </SharedElement>
-      <FeedDetails item={item} navigation={navigation} />
+      <FeedDetails item={item} />
     </View>
   );
 }

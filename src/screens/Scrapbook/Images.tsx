@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
   View,
-  Button,
   useWindowDimensions,
   ActivityIndicator,
   Alert,
@@ -14,10 +13,11 @@ import { RootStackParamList } from '../../utils/types';
 import DraggableFlatList from 'react-native-draggable-flatlist';
 import FitImage from 'react-native-fit-image';
 import Header from '../../ui/components/Extra/Header';
+import { RouteProp } from '@react-navigation/native';
 
 interface LoadProps {
   navigation: NativeStackNavigationProp<RootStackParamList, 'Images'>;
-  route: any;
+  route: RouteProp<{ params: { image: string } }, 'params'>;
 }
 
 export default function Images({ navigation, route }: LoadProps) {
