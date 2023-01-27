@@ -1,22 +1,27 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
   TouchableOpacity,
-  View,
-  ScrollView,
   LogBox,
   RefreshControl,
   Animated,
 } from 'react-native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../utils/types';
 import ProfileDetails from '../../ui/components/Profile/ProfileDetails';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useAppDispatch, useAppSelector } from '../../utils/hooks';
 import { fetchUser } from '../../contexts/slices/users/userSlice';
 import Tabs from '../../ui/components/Profile/Tabs';
 import { fetchUserScrapbooks } from '../../contexts/slices/scrapbooks/userScrapbooksSlice';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { BottomTabParamList, RootStackParamList } from '../../utils/types';
+import { RouteProp, useNavigation } from '@react-navigation/native';
+import { DocumentData } from 'firebase/firestore';
 
-export default function UsersProfile({ route, navigation }: any) {
+interface UsersProfileProps {
+  route: RouteProp<{ params: { user: DocumentData } }, 'params'>;
+  navigation: NativeStackScreenProps<BottomTabParamList>;
+}
+
+export default function UsersProfile({ route }: UsersProfileProps) {
   const { user } = route.params;
   const dispatch = useAppDispatch();
   const otherUser = useAppSelector((state) => state.user.user);
@@ -25,6 +30,7 @@ export default function UsersProfile({ route, navigation }: any) {
   );
   const [refreshing, setRefreshing] = useState<boolean>(true);
   const scrollY = useRef(new Animated.Value(0)).current;
+  const navigation = useNavigation();
 
   useEffect(() => {
     LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
@@ -68,18 +74,11 @@ export default function UsersProfile({ route, navigation }: any) {
         }
         style={{ padding: 4 }}
       >
-        <ProfileDetails
-          user={otherUser}
-          navigation={navigation}
-          me={false}
-          scrollY={scrollY}
-        />
+        <ProfileDetails user={otherUser} me={false} scrollY={scrollY} />
         <Tabs
           user={user}
           scrapbooks={userScrapbooks}
-          refreshing={refreshing}
-          setRefreshing={setRefreshing}
-          navigation={navigation}
+          navigation={navigation as any}
         />
       </Animated.ScrollView>
     </>

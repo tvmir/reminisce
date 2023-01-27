@@ -4,19 +4,31 @@ import styled from 'styled-components/native';
 import { SharedElement } from 'react-navigation-shared-element';
 import Entypo from 'react-native-vector-icons/Entypo';
 import * as Animatable from 'react-native-animatable';
+import { DocumentData } from 'firebase/firestore';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../../utils/types';
 
 // constants
 const { width } = Dimensions.get('window');
 const CARD_WIDTH = width / 2.25;
 const CARD_HEIGHT = 170;
 
-export default function ProfileCardDetails({ item, navigation }: any) {
+interface ProfileCardDetailsProps {
+  item: DocumentData;
+  navigation: NativeStackScreenProps<RootStackParamList>;
+}
+
+export default function ProfileCardDetails({
+  item,
+  navigation,
+}: ProfileCardDetailsProps) {
   return (
     <TouchableWithoutFeedback
       style={{
         flex: 1,
         flexDirection: 'row',
       }}
+      // @ts-ignore
       onPress={() => navigation.navigate('Scrapbook', { item })}
     >
       <View

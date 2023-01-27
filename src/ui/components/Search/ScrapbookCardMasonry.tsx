@@ -5,10 +5,23 @@ import { SharedElement } from 'react-navigation-shared-element';
 import { theme } from '../../shared/Theme';
 import * as Animatable from 'react-native-animatable';
 import { useUserQuery } from '../../../utils/hooks';
+import { DocumentData } from 'firebase/firestore';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../../utils/types';
 
-export default function ScrapbookCardMasonry({ item, index, navigation }: any) {
+interface ScrapbookCardMasonryProps {
+  item: DocumentData | undefined;
+  index: number;
+  navigation: NativeStackScreenProps<RootStackParamList>;
+}
+
+export default function ScrapbookCardMasonry({
+  item,
+  index,
+  navigation,
+}: ScrapbookCardMasonryProps) {
   const even = index % 2 === 0;
-  const user = useUserQuery(item.uid).data;
+  const user = useUserQuery(item?.uid).data;
 
   return (
     <Animated.View
@@ -24,6 +37,7 @@ export default function ScrapbookCardMasonry({ item, index, navigation }: any) {
           styles.card,
           { width: '100%', height: index % 3 === 0 ? 160 : 200 },
         ]}
+        // @ts-ignore
         onPress={() => navigation.navigate('Scrapbook', { item })}
       >
         <View
@@ -32,7 +46,7 @@ export default function ScrapbookCardMasonry({ item, index, navigation }: any) {
             height: '100%',
           }}
         >
-          <SharedElement id={`${item.id}.images`} style={{ flex: 1 }}>
+          <SharedElement id={`${item?.id}.images`} style={{ flex: 1 }}>
             <View
               style={{
                 flex: 1,
@@ -47,7 +61,7 @@ export default function ScrapbookCardMasonry({ item, index, navigation }: any) {
                 delay={300}
                 duration={300}
                 source={{
-                  uri: item.images[0],
+                  uri: item?.images[0],
                 }}
                 style={{
                   height: '100%',
@@ -88,13 +102,13 @@ export default function ScrapbookCardMasonry({ item, index, navigation }: any) {
                   color: '#d3d6d9',
                 }}
               >
-                {item.name}
+                {item?.name}
               </Text>
               <Text
                 numberOfLines={1}
                 style={{ fontSize: 12, color: '#8e8e8e' }}
               >
-                {item.location.name}
+                {item?.location.name}
               </Text>
             </View>
           </View>

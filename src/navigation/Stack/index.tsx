@@ -128,7 +128,7 @@ const AppScreens = () => (
         },
         headerShadowVisible: false,
         headerBackTitleVisible: false,
-        cardStyleInterpolator: ({ current: { progress } }: any) => {
+        cardStyleInterpolator: ({ current: { progress } }) => {
           return {
             cardStyle: {
               opacity: progress,
@@ -157,7 +157,7 @@ const AppScreens = () => (
         },
         headerShadowVisible: false,
         headerBackTitleVisible: false,
-        cardStyleInterpolator: ({ current: { progress } }: any) => {
+        cardStyleInterpolator: ({ current: { progress } }) => {
           return {
             cardStyle: {
               opacity: progress,
@@ -211,6 +211,14 @@ export default function MainStackNavigator() {
         </>
       ) : !isLoggedIn ? (
         <Stack.Navigator>
+          {/* <Stack.Screen
+            options={{
+              headerShown: false,
+              headerBackTitleVisible: false,
+            }}
+            name="Onboard"
+            component={Onboard}
+          /> */}
           <Stack.Screen
             options={{
               headerShown: false,

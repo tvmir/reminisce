@@ -10,21 +10,24 @@ import {
 import ProfileCardDetails from './ProfileCardDetails';
 import moment from 'moment';
 import { TabView, SceneMap } from 'react-native-tab-view';
+import { DocumentData } from 'firebase/firestore';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../../utils/types';
 
-export default function Tabs({ user, scrapbooks, navigation }: any) {
-  // const [tabIndex, setTabIndex] = useState<number>(0);
+interface TabsProps {
+  user: DocumentData | undefined;
+  scrapbooks: DocumentData[] | undefined;
+  navigation: NativeStackScreenProps<RootStackParamList>;
+}
+
+export default function Tabs({ user, scrapbooks, navigation }: TabsProps) {
   const [index, setIndex] = useState<number>(0);
   const { width, height } = useWindowDimensions();
 
   const ProfileCards = () => (
     <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
-      {scrapbooks.map((item: any, index: number) => (
-        <ProfileCardDetails
-          key={index}
-          item={item}
-          navigation={navigation}
-          index={index}
-        />
+      {scrapbooks?.map((item, index: number) => (
+        <ProfileCardDetails key={index} item={item} navigation={navigation} />
       ))}
     </View>
   );

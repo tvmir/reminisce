@@ -10,13 +10,7 @@ import {
   Animated,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import styled from 'styled-components/native';
 import { useAppDispatch, useAppSelector } from '../../utils/hooks';
-import {
-  horizontalScale,
-  moderateScale,
-  verticalScale,
-} from '../../utils/scale';
 import { RootStackParamList } from '../../utils/types';
 import Feather from 'react-native-vector-icons/Feather';
 import ScrapbookMasonry from '../../ui/components/Search/ScrapbookMasonry';
@@ -26,16 +20,14 @@ import ScrapbookSearchCard from '../../ui/components/Search/ScrapbookSearchCard'
 // import Animated from 'react-native-reanimated';
 import { AntDesign, Entypo } from '@expo/vector-icons';
 import SearchUsers from './Users';
-
-interface SearchProps {
-  route: any;
-  navigation: any;
-}
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 // constants
 export const SPACING = 24;
 
-export default function Search({ navigation }: SearchProps) {
+export default function Search({
+  navigation,
+}: NativeStackScreenProps<RootStackParamList>) {
   const dispatch = useAppDispatch();
   const [input, setInput] = useState<string>('');
   const [search, setSearch] = useState<string>('');
@@ -45,7 +37,7 @@ export default function Search({ navigation }: SearchProps) {
     (state) => state.scrapbooksSearch.scrapbooks
   );
   const animated = useRef(new Animated.Value(0)).current;
-  let open: any;
+  let open: number | boolean;
 
   const clearInput = useCallback(() => setInput(''), []);
 
@@ -71,6 +63,7 @@ export default function Search({ navigation }: SearchProps) {
     },
     {
       name: 'People',
+      // @ts-ignore
       component: () => <SearchUsers navigation={navigation} />,
     },
   ];
@@ -114,7 +107,7 @@ export default function Search({ navigation }: SearchProps) {
   return (
     <SafeAreaView style={{ flex: 1 }} edges={['top', 'left', 'right']}>
       {input.length > 0 ? (
-        <>
+        <View style={{ flex: 1 }}>
           <View
             style={{
               paddingHorizontal: 20,
@@ -145,12 +138,6 @@ export default function Search({ navigation }: SearchProps) {
                 onChangeText={(text) => setInput(text)}
                 clearButtonMode="always"
               />
-              <TouchableOpacity
-                onPress={clearInput}
-                style={{ paddingVertical: 15, paddingHorizontal: 5 }}
-              >
-                <Text style={{ color: 'white' }}>Cancel</Text>
-              </TouchableOpacity>
             </View>
           </View>
           <FlatList
@@ -161,11 +148,11 @@ export default function Search({ navigation }: SearchProps) {
             onRefresh={() => setRefreshing(true)}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
-              <ScrapbookSearchCard item={item} navigation={navigation} />
+              <ScrapbookSearchCard item={item} navigation={navigation as any} />
             )}
             style={{ marginLeft: 25 }}
           />
-        </>
+        </View>
       ) : (
         <View style={{ flex: 1 }}>
           <View

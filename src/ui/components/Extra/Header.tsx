@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -19,6 +20,7 @@ export default function Header({
   text,
 }: HeaderProps) {
   const insets = useSafeAreaInsets();
+  // const navigation = useNavigation();
   return (
     <View style={[styles.container, { marginTop: insets.top }]}>
       {onSave ? (
@@ -38,7 +40,14 @@ export default function Header({
           </TouchableOpacity>
 
           <Text style={styles.title}>{title}</Text>
-          <TouchableOpacity onPress={onSave} activeOpacity={0.8}>
+          <TouchableOpacity
+            onPress={() => {
+              onSave();
+              navigation.goBack();
+              alert('Saved! 🎉');
+            }}
+            activeOpacity={0.8}
+          >
             <Text style={{ color: '#fff', fontSize: 16, fontWeight: '500' }}>
               {text}
             </Text>
@@ -67,7 +76,14 @@ export default function Header({
           )}
 
           <Text style={styles.title}>{title}</Text>
-          <TouchableOpacity onPress={onSave} activeOpacity={0.8}>
+          <TouchableOpacity
+            onPress={() => {
+              onSave();
+              navigation.goBack();
+              alert('Saved! 🎉');
+            }}
+            activeOpacity={0.8}
+          >
             <Text style={{ color: '#fff', fontSize: 16, fontWeight: '500' }}>
               {text}
             </Text>

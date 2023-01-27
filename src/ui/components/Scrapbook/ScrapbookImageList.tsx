@@ -4,9 +4,7 @@ import {
   Animated,
   Text,
   Image,
-  StyleSheet,
   ScrollView,
-  TouchableOpacity,
   TouchableWithoutFeedback,
 } from 'react-native';
 import { SharedElement } from 'react-navigation-shared-element';
@@ -14,12 +12,14 @@ import ScrapbookDetails from './ScrapbookDetails';
 import MasonryList from '@react-native-seoul/masonry-list';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { DocumentData } from 'firebase/firestore';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../../utils/types';
 
 interface ScrapbookImageListProps {
   images: string[];
   id: string;
-  item: DocumentData;
-  navigation: any;
+  item: DocumentData | undefined;
+  navigation: NativeStackScreenProps<RootStackParamList>;
 }
 
 export default function ScrapbookImageList({
@@ -42,17 +42,17 @@ export default function ScrapbookImageList({
           }}
         >
           <Text style={[{ fontSize: 32, fontWeight: 'bold', color: '#fff' }]}>
-            {item.name}
+            {item?.name}
           </Text>
 
           <Text style={[{ fontSize: 10, color: '#cdcdcd' }]}>
-            {item.location.name || ''}
+            {item?.location.name || ''}
           </Text>
           <Text style={[{ fontSize: 14, color: '#ffffff', paddingTop: 10 }]}>
-            {item.description}
+            {item?.description}
           </Text>
           <Text style={[{ fontSize: 12, color: '#949494', paddingTop: 10 }]}>
-            {item.tags
+            {item?.tags
               .map((tag: string) => `#${tag}`)
               .join(' ')
               .replace(/# /g, '#') || ''}
@@ -67,6 +67,7 @@ export default function ScrapbookImageList({
               {!i ? (
                 <View style={{ padding: 6 }}>
                   <TouchableWithoutFeedback
+                    // @ts-ignore
                     onPress={() => navigation.navigate('FullView', { item })}
                   >
                     <SharedElement id={`${id}.images`}>
@@ -81,6 +82,7 @@ export default function ScrapbookImageList({
               ) : (
                 <View style={{ padding: 6 }}>
                   <TouchableWithoutFeedback
+                    // @ts-ignore
                     onPress={() => navigation.navigate('FullView', { item })}
                   >
                     <SharedElement id={`${id}.imagesView`}>

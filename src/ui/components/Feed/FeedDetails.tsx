@@ -6,17 +6,12 @@ import {
   updateLikeCount,
 } from '../../../contexts/services/scrapbook';
 import { DocumentData } from 'firebase/firestore';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import Fontisto from 'react-native-vector-icons/Fontisto';
 import Octicons from 'react-native-vector-icons/Octicons';
 import moment from 'moment';
+import { useNavigation } from '@react-navigation/native';
 
-interface FeedCardProps {
-  item: DocumentData;
-  navigation: any;
-}
-
-export default function FeedDetails({ item, navigation }: FeedCardProps) {
+export default function FeedDetails({ item }: DocumentData) {
+  const navigation = useNavigation();
   const [isLiked, setIsLiked] = useState({
     liked: false,
     counter: item.likes_count,
@@ -55,10 +50,12 @@ export default function FeedDetails({ item, navigation }: FeedCardProps) {
           <TouchableOpacity
             onPress={() => {
               if (user?.uid !== currentUser?.uid) {
+                // @ts-ignore
                 navigation.navigate('UsersProfile', {
                   user,
                 });
               } else {
+                // @ts-ignore
                 navigation.navigate('Profile');
               }
             }}

@@ -3,16 +3,28 @@ import { View, Text, TouchableWithoutFeedback, Dimensions } from 'react-native';
 import styled from 'styled-components/native';
 import { SharedElement } from 'react-navigation-shared-element';
 import * as Animatable from 'react-native-animatable';
+import { DocumentData } from 'firebase/firestore';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../../utils/types';
 
 // constants
 const { width } = Dimensions.get('window');
 const CARD_WIDTH = width / 2 - (24 + 18 / 2);
 const CARD_HEIGHT = 200;
 
-export default function ScrapbookSearchCard({ item, navigation }: any) {
+interface ScrapbookSearchCardProps {
+  item: DocumentData;
+  navigation: NativeStackScreenProps<RootStackParamList>;
+}
+
+export default function ScrapbookSearchCard({
+  item,
+  navigation,
+}: ScrapbookSearchCardProps) {
   return (
     <TouchableWithoutFeedback
       style={{}}
+      // @ts-ignore
       onPress={() => navigation.navigate('Scrapbook', { item })}
     >
       <View

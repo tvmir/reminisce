@@ -26,7 +26,7 @@ export const useUserQuery = (uid: string, options = {}) => {
 };
 
 export const useFollowingQuery = (
-  uid: any,
+  uid: string,
   followedUID: string,
   options = {}
 ) => {

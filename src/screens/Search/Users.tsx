@@ -1,22 +1,14 @@
 import React, { useEffect, useState } from 'react';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { View, Text, TouchableOpacity, Image, FlatList } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import styled from 'styled-components/native';
 import { fetchUsersSearch } from '../../contexts/slices/users/searchUsersSlice';
-import { fetchUser } from '../../contexts/slices/users/userSlice';
 import { theme } from '../../ui/shared/Theme';
-import {
-  useAppDispatch,
-  useAppSelector,
-  useUserQuery,
-} from '../../utils/hooks';
-import {
-  horizontalScale,
-  moderateScale,
-  verticalScale,
-} from '../../utils/scale';
+import { useAppDispatch, useAppSelector } from '../../utils/hooks';
+import { RootStackParamList } from '../../utils/types';
 
-export default function SearchUsers({ route, navigation }: any) {
+export default function SearchUsers({
+  navigation,
+}: NativeStackScreenProps<RootStackParamList>) {
   const dispatch = useAppDispatch();
   const [input, setInput] = useState<string>('');
   const [search, setSearch] = useState<string>('');
@@ -51,7 +43,7 @@ export default function SearchUsers({ route, navigation }: any) {
               if (item.uid !== currentUser?.uid) {
                 navigation.navigate('UsersProfile', {
                   user: item,
-                });
+                } as any);
               } else {
                 navigation.navigate('Profile');
               }

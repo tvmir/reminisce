@@ -1,22 +1,17 @@
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-
 import React, { useState } from 'react';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import {
   Keyboard,
   KeyboardAvoidingView,
+  ScrollView,
   Text,
   TextInput,
   TouchableWithoutFeedback,
   View,
+  StyleSheet,
+  TouchableOpacity,
 } from 'react-native';
-import styled from 'styled-components/native';
 import { signup } from '../../contexts/slices/users/currentUserSlice';
-import { SignupButton } from '../../ui/shared/Button';
-import {
-  horizontalScale,
-  moderateScale,
-  verticalScale,
-} from '../../utils/scale';
 import { RootStackParamList } from '../../utils/types';
 
 interface SignupProps {
@@ -36,157 +31,140 @@ export default function Signup({ navigation }: SignupProps) {
   const following_count = 0;
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <Wrapper behavior="padding">
-        <Header>Signup</Header>
-        <InputContainer>
-          <InputBorder>
-            <Input
-              placeholder="Name"
-              placeholderTextColor="#edededb2"
-              autoCorrect={false}
-              value={name}
-              keyboardAppearance="dark"
-              onChangeText={(text) => setName(text)}
-            />
-          </InputBorder>
-          <InputBorder>
-            <Input
-              placeholder="Username"
-              placeholderTextColor="#edededb2"
-              value={username}
-              keyboardAppearance="dark"
-              autoCapitalize="none"
-              onChangeText={(text) => setUsername(text)}
-            />
-          </InputBorder>
-          <InputBorder>
-            <Input
-              placeholder="Email"
-              placeholderTextColor="#edededb2"
-              keyboardType="email-address"
-              autoCapitalize="none"
-              value={email}
-              keyboardAppearance="dark"
-              onChangeText={(text) => setEmail(text)}
-            />
-          </InputBorder>
-          <InputBorder>
-            <Input
-              placeholder="Password"
-              placeholderTextColor="#edededb2"
-              value={password}
-              keyboardAppearance="dark"
-              onChangeText={(text) => setPassword(text)}
-              secureTextEntry
-            />
-          </InputBorder>
-        </InputContainer>
-        <SignupButton
-          onPress={() =>
-            signup(
-              email,
-              password,
-              name,
-              username,
-              bio,
-              location,
-              followers_count,
-              following_count,
-              navigation
-            )
-          }
-          activeOpacity={0.8}
+    <KeyboardAvoidingView
+      behavior="padding"
+      style={{ flex: 1, paddingTop: 100 }}
+    >
+      <ScrollView
+        contentContainerStyle={{ paddingTop: 10 }}
+        showsVerticalScrollIndicator={false}
+      >
+        <TouchableWithoutFeedback
+          onPress={Keyboard.dismiss}
+          style={{ flex: 1 }}
         >
-          <ButtonText>Sign Up</ButtonText>
-        </SignupButton>
-
-        <BottomContainer>
-          <BottomText>Already have an account?</BottomText>
-          <BottomTextBtn onPress={() => navigation.navigate('Login')}>
-            Login
-          </BottomTextBtn>
-        </BottomContainer>
-      </Wrapper>
-    </TouchableWithoutFeedback>
+          <View style={{ flex: 1 }}>
+            <Text
+              style={{
+                color: 'white',
+                fontSize: 32,
+                fontWeight: '500',
+                paddingHorizontal: 20,
+              }}
+            >
+              Sign Up
+            </Text>
+            <View style={{ alignItems: 'center', flex: 1, paddingTop: 30 }}>
+              <View style={{ padding: 10, width: '99%' }}>
+                {/* <Text style={styles.text}>Name</Text> */}
+                <TextInput
+                  style={styles.input}
+                  placeholderTextColor="#777777"
+                  placeholder="Enter your name"
+                  keyboardAppearance="dark"
+                  onChangeText={setName}
+                  value={name}
+                />
+                <View>
+                  <TextInput
+                    style={styles.input}
+                    placeholderTextColor="#777777"
+                    placeholder="Enter your username"
+                    autoCapitalize="none"
+                    keyboardAppearance="dark"
+                    onChangeText={setUsername}
+                    value={username}
+                  />
+                </View>
+                <View>
+                  <TextInput
+                    style={styles.input}
+                    placeholderTextColor="#777777"
+                    placeholder="Enter your email"
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                    keyboardAppearance="dark"
+                    onChangeText={setEmail}
+                    value={email}
+                  />
+                </View>
+                <View>
+                  <TextInput
+                    style={styles.input}
+                    secureTextEntry
+                    placeholderTextColor="#777777"
+                    placeholder="Enter your password"
+                    keyboardType="default"
+                    autoCapitalize="none"
+                    keyboardAppearance="dark"
+                    onChangeText={setPassword}
+                    value={password}
+                  />
+                </View>
+              </View>
+              <View style={{ paddingTop: 20, padding: 10, width: '99%' }}>
+                <TouchableOpacity
+                  onPress={() =>
+                    signup(
+                      email,
+                      password,
+                      name,
+                      username,
+                      bio,
+                      location,
+                      followers_count,
+                      following_count,
+                      navigation
+                    )
+                  }
+                  activeOpacity={0.8}
+                  style={{
+                    backgroundColor: '#edecec',
+                    borderWidth: 1,
+                    borderColor: '#1F1E1E',
+                    borderRadius: 48,
+                    height: 50,
+                  }}
+                >
+                  <Text
+                    style={{
+                      color: 'black',
+                      textAlign: 'center',
+                      top: 14,
+                      fontSize: 18,
+                      fontWeight: '500',
+                    }}
+                  >
+                    Sign Up
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </TouchableWithoutFeedback>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
-// Styles
-const Wrapper = styled(KeyboardAvoidingView)`
-  flex: 1;
-  align-items: center;
-  justify-content: center;
-`;
-
-const ButtonText = styled(Text)`
-  font-style: normal;
-  font-weight: 600;
-  font-size: 15px;
-  line-height: 22px;
-  color: ${(p) => p.theme.colors.primary};
-`;
-
-const Header = styled(Text)`
-  position: absolute;
-  left: ${horizontalScale(21)}px;
-  top: ${verticalScale(100)}px;
-  font-style: normal;
-  font-weight: 600;
-  font-size: 28px;
-  line-height: 42px;
-  color: ${(p) => p.theme.colors.primary};
-`;
-
-const InputContainer = styled(View)`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  position: absolute;
-  width: 90%;
-  left: ${horizontalScale(19)}px;
-  top: ${verticalScale(180)}px;
-`;
-
-const InputBorder = styled(View)`
-  width: 100%;
-  border-bottom-color: #232222;
-  border-bottom-width: 1px;
-`;
-
-const Input = styled(TextInput)`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  padding: 15px 15px;
-  margin-top: ${verticalScale(20)}px;
-  width: 100%;
-  color: white;
-`;
-
-const BottomContainer = styled(View)`
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  color: white;
-  position: absolute;
-  left: 25%;
-  top: 92%;
-`;
-
-const BottomText = styled(Text)`
-  width: 60%;
-  font-style: normal;
-  font-weight: 500;
-  font-size: 12px;
-  line-height: 18px;
-  color: #747980;
-`;
-
-const BottomTextBtn = styled(Text)`
-  font-style: normal;
-  font-weight: 500;
-  font-size: 12px;
-  line-height: 18px;
-  color: #10f0fe;
-`;
+const styles = StyleSheet.create({
+  input: {
+    borderWidth: 0.5,
+    backgroundColor: '#0c0c0c',
+    borderColor: '#1F1E1E',
+    marginBottom: 15,
+    marginTop: 5,
+    height: 50,
+    textAlignVertical: 'top',
+    color: '#fff',
+    alignItems: 'stretch',
+    flexShrink: 1,
+    borderRadius: 4,
+    paddingLeft: 8,
+    fontSize: 16,
+  },
+  text: {
+    color: '#fff',
+    fontWeight: '500',
+  },
+});

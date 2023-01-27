@@ -1,5 +1,5 @@
-import { DocumentData } from 'firebase/firestore';
 import React, { useEffect, useRef, useState } from 'react';
+import { DocumentData } from 'firebase/firestore';
 import {
   FlatList,
   Text,
@@ -16,17 +16,18 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import styled from 'styled-components/native';
 import { fetchScrapbooks } from '../../contexts/slices/scrapbooks/scrapbooksSlice';
 import { useAppDispatch, useAppSelector } from '../../utils/hooks';
-import { useScrollToTop } from '@react-navigation/native';
+import { useNavigation, useScrollToTop } from '@react-navigation/native';
 import { fetchFollowingScrapbooks } from '../../contexts/services/scrapbook';
 import { SceneMap, TabView } from 'react-native-tab-view';
 import MainFeed from '../../ui/components/Feed/MainFeed';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { BottomTabParamList } from '../../utils/types';
 
-interface FeedProps {
-  navigation: any;
-}
-
-export default function Feed({ navigation }: any) {
+export default function Feed({
+  navigation,
+}: NativeStackScreenProps<BottomTabParamList>) {
   const dispatch = useAppDispatch();
+  const drawerNav = useNavigation<any>();
   const scrapbook = useAppSelector((state) => state.scrapbooks.scrapbooks);
   const [forYouScrapbooks, setForYouScrapbooks] = useState<
     DocumentData[] | undefined
@@ -37,8 +38,10 @@ export default function Feed({ navigation }: any) {
   const currentUser = useAppSelector((state) => state.currentUser.currentUser);
   const [index, setIndex] = useState<number>(0);
   const [refreshing, setRefreshing] = useState<boolean>(true);
-  const ref = useRef<any>(null);
-  useScrollToTop(ref);
+  const forYouRef = useRef<FlatList>(null);
+  const followingRef = useRef<FlatList>(null);
+  useScrollToTop(forYouRef);
+  useScrollToTop(followingRef);
 
   useEffect(() => {
     LogBox.ignoreAllLogs();
@@ -59,7 +62,7 @@ export default function Feed({ navigation }: any) {
 
   const ForYou = () => (
     <FlatList
-      ref={ref}
+      ref={forYouRef}
       removeClippedSubviews
       pagingEnabled
       showsVerticalScrollIndicator={false}
@@ -76,7 +79,7 @@ export default function Feed({ navigation }: any) {
 
   const Following = () => (
     <FlatList
-      ref={ref}
+      ref={followingRef}
       removeClippedSubviews
       pagingEnabled
       showsVerticalScrollIndicator={false}
@@ -182,9 +185,9 @@ export default function Feed({ navigation }: any) {
         )}
       />
       <TouchableOpacity
-        onPress={() => navigation.openDrawer()}
+        onPress={() => drawerNav.openDrawer()}
         style={{
-          backgroundColor: '#656565',
+          backgroundColor: '#272727',
           position: 'absolute',
           top: 50,
           left: 5,
