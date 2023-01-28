@@ -40,14 +40,7 @@ export default function Header({
           </TouchableOpacity>
 
           <Text style={styles.title}>{title}</Text>
-          <TouchableOpacity
-            onPress={() => {
-              onSave();
-              navigation.goBack();
-              alert('Saved! 🎉');
-            }}
-            activeOpacity={0.8}
-          >
+          <TouchableOpacity onPress={onSave} activeOpacity={0.8}>
             <Text style={{ color: '#fff', fontSize: 16, fontWeight: '500' }}>
               {text}
             </Text>

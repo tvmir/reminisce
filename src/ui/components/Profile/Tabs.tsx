@@ -93,7 +93,6 @@ export default function Tabs({ user, scrapbooks, navigation }: TabsProps) {
     <>
       <ScrollView
         style={{
-          bottom: 30,
           flex: 1,
         }}
         contentContainerStyle={{

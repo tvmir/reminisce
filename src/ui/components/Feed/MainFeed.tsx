@@ -1,5 +1,5 @@
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import React from 'react';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import {
   View,
   TouchableWithoutFeedback,
@@ -24,8 +24,8 @@ export default function MainFeed({ item, navigation }: any) {
               backgroundColor: '#272727',
               height:
                 // 1.665 for iPhone XS
-                // 1.6 for iPhone 13 Pro
-                Dimensions.get('window').height / 1.6335 + bottomTabBarHeight,
+                // 1.6335 for iPhone 13 Pro
+                Dimensions.get('window').height / 1.665 + bottomTabBarHeight,
               borderRadius: 16,
             }}
           >

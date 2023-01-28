@@ -44,7 +44,7 @@ export default function Post({ route, navigation }: PostProps) {
               title="New Scrapbook"
               navigation={navigation}
               close={false}
-              onSave={() =>
+              onSave={() => {
                 writeScrapbook(
                   name,
                   images,
@@ -52,8 +52,8 @@ export default function Post({ route, navigation }: PostProps) {
                   location,
                   tags,
                   navigation
-                )
-              }
+                );
+              }}
               text="Post"
             />
 
@@ -172,6 +172,7 @@ export default function Post({ route, navigation }: PostProps) {
                   placeholderTextColor="#777777"
                   onChangeText={(text) => setTags(text.split(/(?:,| )+/))}
                   keyboardAppearance="dark"
+                  autoCapitalize="none"
                 />
               </View>
             </View>

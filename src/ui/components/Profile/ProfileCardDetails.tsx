@@ -14,7 +14,7 @@ const CARD_WIDTH = width / 2.25;
 const CARD_HEIGHT = 170;
 
 interface ProfileCardDetailsProps {
-  item: DocumentData;
+  item: DocumentData | undefined;
   navigation: NativeStackScreenProps<RootStackParamList>;
 }
 
@@ -49,7 +49,7 @@ export default function ProfileCardDetails({
               height: CARD_HEIGHT,
             }}
           >
-            <SharedElement id={`${item.id}.images`}>
+            <SharedElement id={`${item?.id}.images`}>
               <View
                 style={{
                   width: CARD_WIDTH,
@@ -69,7 +69,7 @@ export default function ProfileCardDetails({
                     height: CARD_HEIGHT - 60,
                     resizeMode: 'cover',
                   }}
-                  source={{ uri: item.images[0] }}
+                  source={{ uri: item?.images[0] }}
                 />
               </View>
             </SharedElement>
@@ -91,13 +91,13 @@ export default function ProfileCardDetails({
                     color: '#d3d6d9',
                   }}
                 >
-                  {item.name}
+                  {item?.name}
                 </Text>
                 <Text
                   numberOfLines={1}
                   style={{ fontSize: 12, color: '#8e8e8e' }}
                 >
-                  {item.location.name}
+                  {item?.location.name}
                 </Text>
               </View>
               <Entypo name="dots-three-horizontal" size={12} color="#d3d6d9" />

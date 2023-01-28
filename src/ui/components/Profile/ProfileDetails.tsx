@@ -1,21 +1,13 @@
-import React, { useState, useRef } from 'react';
+import React from 'react';
 import {
   View,
   Text,
-  Image,
-  useWindowDimensions,
   TouchableOpacity,
   StyleSheet,
   Dimensions,
   ImageBackground,
   Animated,
 } from 'react-native';
-import styled from 'styled-components/native';
-import {
-  horizontalScale,
-  moderateScale,
-  verticalScale,
-} from '../../../utils/scale';
 import { LinearGradient } from 'expo-linear-gradient';
 import { theme } from '../../shared/Theme';
 import {
@@ -25,11 +17,9 @@ import {
 } from '../../../utils/hooks';
 import { auth } from '../../../api/firebase';
 import { DocumentData } from 'firebase/firestore';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../../utils/types';
 import { useNavigation } from '@react-navigation/native';
 
-const { width, height } = Dimensions.get('window');
+const { height } = Dimensions.get('window');
 const d = (1 + Math.sqrt(5)) / 2;
 const MIN_HEADER_HEIGHT = 64 + 5;
 const MAX_HEADER_HEIGHT = height * (1 - 1 / d);
@@ -54,7 +44,16 @@ export default function ProfileDetails({
   const handleFollow = () => {
     if (isFollowing) {
       return (
-        <FollowingButton
+        <TouchableOpacity
+          style={{
+            borderWidth: 0.5,
+            borderColor: '#10f0fe',
+            borderRadius: 20,
+            padding: 8,
+            paddingLeft: 25,
+            paddingRight: 25,
+            marginRight: 10,
+          }}
           onPress={() => {
             isFollowingMutation.mutate({
               followedUID: user?.uid,
@@ -63,8 +62,10 @@ export default function ProfileDetails({
           }}
           activeOpacity={0.8}
         >
-          <ButtonText>Following</ButtonText>
-        </FollowingButton>
+          <Text style={{ color: theme.colors.primary, fontWeight: '500' }}>
+            Following
+          </Text>
+        </TouchableOpacity>
       );
     } else {
       return (
@@ -103,7 +104,9 @@ export default function ProfileDetails({
               });
             }}
           >
-            <ButtonText>Follow</ButtonText>
+            <Text style={{ color: theme.colors.primary, fontWeight: '500' }}>
+              Follow
+            </Text>
           </TouchableOpacity>
         </LinearGradient>
       );
@@ -118,20 +121,20 @@ export default function ProfileDetails({
       <Animated.View
         style={[
           {
-            // ...StyleSheet.absoluteFillObject,
             height: MAX_HEADER_HEIGHT + 48,
           },
         ]}
       >
         <AnimatedImageBackground
           style={{
-            ...StyleSheet.absoluteFillObject,
+            // ...StyleSheet.absoluteFillObject,
+            height: MAX_HEADER_HEIGHT,
 
             transform: [
               {
                 scale: scrollY.interpolate({
                   inputRange: [-MAX_HEADER_HEIGHT, 0],
-                  outputRange: [4, 1],
+                  outputRange: [3, 1],
                   extrapolateLeft: 'extend',
                   extrapolateRight: 'clamp',
                 }),
@@ -143,7 +146,7 @@ export default function ProfileDetails({
           <Animated.View
             style={{
               ...StyleSheet.absoluteFillObject,
-              backgroundColor: 'black',
+              backgroundColor: 'transparent',
               opacity: scrollY.interpolate({
                 inputRange: [-64, 0, HEADER_DELTA],
                 outputRange: [0, 0.2, 1],
@@ -153,56 +156,28 @@ export default function ProfileDetails({
 
           <LinearGradient
             style={{ ...StyleSheet.absoluteFillObject }}
-            colors={['#000000', '#00000000', '#000000']}
+            colors={['#000000', 'transparent', '#000000']}
             locations={[1, 0.6, 0.9]}
           />
         </AnimatedImageBackground>
-      </Animated.View>
-      <Animated.View
-        style={[
-          styles.container,
-          {
-            opacity: scrollY.interpolate({
-              inputRange: [HEADER_DELTA - 16, HEADER_DELTA],
-              outputRange: [0, 1],
-              extrapolate: 'clamp',
-            }),
-          },
-        ]}
-      >
-        <Animated.Text
-          style={[
-            styles.title,
-            {
-              opacity: scrollY.interpolate({
-                inputRange: [HEADER_DELTA - 8, HEADER_DELTA - 4],
-                outputRange: [0, 1],
-                extrapolate: 'clamp',
-              }),
-            },
-          ]}
-        >
-          {user?.username}
-        </Animated.Text>
       </Animated.View>
 
       <View
         style={{
           position: 'absolute',
-          top: 310,
+          top: 270,
           left: 10,
         }}
       >
         <Animated.View style={{ flex: 1 }}>
           <Animated.Text
             style={{
-              paddingTop: 8,
               paddingBottom: 3,
               fontSize: 28,
               fontWeight: '600',
               color: 'white',
               opacity: scrollY.interpolate({
-                inputRange: [-MAX_HEADER_HEIGHT / 2, 0, MAX_HEADER_HEIGHT / 2],
+                inputRange: [-MAX_HEADER_HEIGHT, 0, MAX_HEADER_HEIGHT / 2],
                 outputRange: [0, 1, 0],
                 extrapolate: 'clamp',
               }),
@@ -215,7 +190,7 @@ export default function ProfileDetails({
               paddingBottom: 10,
               color: '#8b8e93',
               opacity: scrollY.interpolate({
-                inputRange: [-MAX_HEADER_HEIGHT / 2, 0, MAX_HEADER_HEIGHT / 2],
+                inputRange: [-MAX_HEADER_HEIGHT, 0, MAX_HEADER_HEIGHT / 2],
                 outputRange: [0, 1, 0],
                 extrapolate: 'clamp',
               }),
@@ -225,11 +200,28 @@ export default function ProfileDetails({
           </Animated.Text>
         </Animated.View>
       </View>
-      <FollowageContainer>
-        <FollowageSubContainer>
-          <FollowageCount>{user?.followers_count}</FollowageCount>
-          <FollowageDesc>Followers</FollowageDesc>
-        </FollowageSubContainer>
+      <View
+        style={{
+          flexDirection: 'row',
+          position: 'absolute',
+          bottom: 20,
+          // paddingBottom: 10,
+        }}
+      >
+        <View style={{ flex: 1, paddingLeft: 10 }}>
+          <Text
+            style={{
+              color: theme.colors.primary,
+              fontSize: 15,
+              fontWeight: '500',
+            }}
+          >
+            {user?.followers_count}
+          </Text>
+          <Text style={{ color: '#808080', fontSize: 13, fontWeight: '400' }}>
+            Followers
+          </Text>
+        </View>
 
         {me ? (
           <>
@@ -239,10 +231,30 @@ export default function ProfileDetails({
                 alignItems: 'flex-start',
               }}
             >
-              <FollowageCount>{user?.following_count}</FollowageCount>
-              <FollowageDesc>Following</FollowageDesc>
+              <Text
+                style={{
+                  color: theme.colors.primary,
+                  fontSize: 15,
+                  fontWeight: '500',
+                }}
+              >
+                {user?.following_count}
+              </Text>
+              <Text
+                style={{ color: '#808080', fontSize: 13, fontWeight: '400' }}
+              >
+                Following
+              </Text>
             </View>
-            <EditProfileButton
+            <TouchableOpacity
+              style={{
+                borderWidth: 0.5,
+                borderColor: '#727477',
+                borderRadius: 20,
+                padding: 8,
+                paddingLeft: 27,
+                paddingRight: 27,
+              }}
               onPress={() =>
                 // @ts-ignore
                 navigation.navigate('EditProfile', {
@@ -256,8 +268,10 @@ export default function ProfileDetails({
               }
               activeOpacity={0.8}
             >
-              <ButtonText>Edit Profile</ButtonText>
-            </EditProfileButton>
+              <Text style={{ color: theme.colors.primary, fontWeight: '500' }}>
+                Edit Profile
+              </Text>
+            </TouchableOpacity>
           </>
         ) : (
           <>
@@ -267,101 +281,25 @@ export default function ProfileDetails({
                 alignItems: 'flex-start',
               }}
             >
-              <FollowageCount>{user?.following_count}</FollowageCount>
-              <FollowageDesc>Following</FollowageDesc>
+              <Text
+                style={{
+                  color: theme.colors.primary,
+                  fontSize: 15,
+                  fontWeight: '500',
+                }}
+              >
+                {user?.following_count}
+              </Text>
+              <Text
+                style={{ color: '#808080', fontSize: 13, fontWeight: '400' }}
+              >
+                Following
+              </Text>
             </View>
             {handleFollow()}
           </>
         )}
-      </FollowageContainer>
+      </View>
     </View>
   );
 }
-
-// Styles
-const HeaderNameText = styled(Text)`
-  padding-top: ${verticalScale(8)}px;
-  padding-bottom: ${verticalScale(3)}px;
-  font-size: ${moderateScale(28)}px;
-  font-weight: 600;
-  color: ${(p) => p.theme.colors.primary};
-`;
-
-const UsernameText = styled(Text)`
-  padding-bottom: ${verticalScale(10)}px;
-  font-size: ${moderateScale(14)}px;
-  color: #8b8e93;
-`;
-
-const BioText = styled(Text)`
-  padding-bottom: ${verticalScale(10)}px;
-  font-size: ${moderateScale(14)}px;
-  color: #d7d7d7;
-`;
-
-const FollowageContainer = styled(View)`
-  flex-direction: row;
-  padding-top: ${verticalScale(20)}px;
-  padding-bottom: ${verticalScale(12)}px;
-`;
-
-const FollowageSubContainer = styled(View)`
-  flex: 1;
-  padding-left: 10px;
-`;
-
-const FollowageCount = styled(Text)`
-  font-weight: bold;
-  font-size: ${moderateScale(15)}px;
-  font-weight: 500;
-  color: ${(p) => p.theme.colors.primary};
-`;
-
-const FollowageDesc = styled(Text)`
-  color: #808080;
-  font-size: ${moderateScale(13)}px;
-  font-weight: 400;
-`;
-
-const EditProfileButton = styled(TouchableOpacity)`
-  border: 0.5px solid #727477;
-  border-radius: 20px;
-  padding: 8px 27px;
-`;
-
-const FollowingButton = styled(TouchableOpacity)`
-  border: 0.5px solid #10f0fe;
-  border-radius: 20px;
-  padding: 8px 25px;
-  margin-right: 10px;
-`;
-
-const ButtonText = styled(Text)`
-  color: ${(p) => p.theme.colors.primary};
-  font-weight: 500;
-`;
-
-const styles = StyleSheet.create({
-  container: {
-    position: 'absolute',
-    top: 48 / 2 - MIN_HEADER_HEIGHT,
-    left: 0,
-    right: 0,
-    height: MIN_HEADER_HEIGHT,
-    backgroundColor: 'black',
-    paddingTop: 10,
-  },
-  title: {
-    color: 'white',
-    fontSize: 16,
-    textAlign: 'center',
-    fontWeight: '400',
-  },
-  gradient: {
-    position: 'absolute',
-    left: 0,
-    bottom: 0,
-    right: 0,
-    alignItems: 'center',
-  },
-});
