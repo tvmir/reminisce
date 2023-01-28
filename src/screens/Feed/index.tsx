@@ -183,6 +183,7 @@ export default function Feed({
             })}
           </View>
         )}
+        lazy
       />
       <TouchableOpacity
         onPress={() => drawerNav.openDrawer()}

@@ -42,6 +42,7 @@ export default function Edit({ route, navigation }: EditProps) {
   const [inputName, setInputName] = useState<string>(value.name);
   const [inputLocation, setInputLocation] = useState<string>(value.location);
 
+  // Using an ImagePicker to allow the user to change their profile picture
   const editProfilePicture = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -55,12 +56,61 @@ export default function Edit({ route, navigation }: EditProps) {
     }
   };
 
-  const editDetails = () => {
-    if (field.name) updateUserDetails(field.name, inputName);
-
-    if (field.bio) updateUserDetails(field.bio, inputBio);
-
-    if (field.location) updateUserDetails(field.location, inputLocation);
+  // Accessing the specific field the user wants to edit and updating it's value
+  const editFieldValues = () => {
+    field.name && field.bio && field.location
+      ? updateUserDetails(field.name, inputName).then(() => {
+          updateUserDetails(field.bio, inputBio).then(() => {
+            updateUserDetails(field.location, inputLocation).then(() => {
+              alert('Your profile has been updated! 🎉');
+              // @ts-ignore
+              navigation.goBack();
+            });
+          });
+        })
+      : field.name && field.bio
+      ? updateUserDetails(field.name, inputName).then(() => {
+          updateUserDetails(field.bio, inputBio).then(() => {
+            alert('Your profile has been updated! 🎉');
+            // @ts-ignore
+            navigation.goBack();
+          });
+        })
+      : field.name && field.location
+      ? updateUserDetails(field.name, inputName).then(() => {
+          updateUserDetails(field.location, inputLocation).then(() => {
+            alert('Your profile has been updated! 🎉');
+            // @ts-ignore
+            navigation.goBack();
+          });
+        })
+      : field.bio && field.location
+      ? updateUserDetails(field.bio, inputBio).then(() => {
+          updateUserDetails(field.location, inputLocation).then(() => {
+            alert('Your profile has been updated! 🎉');
+            // @ts-ignore
+            navigation.goBack();
+          });
+        })
+      : field.name
+      ? updateUserDetails(field.name, inputName).then(() => {
+          alert('Your profile has been updated! 🎉');
+          // @ts-ignore
+          navigation.goBack();
+        })
+      : field.bio
+      ? updateUserDetails(field.bio, inputBio).then(() => {
+          alert('Your profile has been updated! 🎉');
+          // @ts-ignore
+          navigation.goBack();
+        })
+      : field.location
+      ? updateUserDetails(field.location, inputLocation).then(() => {
+          alert('Your profile has been updated! 🎉');
+          // @ts-ignore
+          navigation.goBack();
+        })
+      : null;
   };
 
   return (
@@ -75,7 +125,7 @@ export default function Edit({ route, navigation }: EditProps) {
               title="Edit Profile"
               navigation={navigation}
               close={false}
-              onSave={editDetails}
+              onSave={editFieldValues}
               text="Done"
             />
             <View style={{ alignItems: 'center', marginTop: 25 }}>
@@ -161,10 +211,7 @@ export default function Edit({ route, navigation }: EditProps) {
                   }}
                   fetchDetails={true}
                   onPress={(data, details = null) => {
-                    console.log('DATA', data);
-                    console.log('DETAILS', details);
-                    //@ts-ignore
-                    setInputLocation(details?.formatted_address);
+                    setInputLocation(details?.formatted_address!);
                   }}
                   onFail={(error) => console.log(error)}
                   enablePoweredByContainer={false}
