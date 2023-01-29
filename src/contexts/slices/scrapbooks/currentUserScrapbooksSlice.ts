@@ -18,6 +18,7 @@ export const initialState: ScrapbookData = {
   scrapbooks: [],
 };
 
+// Fetches the current user's scrapbooks
 export const fetchCurrentUserScrapbooks = createAsyncThunk(
   'currentUserScrapbooks/fetchCurrentUserScrapbooks',
   async (uid: string | undefined = auth.currentUser?.uid) => {
@@ -36,6 +37,7 @@ export const fetchCurrentUserScrapbooks = createAsyncThunk(
   }
 );
 
+// A slice for the current user's scrapbooks
 const currentUserScrapbooksSlice = createSlice({
   name: 'currentUserScrapbooks',
   initialState,

@@ -39,7 +39,7 @@ const initialState: CurrentUserData = {
   },
 };
 
-// Handling signup and login functionalities
+// Sign up a new user
 export const signup = (
   email: string,
   password: string,
@@ -48,9 +48,8 @@ export const signup = (
   bio: string,
   location: string,
   followers_count: number,
-  following_count: number,
-  navigation: NativeStackNavigationProp<RootStackParamList, 'Signup'>
-) => {
+  following_count: number
+): void => {
   createUserWithEmailAndPassword(auth, email, password)
     .then(async (userCredential) => {
       const user = userCredential.user;
@@ -72,7 +71,7 @@ export const signup = (
         following_count,
         // bio,
       }).then(() => {
-        // navigation.navigate('Login');
+        console.log('User created');
       });
     })
     .catch((err) => {
@@ -80,7 +79,8 @@ export const signup = (
     });
 };
 
-export const login = (email: string, password: string) => {
+// Log in an existing user
+export const login = (email: string, password: string): void => {
   signInWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
       const user = userCredential.user;
@@ -95,6 +95,7 @@ export const login = (email: string, password: string) => {
     });
 };
 
+// Fetch the current user on app load
 export const fetchCurrentUser = createAsyncThunk(
   'currentUser/fetchCurrentUser',
   async (uid: string | undefined = auth.currentUser?.uid) => {
@@ -108,6 +109,7 @@ export const fetchCurrentUser = createAsyncThunk(
   }
 );
 
+// A slice for the current user
 export const currentUserSlice = createSlice({
   name: 'currentUser',
   initialState,

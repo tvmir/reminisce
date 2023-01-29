@@ -21,7 +21,7 @@ const initialState: UserData = {
   },
 };
 
-// Fetching user data by their uid
+// Fetching user data by passing in the user's uid
 export const fetchUser = createAsyncThunk(
   'user/fetchUser',
   async (uid: string | undefined) => {
@@ -35,6 +35,7 @@ export const fetchUser = createAsyncThunk(
   }
 );
 
+// A slice for the user's data
 export const userSlice = createSlice({
   name: 'user',
   initialState,

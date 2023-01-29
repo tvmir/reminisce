@@ -43,7 +43,7 @@ export default function Edit({ route, navigation }: EditProps) {
   const [inputLocation, setInputLocation] = useState<string>(value.location);
 
   // Using an ImagePicker to allow the user to change their profile picture
-  const editProfilePicture = async () => {
+  const editProfilePicture = async (): Promise<void> => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
@@ -56,8 +56,8 @@ export default function Edit({ route, navigation }: EditProps) {
     }
   };
 
-  // Accessing the specific field the user wants to edit and updating it's value
-  const editFieldValues = () => {
+  // Accessing the specific field the user wants to edit and updating its value
+  const editFieldValues = (): void => {
     field.name && field.bio && field.location
       ? updateUserDetails(field.name, inputName).then(() => {
           updateUserDetails(field.bio, inputBio).then(() => {

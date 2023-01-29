@@ -5,10 +5,8 @@ import {
   getDocs,
   orderBy,
   query,
-  where,
 } from 'firebase/firestore';
-import { auth, db } from '../../../api/firebase';
-import { fetchFollowingUsers } from '../../services/user';
+import { db } from '../../../api/firebase';
 import { RootState } from '../../store';
 
 interface ScrapbookData {
@@ -19,7 +17,7 @@ const initialState: ScrapbookData = {
   scrapbooks: [],
 };
 
-// This is currently showcasing the most recent scrapbooks in our feed, we can customize it later on
+// Fetches the most recent scrapbooks
 export const fetchScrapbooks = createAsyncThunk(
   'scrapbooks/fetchScrapbooks',
   async () => {
@@ -33,6 +31,7 @@ export const fetchScrapbooks = createAsyncThunk(
   }
 );
 
+// A slice for the most recent scrapbooks
 const scrapbooksSlice = createSlice({
   name: 'scrapbooks',
   initialState,

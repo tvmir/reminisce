@@ -4,6 +4,7 @@ import {
   collection,
   deleteDoc,
   doc,
+  DocumentData,
   getDoc,
   getDocs,
   runTransaction,
@@ -13,7 +14,7 @@ import {
 import { uploadImage } from './storage';
 
 // Uploading a user's profile picture to Firebase Storage
-export const uploadProfilePicture = async (image: string) => {
+export const uploadProfilePicture = async (image: string): Promise<void> => {
   const path = `profile_pictures/${
     auth.currentUser?.uid
   }/${Math.random().toString(36)}`;
@@ -38,7 +39,7 @@ export const uploadProfilePicture = async (image: string) => {
 };
 
 // Updating a user's profile picture
-export const updateProfilePicture = async (photoURL: string) => {
+export const updateProfilePicture = async (photoURL: string): Promise<void> => {
   const scrapbookUserRef = doc(db, 'users', auth.currentUser?.uid!);
   await updateDoc(scrapbookUserRef, {
     photoURL,
@@ -52,9 +53,12 @@ export const updateProfilePicture = async (photoURL: string) => {
 };
 
 // Updating user details (found in the edit profile screen)
-export const updateUserDetails = async (field: any, text: string) => {
-  let docField: any = {};
-  docField[field] = text;
+export const updateUserDetails = async (
+  field: DocumentData,
+  text: string
+): Promise<void> => {
+  let docField: DocumentData = {};
+  docField[field as any] = text;
 
   const scrapbookUserRef = doc(db, 'users', auth.currentUser?.uid!);
   await updateDoc(scrapbookUserRef, docField)
@@ -67,7 +71,9 @@ export const updateUserDetails = async (field: any, text: string) => {
 };
 
 // Fetching users by their UID (for the feed screen)
-export const fetchUsersByID = async (uid: string) => {
+export const fetchUsersByID = async (
+  uid: string
+): Promise<DocumentData | undefined> => {
   const userRef = doc(db, 'users', uid!);
   const userDoc = await getDoc(userRef);
   if (userDoc.exists()) {
@@ -78,7 +84,10 @@ export const fetchUsersByID = async (uid: string) => {
 };
 
 // Fetching followed user by their UID
-export const fetchFollowingUser = async (uid: string, followedUID: string) => {
+export const fetchFollowingUser = async (
+  uid: string,
+  followedUID: string
+): Promise<boolean> => {
   const userRef = doc(db, 'users', uid!);
   const followedUserRef = doc(userRef, 'following', followedUID!);
   const followingDoc = await getDoc(followedUserRef);
@@ -87,7 +96,7 @@ export const fetchFollowingUser = async (uid: string, followedUID: string) => {
 };
 
 // Fetching all followed users (for the feed screen)
-export const fetchFollowingUsers = async (uid: string) => {
+export const fetchFollowingUsers = async (uid: string): Promise<string[]> => {
   const userRef = doc(db, 'users', uid!);
   const followingCollection = await getDocs(collection(userRef, 'following'));
   const followingUsers = followingCollection.docs.map((doc) => doc.id);
@@ -95,10 +104,17 @@ export const fetchFollowingUsers = async (uid: string) => {
   return followingUsers;
 };
 
-// export const fetch
+// type for updating the followers and following count
+export type FollowCount = {
+  followedUID: string;
+  isFollowing: boolean | undefined;
+};
 
 // Updating the followers and following simultaneously (by adding or removing it from their respective subcollections)
-export const updateFollow = async ({ followedUID, isFollowing }: any) => {
+export const updateFollow = async ({
+  followedUID,
+  isFollowing,
+}: FollowCount): Promise<void> => {
   // following
   const followingUserRef = doc(db, 'users', auth.currentUser?.uid!);
   const followingRef = doc(followingUserRef, 'following', followedUID!);
@@ -121,7 +137,10 @@ export const updateFollow = async ({ followedUID, isFollowing }: any) => {
 };
 
 // Updating the followers and following count, handled by a transaction and cached via a useMutation hook
-export const updateFollowCount = async ({ followedUID, isFollowing }: any) => {
+export const updateFollowCount = async ({
+  followedUID,
+  isFollowing,
+}: FollowCount): Promise<void> => {
   const followingRef = doc(db, 'users', auth.currentUser?.uid!);
   const followersRef = doc(db, 'users', followedUID!);
 
@@ -134,10 +153,12 @@ export const updateFollowCount = async ({ followedUID, isFollowing }: any) => {
       const followersDoc = await transaction.get(followersRef);
       const numOfFollowers = followingDoc.get('followers_count');
 
+      // Only decrement the count if it's greater than 0 (to prevent negative values)
       if (numOfFollowing > 0 || numOfFollowers > 0) {
         const followingCount = followingDoc?.data()?.following_count - 1;
         const followersCount = followersDoc?.data()?.followers_count - 1;
 
+        // Update the count
         transaction.update(followingRef, { following_count: followingCount });
         transaction.update(followersRef, { followers_count: followersCount });
       }

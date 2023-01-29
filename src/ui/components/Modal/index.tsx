@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from '../../../utils/hooks';
 import { clear } from '../../../contexts/slices/modals/modalsSlice';
 import Comment from './Comment';
 import { StyleSheet, View } from 'react-native';
-import { theme } from '../../shared/Theme';
+import { theme } from '../../shared/theme';
 
 export default function Modal() {
   const dispatch = useAppDispatch();

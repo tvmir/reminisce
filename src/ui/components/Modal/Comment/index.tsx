@@ -1,76 +1,37 @@
 import React, { useEffect, useState } from 'react';
 import { View, Image, FlatList, LogBox } from 'react-native';
-import styled from 'styled-components/native';
 import { useAppSelector } from '../../../../utils/hooks';
 import {
   detachCommentsListener,
-  detachRepliesListener,
   fetchComments,
-  fetchReplies,
   writeComment,
-  writeReply,
 } from '../../../../contexts/services/scrapbook';
-import {
-  horizontalScale,
-  moderateScale,
-  verticalScale,
-} from '../../../../utils/scale';
-import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
 import { DocumentData } from 'firebase/firestore';
 import CommentDetails from './CommentDetails';
 import { TextInput } from 'react-native-gesture-handler';
 
 export interface CommentProps {
-  item: DocumentData;
+  item: DocumentData | undefined;
 }
 
 export default function Comment({ item }: CommentProps) {
   const [comment, setComment] = useState<string>('');
   const [comments, setComments] = useState<DocumentData[]>([]);
   const currentUser = useAppSelector((state) => state.currentUser.currentUser);
-  const [reply, setReply] = useState<string>('');
-  const [replies, setReplies] = useState<any[]>([]);
 
   useEffect(() => {
-    fetchComments(item.id, setComments);
+    fetchComments(item?.id, setComments);
     return () => detachCommentsListener();
   }, []);
-
-  // console.log('COMMENT', comments);
-
-  // useEffect(() => {
-  //   // fetchReplies(item.id, comments?.id, setReplies);
-  //   // comments.find((comment) => {
-  //   //   fetchReplies(item.id, comment.id, setReplies);
-  //   // });
-  //   const currentComment = comments.find((comment) => comment.id === reply);
-  //   fetchReplies(item.id, currentComment?.id, setReplies);
-  //   return () => detachRepliesListener();
-  // }, []);
 
   const handleComments = () => {
     if (comment.length > 0) {
       setComment('');
-      writeComment(item.id, currentUser?.uid, comment);
+      writeComment(item?.id, currentUser?.uid, comment);
     } else {
       return;
     }
   };
-
-  // console.log('REPLIES', replies);
-
-  // const handleReplies = () => {
-  //   if (reply.length > 0) {
-  //     setReply('');
-  //     const currentComment = comments.find((comment) => comment.id === reply);
-  //     writeReply(item.id, currentUser?.uid, currentComment?.id, reply);
-  //     // comments.map((comment) => {
-  //     //   writeReply(item.id, currentUser?.uid, comment.id, reply);
-  //     // });
-  //   } else {
-  //     return;
-  //   }
-  // };
 
   return (
     <View style={{ flex: 1, justifyContent: 'flex-end' }}>
@@ -79,16 +40,7 @@ export default function Comment({ item }: CommentProps) {
         data={comments}
         showsVerticalScrollIndicator={false}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <CommentDetails
-            item={item}
-            replies={replies}
-            // setReplies={setReplies}
-            // reply={reply}
-            // setReply={setReply}
-            // handleReplies={handleReplies}
-          />
-        )}
+        renderItem={({ item }) => <CommentDetails item={item} />}
       />
       <View style={{ padding: 10, paddingBottom: 40, flexDirection: 'row' }}>
         <Image

@@ -1,10 +1,18 @@
-import { useMutation, useQuery, useQueryClient } from 'react-query';
+import { DocumentData } from 'firebase/firestore';
+import {
+  useMutation,
+  UseMutationResult,
+  useQuery,
+  useQueryClient,
+  UseQueryResult,
+} from 'react-query';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import { auth } from '../api/firebase';
 import {
   fetchUsersByID,
   fetchFollowingUser,
   updateFollowCount,
+  FollowCount,
 } from '../contexts/services/user';
 import { AppDispatch, RootState } from '../contexts/store';
 
@@ -21,7 +29,10 @@ export const keys = {
 };
 
 // React Query hooks
-export const useUserQuery = (uid: string, options = {}) => {
+export const useUserQuery = (
+  uid: string,
+  options = {}
+): UseQueryResult<DocumentData | undefined, unknown> => {
   return useQuery(keys.user(uid), () => fetchUsersByID(uid), options);
 };
 
@@ -29,7 +40,7 @@ export const useFollowingQuery = (
   uid: string,
   followedUID: string,
   options = {}
-) => {
+): UseQueryResult<boolean, unknown> => {
   return useQuery(
     keys.following(uid, followedUID),
     () => fetchFollowingUser(uid, followedUID),
@@ -37,7 +48,9 @@ export const useFollowingQuery = (
   );
 };
 
-export const useFollowMutation = (options = {}) => {
+export const useFollowMutation = (
+  options = {}
+): UseMutationResult<void, unknown, FollowCount, void> => {
   const queryClient = useQueryClient();
   return useMutation(updateFollowCount, {
     ...options,

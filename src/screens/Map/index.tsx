@@ -1,16 +1,10 @@
-import React, {
-  LegacyRef,
-  MutableRefObject,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import {
   mapNightTheme,
   mapDarkTheme,
   customMapTheme,
-} from '../../ui/shared/MapTheme';
+} from '../../ui/shared/mapTheme';
 import * as Locaiton from 'expo-location';
 import Animated, { call, useCode } from 'react-native-reanimated';
 // @ts-ignore
@@ -61,7 +55,6 @@ export default function Map() {
 
       let currentLocation = await Locaiton.getCurrentPositionAsync({});
       setLocation(currentLocation);
-      // console.log('LOCATION: ');
       // console.log(currentLocation);
     })();
   }, []);
@@ -102,7 +95,8 @@ export default function Map() {
     });
   }, [scrollX]);
 
-  const onMarkerPress = (mapEventData: any) => {
+  // Setting the scroll view to the marker that is pressed
+  const onMarkerPress = (mapEventData: any): void => {
     const id = mapEventData._targetInst.return.key;
     let x = id * CARD_WIDTH + id * 20;
 

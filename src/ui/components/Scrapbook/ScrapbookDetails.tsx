@@ -17,11 +17,12 @@ export default function ScrapbookDetails({ item }: DocumentData) {
   const dispatch = useAppDispatch();
   const [isLiked, setIsLiked] = useState({
     liked: false,
-    counter: item.likes_count,
+    counter: item.likes_count as number,
   });
   const currentUser = useAppSelector((state) => state.currentUser.currentUser);
 
-  const openShareDialog = async () => {
+  // Used for sharing images to other apps
+  const openShareDialog = async (): Promise<void> => {
     let imageProc = await ImageManipulator.manipulateAsync(item.images[0]);
     await Sharing.shareAsync(imageProc.uri);
   };

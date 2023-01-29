@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { SharedElement } from 'react-navigation-shared-element';
-import { theme } from '../../shared/Theme';
+import { theme } from '../../shared/theme';
 import * as Animatable from 'react-native-animatable';
 import { useUserQuery } from '../../../utils/hooks';
 import { DocumentData } from 'firebase/firestore';

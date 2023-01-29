@@ -3,6 +3,7 @@ import { DocumentData } from 'firebase/firestore';
 import { View, Text, Dimensions, Platform, Image } from 'react-native';
 import Animated from 'react-native-reanimated';
 
+// constants
 const { width } = Dimensions.get('window');
 const CARD_WIDTH = width * 0.65;
 const SPACING = width * 0.15;
@@ -11,7 +12,7 @@ interface MapCardProps {
   user: DocumentData | undefined;
   scrapbooks: DocumentData | undefined;
   scrollX: Animated.Value<number>;
-  scrollRef: React.MutableRefObject<Animated.ScrollView>;
+  scrollRef: React.RefObject<Animated.ScrollView>;
 }
 
 export default function MapCard({

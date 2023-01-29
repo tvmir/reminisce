@@ -1,7 +1,15 @@
-import { getStorage, ref, uploadBytesResumable } from 'firebase/storage';
+import {
+  getStorage,
+  ref,
+  uploadBytesResumable,
+  UploadTaskSnapshot,
+} from 'firebase/storage';
 
 // This function is used to upload images to Firebase Storage
-export const uploadImage = async (image: string, path: string) => {
+export const uploadImage = async (
+  image: string,
+  path: string
+): Promise<UploadTaskSnapshot> => {
   const storage = getStorage();
   const response = await fetch(image);
   const storageRef = ref(storage, path);

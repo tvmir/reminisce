@@ -8,7 +8,6 @@ export type RootStackParamList = {
   // Main Screens
   Home: undefined;
   // Scrapbook Screens
-  // Add: undefined;
   Images: undefined;
   Post: undefined;
   Scrapbook: undefined;
@@ -16,6 +15,7 @@ export type RootStackParamList = {
   Profile: undefined;
   EditProfile: undefined;
   UsersProfile: undefined;
+  FullView: undefined;
 };
 
 export type BottomTabParamList = {
@@ -25,5 +25,4 @@ export type BottomTabParamList = {
   AddFC: undefined;
   Map: undefined;
   Notifications: undefined;
-  // Profile: undefined;
 };

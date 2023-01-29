@@ -12,7 +12,7 @@ import { fetchUser } from '../../contexts/slices/users/userSlice';
 import Tabs from '../../ui/components/Profile/Tabs';
 import { fetchUserScrapbooks } from '../../contexts/slices/scrapbooks/userScrapbooksSlice';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { BottomTabParamList, RootStackParamList } from '../../utils/types';
+import { BottomTabParamList } from '../../utils/types';
 import { RouteProp, useNavigation } from '@react-navigation/native';
 import { DocumentData } from 'firebase/firestore';
 

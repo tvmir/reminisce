@@ -1,9 +1,9 @@
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import {
   addDoc,
   collection,
   deleteDoc,
   doc,
+  DocumentData,
   getDoc,
   getDocs,
   onSnapshot,
@@ -12,18 +12,20 @@ import {
   runTransaction,
   serverTimestamp,
   setDoc,
+  Unsubscribe,
   updateDoc,
   where,
 } from 'firebase/firestore';
 import { getDownloadURL } from 'firebase/storage';
 import { auth, db } from '../../api/firebase';
-import { RootStackParamList } from '../../utils/types';
 import { uploadImage } from './storage';
 import { fetchFollowingUsers } from './user';
 
 // Uploading images to Firebase Storage. From there, we can extract the image URL and store it
 // with the rest of the scrapbook details in the database
-export const uploadScrapbookImages = async (image: string) => {
+export const uploadScrapbookImages = async (
+  image: string
+): Promise<string | void> => {
   const path = `scrapbooks/${auth.currentUser?.uid}/${Math.random().toString(
     36
   )}`;
@@ -46,7 +48,7 @@ export const writeScrapbook = async (
   location: object,
   tags: string[],
   navigation: any
-) => {
+): Promise<void> => {
   const urls = await Promise.all(
     images.map((image) => uploadScrapbookImages(image))
   );
@@ -73,11 +75,37 @@ export const writeScrapbook = async (
     });
 };
 
+// Used for fetching the scrapbooks of the users that the current user is following
+export const fetchFollowingScrapbooks = async (
+  uid: string = auth.currentUser?.uid!
+): Promise<
+  {
+    id: string;
+  }[]
+> => {
+  const followingUsers = await fetchFollowingUsers(uid);
+  const scrapbooksRef = collection(db, 'scrapbooks');
+  if (followingUsers.length === 0) return [];
+  const q = query(
+    scrapbooksRef,
+    where('uid', 'in', followingUsers),
+    orderBy('createdAt', 'desc')
+  );
+  const scrapbooksSnapshot = await getDocs(q);
+  const scrapbooks = scrapbooksSnapshot.docs.map((doc) => {
+    return { id: doc.id, ...doc.data() };
+  });
+  return scrapbooks;
+};
+
 // Likes and comments are stored in subcollections of the scrapbook document. This is because we
 // want to be able to query them without having to fetch the entire scrapbook document
 
 // Fetching likes
-export const fetchLikes = async (sid: string, uid: string) => {
+export const fetchLikes = async (
+  sid: string,
+  uid: string
+): Promise<boolean> => {
   const likesRef = doc(db, 'scrapbooks', sid);
   const likesDoc = await getDoc(doc(likesRef, 'likes', uid));
   return likesDoc.exists();
@@ -88,7 +116,7 @@ export const updateLikes = async (
   sid: string,
   uid: string,
   isLiked: boolean
-) => {
+): Promise<void> => {
   const likesRef = doc(db, 'scrapbooks', sid);
   const likesId = await getDoc(doc(likesRef, 'likes', uid));
 
@@ -103,9 +131,16 @@ export const updateLikes = async (
 export const updateLikeCount = async (
   sid: string,
   uid: string,
-  isLiked: any,
-  setIsLiked: any
-) => {
+  isLiked: {
+    liked: boolean;
+  },
+  setIsLiked: React.Dispatch<
+    React.SetStateAction<{
+      liked: boolean;
+      counter: number;
+    }>
+  >
+): Promise<void> => {
   const likesRef = doc(db, 'scrapbooks', sid);
   const likesId = await getDoc(doc(likesRef, 'likes', uid));
 
@@ -125,7 +160,6 @@ export const updateLikeCount = async (
   } else {
     await runTransaction(db, async (transaction) => {
       const likesDoc = await transaction.get(likesRef);
-      console.log('DOC', likesDoc.data());
       const newLikeCount = likesDoc?.data()?.likes_count + 1;
       transaction.update(likesRef, { likes_count: newLikeCount });
       setIsLiked({
@@ -142,7 +176,7 @@ export const writeComment = async (
   sid: string,
   uid: string,
   comment: string
-) => {
+): Promise<void> => {
   const commentsRef = doc(db, 'scrapbooks', sid);
   await addDoc(collection(commentsRef, 'comments'), {
     uid,
@@ -154,13 +188,13 @@ export const writeComment = async (
   updateCommentCount(sid);
 };
 
-let commentsListener: any = null;
+let commentsListener: Unsubscribe | null;
 
 // Fetching comments of a given scrapbook
 export const fetchComments = async (
   sid: string,
-  setComments: React.Dispatch<React.SetStateAction<any>>
-) => {
+  setComments: React.Dispatch<React.SetStateAction<DocumentData[]>>
+): Promise<void> => {
   const commentsRef = doc(db, 'scrapbooks', sid);
   const q = query(
     collection(commentsRef, 'comments'),
@@ -177,7 +211,7 @@ export const fetchComments = async (
 };
 
 // Updating the comments count of the scrapbook
-export const updateCommentCount = async (sid: string) => {
+export const updateCommentCount = async (sid: string): Promise<void> => {
   const commentsRef = doc(db, 'scrapbooks', sid);
   const commentsCount = await getDoc(commentsRef).then(
     (doc) => doc.data()?.comments_count
@@ -187,7 +221,7 @@ export const updateCommentCount = async (sid: string) => {
 };
 
 // Detaching comments listener to prevent memory leaks and unnecessary calls to the database
-export const detachCommentsListener = () => {
+export const detachCommentsListener = (): void => {
   console.log('Detaching comments listener...');
   if (commentsListener != null) {
     commentsListener();
@@ -201,7 +235,7 @@ export const writeReply = async (
   uid: string,
   cid: string,
   reply: string
-) => {
+): Promise<void> => {
   const commentsRef = doc(db, 'scrapbooks', sid);
   const repliesRef = doc(commentsRef, 'comments', cid);
   await addDoc(collection(repliesRef, 'replies'), {
@@ -212,17 +246,16 @@ export const writeReply = async (
   }).then(() => {
     console.log('Reply has been sent');
   });
-  // updateCommentCount(sid);
 };
 
-let repliesListener: any = null;
+let repliesListener: Unsubscribe | null;
 
 // Fetching replies of a given comment
 export const fetchReplies = async (
   sid: string,
   cid: string,
-  setReplies: React.Dispatch<React.SetStateAction<any>>
-) => {
+  setReplies: React.Dispatch<React.SetStateAction<DocumentData[]>>
+): Promise<void> => {
   const commentsRef = doc(db, 'scrapbooks', sid);
   const repliesRef = doc(commentsRef, 'comments', cid);
   const q = query(
@@ -239,28 +272,11 @@ export const fetchReplies = async (
   });
 };
 
-export const detachRepliesListener = () => {
+// Detaching replies listener to prevent memory leaks and unnecessary calls to the database
+export const detachRepliesListener = (): void => {
   console.log('Detaching replies listener...');
   if (repliesListener != null) {
     repliesListener();
     repliesListener = null;
   }
-};
-
-export const fetchFollowingScrapbooks = async (
-  uid: string = auth.currentUser?.uid!
-) => {
-  const followingUsers = await fetchFollowingUsers(uid);
-  const scrapbooksRef = collection(db, 'scrapbooks');
-  if (followingUsers.length === 0) return [];
-  const q = query(
-    scrapbooksRef,
-    where('uid', 'in', followingUsers),
-    orderBy('createdAt', 'desc')
-  );
-  const scrapbooksSnapshot = await getDocs(q);
-  const scrapbooks = scrapbooksSnapshot.docs.map((doc) => {
-    return { id: doc.id, ...doc.data() };
-  });
-  return scrapbooks;
 };

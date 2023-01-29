@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, Text, TouchableWithoutFeedback, Dimensions } from 'react-native';
-import styled from 'styled-components/native';
 import { SharedElement } from 'react-navigation-shared-element';
 import Entypo from 'react-native-vector-icons/Entypo';
 import * as Animatable from 'react-native-animatable';
@@ -43,10 +42,13 @@ export default function ProfileCardDetails({
             paddingRight: 14,
           }}
         >
-          <ImageWrapper
+          <View
             style={{
               width: CARD_WIDTH,
               height: CARD_HEIGHT,
+              borderWidth: 0.5,
+              borderRadius: 16,
+              borderColor: '#121212',
             }}
           >
             <SharedElement id={`${item?.id}.images`}>
@@ -102,14 +104,9 @@ export default function ProfileCardDetails({
               </View>
               <Entypo name="dots-three-horizontal" size={12} color="#d3d6d9" />
             </View>
-          </ImageWrapper>
+          </View>
         </View>
       </View>
     </TouchableWithoutFeedback>
   );
 }
-
-const ImageWrapper = styled(View)`
-  border-radius: 16px;
-  border: 0.5px solid #121212;
-`;

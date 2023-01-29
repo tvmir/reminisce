@@ -12,19 +12,14 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { signup } from '../../contexts/slices/users/currentUserSlice';
-import { RootStackParamList } from '../../utils/types';
 
-interface SignupProps {
-  navigation: NativeStackNavigationProp<RootStackParamList, 'Signup'>;
-}
-
-export default function Signup({ navigation }: SignupProps) {
+export default function Signup() {
   const [name, setName] = useState<string>('');
   const [username, setUsername] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
 
-  // Initial empty variables
+  // Initialize empty variables
   const bio = '';
   const location = '';
   const followers_count = 0;
@@ -113,8 +108,7 @@ export default function Signup({ navigation }: SignupProps) {
                       bio,
                       location,
                       followers_count,
-                      following_count,
-                      navigation
+                      following_count
                     )
                   }
                   activeOpacity={0.8}

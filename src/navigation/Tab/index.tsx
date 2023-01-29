@@ -1,5 +1,4 @@
 import React, { ComponentType, useEffect } from 'react';
-import styled from 'styled-components/native';
 import { fetchCurrentUser } from '../../contexts/slices/users/currentUserSlice';
 import { fetchCurrentUserScrapbooks } from '../../contexts/slices/scrapbooks/currentUserScrapbooksSlice';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -8,10 +7,9 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import Search from '../../screens/Search';
 import Notifications from '../../screens/Notifications';
 import Feed from '../../screens/Feed';
-import { theme } from '../../ui/shared/Theme';
+import { theme } from '../../ui/shared/theme';
 import { BottomTabParamList } from '../../utils/types';
 import { LogBox, Text, TouchableOpacity } from 'react-native';
-import { horizontalScale, verticalScale } from '../../utils/scale';
 import { useAppDispatch } from '../../utils/hooks';
 import Map from '../../screens/Map';
 import {
@@ -182,23 +180,3 @@ export default function Home() {
     </Tab.Navigator>
   );
 }
-
-// Styles
-const TextLogo = styled(Text)`
-  font-family: 'Montserrat';
-  font-size: 27px;
-  top: ${verticalScale(3)}px;
-  left: ${horizontalScale(12)}px;
-  letter-spacing: 0.02em;
-  color: #ffffff;
-`;
-
-const AddBtn = styled(TouchableOpacity)`
-  right: ${horizontalScale(12)}px;
-  top: ${verticalScale(16.5)}px;
-`;
-
-const MessageBtn = styled(TouchableOpacity)`
-  right: ${horizontalScale(55)}px;
-  bottom: ${verticalScale(10)}px;
-`;

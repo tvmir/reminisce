@@ -17,7 +17,7 @@ const initialState: ScrapbooksSearchData = {
   scrapbooks: [],
 };
 
-// Used for search
+// Fetches all scrapbooks that match the search query
 export const fetchScrapbooksSearch = createAsyncThunk(
   'scrapbooks/fetchScrapbooksSearch',
   async (scrapbook: string) => {
@@ -36,6 +36,7 @@ export const fetchScrapbooksSearch = createAsyncThunk(
   }
 );
 
+// A slice for the search results
 export const scrapbooksSearchSlice = createSlice({
   name: 'scrapbooks',
   initialState,
@@ -49,4 +50,5 @@ export const scrapbooksSearchSlice = createSlice({
 
 export const searchScrapbook = (state: RootState) =>
   state.scrapbooksSearch.scrapbooks;
+
 export default scrapbooksSearchSlice.reducer;

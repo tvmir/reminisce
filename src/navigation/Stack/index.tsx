@@ -4,7 +4,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../../api/firebase';
 import { Provider } from 'react-redux';
 import Home from '../Tab';
-import { theme } from '../../ui/shared/Theme';
+import { theme } from '../../ui/shared/theme';
 import Images from '../../screens/Scrapbook/Images';
 import Post from '../../screens/Scrapbook/Post';
 import Add from '../../screens/Scrapbook/Add';
