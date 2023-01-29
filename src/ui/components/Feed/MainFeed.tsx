@@ -8,13 +8,19 @@ import {
 } from 'react-native';
 import { SharedElement } from 'react-navigation-shared-element';
 import FeedDetails from './FeedDetails';
+import { DocumentData } from 'firebase/firestore';
 
-export default function MainFeed({ item, navigation }: any) {
+interface MainFeedProps {
+  item: DocumentData | undefined;
+  navigation: any;
+}
+
+export default function MainFeed({ item, navigation }: MainFeedProps) {
   const bottomTabBarHeight = useBottomTabBarHeight();
   // const bg = index % 2 === 0 ? '#c06262' : '#3d8c96';
   return (
     <View style={{ flex: 1 }}>
-      <SharedElement id={`${item.id}.images`}>
+      <SharedElement id={`${item?.id}.images`}>
         <TouchableWithoutFeedback
           onPress={() => navigation.navigate('Scrapbook', { item })}
         >

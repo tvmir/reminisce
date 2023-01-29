@@ -4,6 +4,7 @@ import { db } from '../../../api/firebase';
 import { RootState } from '../../store';
 import { initialState } from './currentUserScrapbooksSlice';
 
+// Fetches a specific user's scrapbooks by passing in their uid
 export const fetchUserScrapbooks = createAsyncThunk(
   'userScrapbooks/fetchUserScrapbooks',
   async (uid: string | undefined) => {
@@ -22,6 +23,7 @@ export const fetchUserScrapbooks = createAsyncThunk(
   }
 );
 
+// A slice for a specific user's scrapbooks
 const userScrapbooksSlice = createSlice({
   name: 'userScrapbooks',
   initialState,

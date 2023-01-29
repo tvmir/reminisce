@@ -6,6 +6,7 @@ const initialState = {
   isOpen: false,
 };
 
+// A slice for the modals
 export const modalsSlice = createSlice({
   name: 'modal',
   initialState,

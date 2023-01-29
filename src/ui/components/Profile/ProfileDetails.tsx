@@ -9,7 +9,7 @@ import {
   Animated,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { theme } from '../../shared/Theme';
+import { theme } from '../../shared/theme';
 import {
   useAppSelector,
   useFollowMutation,
@@ -19,6 +19,7 @@ import { auth } from '../../../api/firebase';
 import { DocumentData } from 'firebase/firestore';
 import { useNavigation } from '@react-navigation/native';
 
+// constants
 const { height } = Dimensions.get('window');
 const d = (1 + Math.sqrt(5)) / 2;
 const MIN_HEADER_HEIGHT = 64 + 5;
@@ -127,7 +128,6 @@ export default function ProfileDetails({
       >
         <AnimatedImageBackground
           style={{
-            // ...StyleSheet.absoluteFillObject,
             height: MAX_HEADER_HEIGHT,
 
             transform: [
@@ -205,7 +205,6 @@ export default function ProfileDetails({
           flexDirection: 'row',
           position: 'absolute',
           bottom: 20,
-          // paddingBottom: 10,
         }}
       >
         <View style={{ flex: 1, paddingLeft: 10 }}>

@@ -1,13 +1,10 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   FlatList,
   View,
-  StyleSheet,
   TextInput,
   TouchableOpacity,
   Text,
-  TouchableWithoutFeedback,
-  Animated,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAppDispatch, useAppSelector } from '../../utils/hooks';
@@ -17,8 +14,6 @@ import ScrapbookMasonry from '../../ui/components/Search/ScrapbookMasonry';
 import { fetchScrapbooks } from '../../contexts/slices/scrapbooks/scrapbooksSlice';
 import { fetchScrapbooksSearch } from '../../contexts/slices/scrapbooks/searchScrapbooksSlice';
 import ScrapbookSearchCard from '../../ui/components/Search/ScrapbookSearchCard';
-// import Animated from 'react-native-reanimated';
-import { AntDesign, Entypo } from '@expo/vector-icons';
 import SearchUsers from './Users';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
@@ -32,14 +27,15 @@ export default function Search({
   const [input, setInput] = useState<string>('');
   const [search, setSearch] = useState<string>('');
   const [refreshing, setRefreshing] = useState<boolean>(true);
+  const [tabIndex, setTabIndex] = useState<number>(0);
   const scrapbooks = useAppSelector((state) => state.scrapbooks.scrapbooks);
   const scrapbooksSearch = useAppSelector(
     (state) => state.scrapbooksSearch.scrapbooks
   );
-  const animated = useRef(new Animated.Value(0)).current;
-  let open: number | boolean;
 
-  const clearInput = useCallback(() => setInput(''), []);
+  useEffect(() => {
+    dispatch(fetchScrapbooks()).then(() => setRefreshing(false));
+  }, [refreshing]);
 
   useEffect(() => {
     if (input !== search) {
@@ -48,17 +44,14 @@ export default function Search({
     }
   }, [input]);
 
-  useEffect(() => {
-    dispatch(fetchScrapbooks()).then(() => setRefreshing(false));
-  }, [refreshing]);
-
-  const [tabIndex, setTabIndex] = useState<number>(0);
-
   const tabBar = [
     {
       name: 'Scrapbooks',
       component: () => (
-        <ScrapbookMasonry scrapbooks={scrapbooks} navigation={navigation} />
+        <ScrapbookMasonry
+          scrapbooks={scrapbooks}
+          navigation={navigation as any}
+        />
       ),
     },
     {
@@ -67,42 +60,6 @@ export default function Search({
       component: () => <SearchUsers navigation={navigation} />,
     },
   ];
-
-  const toggleMenu = () => {
-    const toValue = open ? 0 : 1;
-
-    Animated.spring(animated, {
-      toValue,
-      friction: 5,
-      useNativeDriver: true,
-    }).start();
-
-    open = !open;
-    return open;
-  };
-
-  const rotation = {
-    transform: [
-      {
-        rotate: animated.interpolate({
-          inputRange: [0, 1],
-          outputRange: ['0deg', '45deg'],
-        }),
-      },
-    ],
-  };
-
-  const pinStyle = {
-    transform: [
-      { scale: animated },
-      {
-        translateY: animated.interpolate({
-          inputRange: [0, 1],
-          outputRange: [0, -80],
-        }),
-      },
-    ],
-  };
 
   return (
     <SafeAreaView style={{ flex: 1 }} edges={['top', 'left', 'right']}>
@@ -228,34 +185,3 @@ export default function Search({
     </SafeAreaView>
   );
 }
-
-// Styles
-const styles = StyleSheet.create({
-  button: {
-    position: 'absolute',
-    bottom: 20,
-    right: 20,
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: '#F02A4B',
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowRadius: 10,
-    shadowOpacity: 0.3,
-    // shadowOffset: { height: 10 },
-  },
-  menu: {
-    backgroundColor: '#FD0FDD',
-  },
-  secondary: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: '#e3d7d9',
-    position: 'absolute',
-    bottom: 10,
-    right: 27,
-    alignItems: 'center',
-  },
-});

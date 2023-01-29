@@ -28,7 +28,7 @@ export default function Post({ route, navigation }: PostProps) {
   const { images } = route.params;
   const [name, setName] = useState<string>('');
   const [description, setDescription] = useState<string>('');
-  const [location, setLocation] = useState<{}>({});
+  const [location, setLocation] = useState<object>({});
   const [tags, setTags] = useState<string[]>([]);
 
   useEffect(() => {

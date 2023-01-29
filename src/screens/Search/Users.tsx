@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { View, Text, TouchableOpacity, Image, FlatList } from 'react-native';
 import { fetchUsersSearch } from '../../contexts/slices/users/searchUsersSlice';
-import { theme } from '../../ui/shared/Theme';
+import { theme } from '../../ui/shared/theme';
 import { useAppDispatch, useAppSelector } from '../../utils/hooks';
 import { RootStackParamList } from '../../utils/types';
 

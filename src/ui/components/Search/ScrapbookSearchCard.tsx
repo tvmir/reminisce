@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, Text, TouchableWithoutFeedback, Dimensions } from 'react-native';
-import styled from 'styled-components/native';
 import { SharedElement } from 'react-navigation-shared-element';
 import * as Animatable from 'react-native-animatable';
 import { DocumentData } from 'firebase/firestore';
@@ -105,8 +104,3 @@ export default function ScrapbookSearchCard({
     </TouchableWithoutFeedback>
   );
 }
-
-const ImageWrapper = styled(View)`
-  border-radius: 16px;
-  border: 0.5px solid #121212;
-`;

@@ -11,16 +11,13 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { auth } from '../../api/firebase';
-
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../utils/types';
 import { login } from '../../contexts/slices/users/currentUserSlice';
 
-interface LoginProps {
-  navigation: NativeStackNavigationProp<RootStackParamList, 'Login'>;
-}
-
-export default function Login({ navigation }: LoginProps) {
+export default function Login({
+  navigation,
+}: NativeStackScreenProps<RootStackParamList>) {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
 
@@ -38,10 +35,6 @@ export default function Login({ navigation }: LoginProps) {
       behavior="padding"
       style={{ flex: 1, paddingTop: 100 }}
     >
-      {/* <ScrollView
-        // style={{ flex: 1 }}
-        contentContainerStyle={{ paddingTop: 100 }}
-      > */}
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} style={{ flex: 1 }}>
         <View style={{ flex: 1 }}>
           <View

@@ -14,7 +14,7 @@ export default function FeedDetails({ item }: DocumentData) {
   const navigation = useNavigation();
   const [isLiked, setIsLiked] = useState({
     liked: false,
-    counter: item.likes_count,
+    counter: item.likes_count as number,
   });
   const currentUser = useAppSelector((state) => state.currentUser.currentUser);
   const user = useUserQuery(item.uid).data;

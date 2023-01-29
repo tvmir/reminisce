@@ -27,7 +27,7 @@ export default function Images({ navigation, route }: LoadProps) {
   const { image } = route.params || {};
 
   // Selecting images from the system library
-  const useLibrary = async () => {
+  const useLibrary = async (): Promise<void> => {
     setIsLoading(true);
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (permission.granted === false) {
@@ -62,8 +62,6 @@ export default function Images({ navigation, route }: LoadProps) {
     let results: string[] = [];
     result.assets?.forEach((asset) => results.push(asset.uri));
 
-    console.log('IMG', image);
-
     Promise.all(results)
       .then(() => {
         if (image === undefined && result.assets!.length > 1) {
@@ -79,7 +77,6 @@ export default function Images({ navigation, route }: LoadProps) {
         console.log('\n')
       );
 
-    console.log('RESULTS', results);
     console.log('IMAGES', images);
   };
 

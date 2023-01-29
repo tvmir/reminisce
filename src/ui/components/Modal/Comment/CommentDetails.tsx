@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, Image, TextInput, FlatList, LogBox } from 'react-native';
+import React, { useEffect } from 'react';
+import { View, Text, Image, LogBox } from 'react-native';
 import { useUserQuery } from '../../../../utils/hooks';
-import { theme } from '../../../shared/Theme';
+import { theme } from '../../../shared/theme';
 import moment from 'moment';
 import { DocumentData } from 'firebase/firestore';
 
+// Time abbreviations
 moment.updateLocale('en', {
   relativeTime: {
     future: 'in %s',

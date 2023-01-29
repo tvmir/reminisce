@@ -6,14 +6,12 @@ import {
   View,
   StyleSheet,
   TouchableOpacity,
-  useWindowDimensions,
   Image,
   LogBox,
   ScrollView,
   RefreshControl,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import styled from 'styled-components/native';
 import { fetchScrapbooks } from '../../contexts/slices/scrapbooks/scrapbooksSlice';
 import { useAppDispatch, useAppSelector } from '../../utils/hooks';
 import { useNavigation, useScrollToTop } from '@react-navigation/native';
@@ -27,7 +25,6 @@ export default function Feed({
   navigation,
 }: NativeStackScreenProps<BottomTabParamList>) {
   const dispatch = useAppDispatch();
-  const drawerNav = useNavigation<any>();
   const scrapbook = useAppSelector((state) => state.scrapbooks.scrapbooks);
   const [forYouScrapbooks, setForYouScrapbooks] = useState<
     DocumentData[] | undefined
@@ -72,7 +69,7 @@ export default function Feed({
       keyExtractor={(item) => item.id}
       data={forYouScrapbooks}
       renderItem={({ item, index }) => {
-        return <MainFeed item={item} navigation={navigation} index={index} />;
+        return <MainFeed item={item} navigation={navigation} />;
       }}
     />
   );
@@ -89,7 +86,7 @@ export default function Feed({
       keyExtractor={(item) => item.id}
       data={followingScrapbooks}
       renderItem={({ item, index }) => {
-        return <MainFeed item={item} navigation={navigation} index={index} />;
+        return <MainFeed item={item} navigation={navigation} />;
       }}
     />
   );
@@ -152,7 +149,17 @@ export default function Feed({
   ]);
 
   return (
-    <Wrapper edges={['top', 'left', 'right']}>
+    <SafeAreaView
+      style={{
+        flex: 1,
+        width: '93%',
+        marginTop: 0,
+        marginRight: 'auto',
+        marginBottom: 0,
+        marginLeft: 'auto',
+      }}
+      edges={['top', 'left', 'right']}
+    >
       <TabView
         navigationState={{ index, routes }}
         renderScene={renderScene}
@@ -183,10 +190,10 @@ export default function Feed({
             })}
           </View>
         )}
-        lazy
       />
       <TouchableOpacity
-        onPress={() => drawerNav.openDrawer()}
+        // @ts-ignore
+        onPress={() => navigation.openDrawer()}
         style={{
           backgroundColor: '#272727',
           position: 'absolute',
@@ -205,16 +212,9 @@ export default function Feed({
           style={{ width: 30, height: 30, borderRadius: 15 }}
         />
       </TouchableOpacity>
-    </Wrapper>
+    </SafeAreaView>
   );
 }
-
-// Styles
-const Wrapper = styled(SafeAreaView)`
-  flex: 1;
-  width: 93%;
-  margin: 0 auto 0 auto;
-`;
 
 const styles = StyleSheet.create({
   tabText: {
@@ -238,11 +238,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#0FEFFD',
   },
   tabItem: {
-    // flex: 1,
     width: 120,
     alignItems: 'center',
     paddingLeft: 40,
-    // paddingHorizontal: 50,
     paddingVertical: 10,
     paddingBottom: 13,
     letterSpacing: 0.8,

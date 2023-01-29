@@ -9,8 +9,6 @@ import {
   ActivityIndicator,
   Button,
 } from 'react-native';
-import styled from 'styled-components/native';
-import { horizontalScale, verticalScale } from '../../utils/scale';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { RootStackParamList } from '../../utils/types';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -26,7 +24,7 @@ export default function Add({
   const { width, height } = useWindowDimensions();
 
   // Saving image to camera roll
-  const saveToCameraRoll = async (image: string) => {
+  const saveToCameraRoll = async (image: string): Promise<void> => {
     const permission = await MediaLibrary.requestPermissionsAsync();
     if (permission.granted) {
       try {
@@ -47,7 +45,7 @@ export default function Add({
   };
 
   // Accessing the system camera
-  const useCamera = async () => {
+  const useCamera = async (): Promise<void> => {
     setIsLoading(true);
     const permission = await ImagePicker.requestCameraPermissionsAsync();
     if (permission.granted === false) {
@@ -137,14 +135,30 @@ export default function Add({
           </View>
         </>
       ) : (
-        <View style={{}}>
+        <View>
           <View
             style={{ position: 'absolute', width: 229, left: 34, top: 150 }}
           >
-            <HeaderText>Start a Scrapbook</HeaderText>
-            <HeaderTwo>
+            <Text
+              style={{
+                color: '#fff',
+                fontSize: 32,
+                fontWeight: '700',
+                lineHeight: 30,
+              }}
+            >
+              Start a Scrapbook
+            </Text>
+            <Text
+              style={{
+                color: '#fff',
+                fontSize: 13,
+                fontWeight: '500',
+                lineHeight: 16,
+              }}
+            >
               Add content to your scrapbook using the tools below.
-            </HeaderTwo>
+            </Text>
           </View>
           <View
             style={{
@@ -178,24 +192,3 @@ export default function Add({
     </>
   );
 }
-
-// Styles
-const HeaderText = styled(Text)`
-  position: absolute;
-  font-style: normal;
-  font-weight: 700;
-  font-size: 32px;
-  line-height: 30px;
-  color: ${(p) => p.theme.colors.primary};
-`;
-
-const HeaderTwo = styled(Text)`
-  position: absolute;
-  width: ${horizontalScale(204)}px;
-  top: ${verticalScale(60)}px;
-  font-style: normal;
-  font-weight: 500;
-  font-size: 13px;
-  line-height: 16px;
-  color: ${(p) => p.theme.colors.primary};
-`;

@@ -6,7 +6,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../utils/types';
 
 interface ScrapbookMasonryProps {
-  scrapbooks: DocumentData[];
+  scrapbooks: DocumentData[] | undefined;
   navigation: NativeStackScreenProps<RootStackParamList>;
 }
 
@@ -16,7 +16,7 @@ export default function ScrapbookMasonry({
 }: ScrapbookMasonryProps) {
   return (
     <MasonryList
-      data={scrapbooks}
+      data={scrapbooks!}
       keyExtractor={(item) => item.id}
       numColumns={2}
       contentContainerStyle={{ paddingHorizontal: 14 }}

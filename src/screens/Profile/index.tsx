@@ -20,15 +20,15 @@ export default function Profile({
 }: NativeStackScreenProps<RootStackParamList>) {
   const [refreshing, setRefreshing] = useState<boolean>(true);
   const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
-  }, []);
-
   const currentUser = useAppSelector((state) => state.currentUser.currentUser);
   const currentUserScrapbooks = useAppSelector(
     (state) => state.currentUserScrapbooks.scrapbooks
   );
+  const scrollY = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
+  }, []);
 
   useEffect(() => {
     dispatch(fetchCurrentUser(auth.currentUser?.uid)).then(() =>
@@ -41,8 +41,6 @@ export default function Profile({
       setRefreshing(false)
     );
   }, [refreshing]);
-
-  const scrollY = useRef(new Animated.Value(0)).current;
 
   return (
     <>
