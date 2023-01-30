@@ -31,11 +31,12 @@ export const uploadScrapbookImages = async (
   )}`;
   const uploadTask = await uploadImage(image, path);
   const downloadURL = await getDownloadURL(uploadTask.ref)
-    .then((downloadURL) => {
-      return downloadURL;
+    .then((url) => {
+      console.log('Uploading...');
+      return url;
     })
     .catch((err) => {
-      console.log('Error getting download URL:', err);
+      console.log('Error getting downloadURL:', err);
     });
   return downloadURL;
 };
@@ -66,7 +67,6 @@ export const writeScrapbook = async (
   })
     .then(() => {
       console.log('Images:', urls);
-      // TODO: cutomize alert
       alert('Your scrapbook has been posted! 🎉');
       navigation.popToTop();
     })

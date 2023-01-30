@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Image, FlatList, LogBox } from 'react-native';
+import { View, Image, FlatList, LogBox, ScrollView } from 'react-native';
 import { useAppSelector } from '../../../../utils/hooks';
 import {
   detachCommentsListener,
@@ -34,17 +34,29 @@ export default function Comment({ item }: CommentProps) {
   };
 
   return (
-    <View style={{ flex: 1, justifyContent: 'flex-end' }}>
+    <ScrollView automaticallyAdjustKeyboardInsets={true} style={{ flex: 1 }}>
       <FlatList
-        // @ts-ignore
         data={comments}
         showsVerticalScrollIndicator={false}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => <CommentDetails item={item} />}
       />
-      <View style={{ padding: 10, paddingBottom: 40, flexDirection: 'row' }}>
+
+      <View
+        style={{
+          position: 'absolute',
+          top: 430,
+          padding: 10,
+          flexDirection: 'row',
+        }}
+      >
         <Image
-          style={{ height: 38, width: 38, borderRadius: 20, borderWidth: 1 }}
+          style={{
+            height: 38,
+            width: 38,
+            borderRadius: 20,
+            borderWidth: 1,
+          }}
           source={{ uri: currentUser?.photoURL }}
         />
         <TextInput
@@ -64,6 +76,6 @@ export default function Comment({ item }: CommentProps) {
           placeholderTextColor={'#797979'}
         />
       </View>
-    </View>
+    </ScrollView>
   );
 }

@@ -8,11 +8,12 @@ import { useUserQuery } from '../../../utils/hooks';
 import { DocumentData } from 'firebase/firestore';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../utils/types';
+import { StackNavigationProp } from '@react-navigation/stack';
 
 interface ScrapbookCardMasonryProps {
   item: DocumentData | undefined;
   index: number;
-  navigation: NativeStackScreenProps<RootStackParamList>;
+  navigation: StackNavigationProp<RootStackParamList, 'Scrapbook'>;
 }
 
 export default function ScrapbookCardMasonry({
@@ -37,7 +38,6 @@ export default function ScrapbookCardMasonry({
           styles.card,
           { width: '100%', height: index % 3 === 0 ? 160 : 200 },
         ]}
-        // @ts-ignore
         onPress={() => navigation.navigate('Scrapbook', { item })}
       >
         <View

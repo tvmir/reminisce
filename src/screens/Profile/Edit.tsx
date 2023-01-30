@@ -24,15 +24,15 @@ import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplet
 import { MAPS_API_KEY } from '@env';
 import { RouteProp } from '@react-navigation/native';
 import { DocumentData } from 'firebase/firestore';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../utils/types';
+import { StackNavigationProp } from '@react-navigation/stack';
 
 interface EditProps {
   route: RouteProp<
     { params: { field: DocumentData; value: DocumentData } },
     'params'
   >;
-  navigation: NativeStackScreenProps<RootStackParamList>;
+  navigation: StackNavigationProp<RootStackParamList, 'EditProfile'>;
 }
 
 export default function Edit({ route, navigation }: EditProps) {
@@ -51,8 +51,7 @@ export default function Edit({ route, navigation }: EditProps) {
       quality: 0.2,
     });
     if (!result.canceled) {
-      // @ts-ignore
-      uploadProfilePicture(result.assets[0]?.map((asset) => asset.uri));
+      uploadProfilePicture(result.assets[0].uri);
     }
   };
 
@@ -63,7 +62,6 @@ export default function Edit({ route, navigation }: EditProps) {
           updateUserDetails(field.bio, inputBio).then(() => {
             updateUserDetails(field.location, inputLocation).then(() => {
               alert('Your profile has been updated! 🎉');
-              // @ts-ignore
               navigation.goBack();
             });
           });
@@ -72,7 +70,6 @@ export default function Edit({ route, navigation }: EditProps) {
       ? updateUserDetails(field.name, inputName).then(() => {
           updateUserDetails(field.bio, inputBio).then(() => {
             alert('Your profile has been updated! 🎉');
-            // @ts-ignore
             navigation.goBack();
           });
         })
@@ -80,7 +77,6 @@ export default function Edit({ route, navigation }: EditProps) {
       ? updateUserDetails(field.name, inputName).then(() => {
           updateUserDetails(field.location, inputLocation).then(() => {
             alert('Your profile has been updated! 🎉');
-            // @ts-ignore
             navigation.goBack();
           });
         })
@@ -88,26 +84,22 @@ export default function Edit({ route, navigation }: EditProps) {
       ? updateUserDetails(field.bio, inputBio).then(() => {
           updateUserDetails(field.location, inputLocation).then(() => {
             alert('Your profile has been updated! 🎉');
-            // @ts-ignore
             navigation.goBack();
           });
         })
       : field.name
       ? updateUserDetails(field.name, inputName).then(() => {
           alert('Your profile has been updated! 🎉');
-          // @ts-ignore
           navigation.goBack();
         })
       : field.bio
       ? updateUserDetails(field.bio, inputBio).then(() => {
           alert('Your profile has been updated! 🎉');
-          // @ts-ignore
           navigation.goBack();
         })
       : field.location
       ? updateUserDetails(field.location, inputLocation).then(() => {
           alert('Your profile has been updated! 🎉');
-          // @ts-ignore
           navigation.goBack();
         })
       : null;
@@ -147,8 +139,7 @@ export default function Edit({ route, navigation }: EditProps) {
                 />
                 <Feather name="camera" size={28} color="white" />
               </TouchableOpacity>
-              <View style={{ padding: 10, width: '90%' }}>
-                <Text style={styles.text}>Name</Text>
+              <View style={{ padding: 10, width: '95%', paddingTop: 30 }}>
                 <TextInput
                   style={styles.input}
                   placeholder={inputName}
@@ -159,7 +150,6 @@ export default function Edit({ route, navigation }: EditProps) {
                   onChangeText={setInputName}
                 />
                 <View>
-                  <Text style={styles.text}>Bio</Text>
                   <TextInput
                     style={styles.inputBio}
                     multiline={true}
@@ -183,11 +173,9 @@ export default function Edit({ route, navigation }: EditProps) {
                     {inputBio.length + '/70'}
                   </Text>
                 </View>
-                <Text style={styles.text}>Location</Text>
                 <GooglePlacesAutocomplete
                   placeholder={inputLocation}
                   listViewDisplayed={false}
-                  // keyboardShouldPersistTaps="handled"
                   minLength={2}
                   nearbyPlacesAPI="GooglePlacesSearch"
                   debounce={400}
@@ -216,20 +204,22 @@ export default function Edit({ route, navigation }: EditProps) {
                   onFail={(error) => console.log(error)}
                   enablePoweredByContainer={false}
                   textInputProps={{
-                    placeholderTextColor: '#959595',
+                    placeholderTextColor: '#777777',
                     style: {
                       width: '100%',
-                      borderWidth: 1,
+                      borderWidth: 0.5,
+                      backgroundColor: '#0c0c0c',
                       borderColor: '#1F1E1E',
                       marginBottom: 15,
                       marginTop: 5,
-                      height: 42,
+                      height: 50,
                       textAlignVertical: 'top',
                       color: '#fff',
                       alignItems: 'stretch',
                       flexShrink: 1,
                       borderRadius: 4,
                       paddingLeft: 8,
+                      fontSize: 15,
                     },
                   }}
                 />
@@ -245,20 +235,23 @@ export default function Edit({ route, navigation }: EditProps) {
 // Styles
 const styles = StyleSheet.create({
   input: {
-    borderWidth: 1,
+    borderWidth: 0.5,
+    backgroundColor: '#0c0c0c',
     borderColor: '#1F1E1E',
     marginBottom: 15,
     marginTop: 5,
-    height: 42,
+    height: 50,
     textAlignVertical: 'top',
     color: '#fff',
     alignItems: 'stretch',
     flexShrink: 1,
     borderRadius: 4,
     paddingLeft: 8,
+    fontSize: 15,
   },
   inputBio: {
-    borderWidth: 1,
+    borderWidth: 0.5,
+    backgroundColor: '#0c0c0c',
     borderColor: '#1F1E1E',
     marginBottom: 15,
     marginTop: 5,
@@ -269,6 +262,7 @@ const styles = StyleSheet.create({
     flexShrink: 1,
     borderRadius: 4,
     paddingLeft: 8,
+    fontSize: 15,
   },
   text: {
     color: '#fff',

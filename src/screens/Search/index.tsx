@@ -8,21 +8,23 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAppDispatch, useAppSelector } from '../../utils/hooks';
-import { RootStackParamList } from '../../utils/types';
+import { BottomTabParamList, RootStackParamList } from '../../utils/types';
 import Feather from 'react-native-vector-icons/Feather';
 import ScrapbookMasonry from '../../ui/components/Search/ScrapbookMasonry';
 import { fetchScrapbooks } from '../../contexts/slices/scrapbooks/scrapbooksSlice';
 import { fetchScrapbooksSearch } from '../../contexts/slices/scrapbooks/searchScrapbooksSlice';
 import ScrapbookSearchCard from '../../ui/components/Search/ScrapbookSearchCard';
 import SearchUsers from './Users';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { StackNavigationProp } from '@react-navigation/stack';
 
 // constants
 export const SPACING = 24;
 
-export default function Search({
-  navigation,
-}: NativeStackScreenProps<RootStackParamList>) {
+interface SearchProps {
+  navigation: StackNavigationProp<BottomTabParamList, 'Search'>;
+}
+
+export default function Search({ navigation }: SearchProps) {
   const dispatch = useAppDispatch();
   const [input, setInput] = useState<string>('');
   const [search, setSearch] = useState<string>('');
@@ -48,10 +50,8 @@ export default function Search({
     {
       name: 'Scrapbooks',
       component: () => (
-        <ScrapbookMasonry
-          scrapbooks={scrapbooks}
-          navigation={navigation as any}
-        />
+        // @ts-ignore
+        <ScrapbookMasonry scrapbooks={scrapbooks} navigation={navigation} />
       ),
     },
     {

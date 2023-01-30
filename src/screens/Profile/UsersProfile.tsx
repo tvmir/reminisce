@@ -11,17 +11,17 @@ import { useAppDispatch, useAppSelector } from '../../utils/hooks';
 import { fetchUser } from '../../contexts/slices/users/userSlice';
 import Tabs from '../../ui/components/Profile/Tabs';
 import { fetchUserScrapbooks } from '../../contexts/slices/scrapbooks/userScrapbooksSlice';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { BottomTabParamList } from '../../utils/types';
-import { RouteProp, useNavigation } from '@react-navigation/native';
+import { RootStackParamList } from '../../utils/types';
+import { RouteProp } from '@react-navigation/native';
 import { DocumentData } from 'firebase/firestore';
+import { StackNavigationProp } from '@react-navigation/stack';
 
 interface UsersProfileProps {
   route: RouteProp<{ params: { user: DocumentData } }, 'params'>;
-  navigation: NativeStackScreenProps<BottomTabParamList>;
+  navigation: StackNavigationProp<RootStackParamList, 'UsersProfile'>;
 }
 
-export default function UsersProfile({ route }: UsersProfileProps) {
+export default function UsersProfile({ route, navigation }: UsersProfileProps) {
   const { user } = route.params;
   const dispatch = useAppDispatch();
   const otherUser = useAppSelector((state) => state.user.user);
@@ -30,7 +30,6 @@ export default function UsersProfile({ route }: UsersProfileProps) {
   );
   const [refreshing, setRefreshing] = useState<boolean>(true);
   const scrollY = useRef(new Animated.Value(0)).current;
-  const navigation = useNavigation();
 
   useEffect(() => {
     LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
@@ -74,12 +73,13 @@ export default function UsersProfile({ route }: UsersProfileProps) {
         }
         style={{ padding: 4 }}
       >
-        <ProfileDetails user={otherUser} me={false} scrollY={scrollY} />
-        <Tabs
-          user={user}
-          scrapbooks={userScrapbooks}
-          navigation={navigation as any}
+        <ProfileDetails
+          user={otherUser}
+          me={false}
+          scrollY={scrollY}
+          navigation={navigation}
         />
+        <Tabs user={user} scrapbooks={userScrapbooks} navigation={navigation} />
       </Animated.ScrollView>
     </>
   );

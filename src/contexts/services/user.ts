@@ -62,9 +62,7 @@ export const updateUserDetails = async (
 
   const scrapbookUserRef = doc(db, 'users', auth.currentUser?.uid!);
   await updateDoc(scrapbookUserRef, docField)
-    .then(() => {
-      console.log('User details have been updated successfully');
-    })
+    .then(() => {})
     .catch((err) => {
       console.log('Error updating user details: ', err);
     });

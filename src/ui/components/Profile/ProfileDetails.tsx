@@ -17,7 +17,8 @@ import {
 } from '../../../utils/hooks';
 import { auth } from '../../../api/firebase';
 import { DocumentData } from 'firebase/firestore';
-import { useNavigation } from '@react-navigation/native';
+import { RootStackParamList } from '../../../utils/types';
+import { StackNavigationProp } from '@react-navigation/stack';
 
 // constants
 const { height } = Dimensions.get('window');
@@ -29,18 +30,22 @@ const HEADER_DELTA = MAX_HEADER_HEIGHT - MIN_HEADER_HEIGHT;
 interface ProfileDetailsProps {
   user: DocumentData | undefined;
   me: boolean;
-  scrollY: any;
+  scrollY: Animated.Value;
+  navigation: StackNavigationProp<
+    RootStackParamList,
+    'Profile' | 'UsersProfile'
+  >;
 }
 
 export default function ProfileDetails({
   user,
   me = true,
   scrollY,
+  navigation,
 }: ProfileDetailsProps) {
   const isFollowing = useFollowingQuery(auth.currentUser?.uid!, user?.uid).data;
   const isFollowingMutation = useFollowMutation();
   const currentUser = useAppSelector((state) => state.currentUser.currentUser);
-  const navigation = useNavigation();
 
   const handleFollow = () => {
     if (isFollowing) {
@@ -255,7 +260,6 @@ export default function ProfileDetails({
                 paddingRight: 27,
               }}
               onPress={() =>
-                // @ts-ignore
                 navigation.navigate('EditProfile', {
                   field: {
                     name: 'name',

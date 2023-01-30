@@ -5,28 +5,12 @@ import { theme } from '../../../shared/theme';
 import moment from 'moment';
 import { DocumentData } from 'firebase/firestore';
 
-// Time abbreviations
-moment.updateLocale('en', {
-  relativeTime: {
-    future: 'in %s',
-    past: '%s ago',
-    s: '1s',
-    ss: '%ss',
-    m: '1m',
-    mm: '%dm',
-    h: '1h',
-    hh: '%dh',
-    d: '1d',
-    dd: '%dd',
-    M: '1M',
-    MM: '%dM',
-    y: '1Y',
-    yy: '%dY',
-  },
-});
+interface CommentDetailsProps {
+  item: DocumentData | undefined;
+}
 
-export default function CommentDetails({ item }: DocumentData) {
-  const user = useUserQuery(item.uid).data;
+export default function CommentDetails({ item }: CommentDetailsProps) {
+  const user = useUserQuery(item?.uid).data;
   const inputRef = React.useRef<Text>();
 
   useEffect(() => {
@@ -48,7 +32,7 @@ export default function CommentDetails({ item }: DocumentData) {
         <Text
           style={{ color: theme.colors.primary, fontSize: 13, paddingTop: 2 }}
         >
-          {item.comment}
+          {item?.comment}
         </Text>
         <View style={{ flexDirection: 'row', paddingTop: 3 }}>
           <Text
@@ -58,8 +42,8 @@ export default function CommentDetails({ item }: DocumentData) {
             Reply
           </Text>
           <Text style={{ color: '#cfcfcf', fontSize: 11, paddingLeft: 10 }}>
-            {moment(item.createdAt?.toDate()).fromNow(true)
-              ? moment(item.createdAt?.toDate()).fromNow(true)
+            {moment(item?.createdAt?.toDate()).fromNow(true)
+              ? moment(item?.createdAt?.toDate()).fromNow(true)
               : '1s'}
           </Text>
         </View>

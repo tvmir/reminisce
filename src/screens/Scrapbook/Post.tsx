@@ -11,17 +11,17 @@ import {
   LogBox,
 } from 'react-native';
 import { RouteProp } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../utils/types';
 import { writeScrapbook } from '../../contexts/services/scrapbook';
 import Header from '../../ui/components/Extra/Header';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 // @ts-ignore
 import { MAPS_API_KEY } from '@env';
+import { StackNavigationProp } from '@react-navigation/stack';
 
 interface PostProps {
   route: RouteProp<{ params: { images: string[] } }, 'params'>;
-  navigation: NativeStackNavigationProp<RootStackParamList, 'Post'>;
+  navigation: StackNavigationProp<RootStackParamList, 'Post'>;
 }
 
 export default function Post({ route, navigation }: PostProps) {
@@ -58,9 +58,7 @@ export default function Post({ route, navigation }: PostProps) {
             />
 
             <View style={{ alignItems: 'center', marginTop: 15 }}>
-              <View style={{ padding: 10, width: '90%' }}>
-                {/* <Text style={styles.text}>Cover</Text> */}
-              </View>
+              <View style={{ padding: 10, width: '90%' }}></View>
               <View
                 style={{
                   backgroundColor: '#656565',
@@ -83,8 +81,7 @@ export default function Post({ route, navigation }: PostProps) {
                   source={{ uri: images[0] }}
                 />
               </View>
-              <View style={{ padding: 10, width: '90%' }}>
-                {/* <Text style={styles.text}>Name</Text> */}
+              <View style={{ padding: 10, width: '95%' }}>
                 <TextInput
                   style={styles.input}
                   placeholder="Name your scrapbook"
@@ -92,7 +89,6 @@ export default function Post({ route, navigation }: PostProps) {
                   onChangeText={(text) => setName(text)}
                   keyboardAppearance="dark"
                 />
-                {/* <Text style={styles.text}>Description</Text> */}
                 <TextInput
                   style={styles.inputDesc}
                   placeholder="Add a description"
@@ -101,8 +97,6 @@ export default function Post({ route, navigation }: PostProps) {
                   onChangeText={(text) => setDescription(text)}
                   keyboardAppearance="dark"
                 />
-
-                {/* <Text style={styles.text}>Location</Text> */}
 
                 <GooglePlacesAutocomplete
                   placeholder="Where was this taken?"
@@ -165,7 +159,6 @@ export default function Post({ route, navigation }: PostProps) {
                     },
                   }}
                 />
-                {/* <Text style={{ color: 'white', fontWeight: '500' }}>Tags</Text> */}
                 <TextInput
                   style={styles.input}
                   placeholder="Tags (separate with commas and spaces)"

@@ -19,9 +19,10 @@ import { createSharedElementStackNavigator } from 'react-navigation-shared-eleme
 import FullView from '../../ui/components/Scrapbook/FullView';
 import { CardStyleInterpolators } from '@react-navigation/stack';
 import Profile from '../../screens/Profile';
+import { RootStackParamList } from '../../utils/types';
 
 // Creating the shared element stack navigator
-const Stack = createSharedElementStackNavigator();
+const Stack = createSharedElementStackNavigator<RootStackParamList>();
 
 // Where all screens are except auth screens
 const AppScreens = () => (
@@ -83,45 +84,6 @@ const AppScreens = () => (
     <Stack.Screen
       options={{
         headerShown: false,
-        headerStyle: {
-          backgroundColor: theme.colors.background,
-        },
-        headerShadowVisible: false,
-        headerBackTitleVisible: false,
-        headerTitle: 'Edit Profile',
-      }}
-      name="EditProfile"
-      component={Edit}
-    />
-    <Stack.Screen
-      options={{
-        headerShown: false,
-        headerTitle: '',
-        headerStyle: {
-          backgroundColor: theme.colors.background,
-        },
-        headerShadowVisible: false,
-        headerBackTitleVisible: false,
-      }}
-      name="Profile"
-      component={Profile}
-    />
-    <Stack.Screen
-      options={{
-        headerShown: false,
-        headerTitle: '',
-        headerStyle: {
-          backgroundColor: theme.colors.background,
-        },
-        headerShadowVisible: false,
-        headerBackTitleVisible: false,
-      }}
-      name="UsersProfile"
-      component={UsersProfile}
-    />
-    <Stack.Screen
-      options={{
-        headerShown: false,
         headerTitle: '',
         headerStyle: {
           backgroundColor: theme.colors.background,
@@ -176,6 +138,46 @@ const AppScreens = () => (
           },
         ];
       }}
+    />
+    <Stack.Screen
+      options={{
+        headerShown: false,
+        headerTitle: '',
+        headerStyle: {
+          backgroundColor: theme.colors.background,
+        },
+        headerShadowVisible: false,
+        headerBackTitleVisible: false,
+      }}
+      name="Profile"
+      component={Profile}
+    />
+    <Stack.Screen
+      options={{
+        headerShown: false,
+        headerStyle: {
+          backgroundColor: theme.colors.background,
+        },
+        headerShadowVisible: false,
+        headerBackTitleVisible: false,
+        headerTitle: 'Edit Profile',
+      }}
+      name="EditProfile"
+      component={Edit}
+    />
+
+    <Stack.Screen
+      options={{
+        headerShown: false,
+        headerTitle: '',
+        headerStyle: {
+          backgroundColor: theme.colors.background,
+        },
+        headerShadowVisible: false,
+        headerBackTitleVisible: false,
+      }}
+      name="UsersProfile"
+      component={UsersProfile}
     />
   </Stack.Navigator>
 );

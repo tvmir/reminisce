@@ -1,29 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import {
   View,
-  useWindowDimensions,
   ActivityIndicator,
   Alert,
   Linking,
   TouchableOpacity,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../utils/types';
 import DraggableFlatList from 'react-native-draggable-flatlist';
 import FitImage from 'react-native-fit-image';
 import Header from '../../ui/components/Extra/Header';
 import { RouteProp } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 
-interface LoadProps {
-  navigation: NativeStackNavigationProp<RootStackParamList, 'Images'>;
+interface ImagesProps {
+  navigation: StackNavigationProp<RootStackParamList, 'Images'>;
   route: RouteProp<{ params: { image: string } }, 'params'>;
 }
 
-export default function Images({ navigation, route }: LoadProps) {
+export default function Images({ navigation, route }: ImagesProps) {
   const [images, setImages] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const { height } = useWindowDimensions();
   const { image } = route.params || {};
 
   // Selecting images from the system library
@@ -90,7 +88,7 @@ export default function Images({ navigation, route }: LoadProps) {
         title="New Scrapbook"
         navigation={navigation}
         close={false}
-        onSave={() => navigation.navigate('Post', { images } as any)}
+        onSave={() => navigation.navigate('Post', { images })}
         text="Next"
       />
       <DraggableFlatList

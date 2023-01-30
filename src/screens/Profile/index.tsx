@@ -12,19 +12,21 @@ import ProfileDetails from '../../ui/components/Profile/ProfileDetails';
 import { fetchCurrentUser } from '../../contexts/slices/users/currentUserSlice';
 import Tabs from '../../ui/components/Profile/Tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../utils/types';
+import { StackNavigationProp } from '@react-navigation/stack';
 
-export default function Profile({
-  navigation,
-}: NativeStackScreenProps<RootStackParamList>) {
-  const [refreshing, setRefreshing] = useState<boolean>(true);
+interface ProfileProps {
+  navigation: StackNavigationProp<RootStackParamList, 'Profile'>;
+}
+
+export default function Profile({ navigation }: ProfileProps) {
+  const scrollY = useRef(new Animated.Value(0)).current;
   const dispatch = useAppDispatch();
   const currentUser = useAppSelector((state) => state.currentUser.currentUser);
   const currentUserScrapbooks = useAppSelector(
     (state) => state.currentUserScrapbooks.scrapbooks
   );
-  const scrollY = useRef(new Animated.Value(0)).current;
+  const [refreshing, setRefreshing] = useState<boolean>(true);
 
   useEffect(() => {
     LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
@@ -72,11 +74,16 @@ export default function Profile({
         }
         style={{ padding: 4 }}
       >
-        <ProfileDetails user={currentUser} me={true} scrollY={scrollY} />
+        <ProfileDetails
+          user={currentUser}
+          me={true}
+          scrollY={scrollY}
+          navigation={navigation}
+        />
         <Tabs
           user={currentUser}
           scrapbooks={currentUserScrapbooks}
-          navigation={navigation as any}
+          navigation={navigation}
         />
       </Animated.ScrollView>
     </>

@@ -2,12 +2,12 @@ import React from 'react';
 import MasonryList from '@react-native-seoul/masonry-list';
 import ScrapbookCardMasonry from './ScrapbookCardMasonry';
 import { DocumentData } from 'firebase/firestore';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../utils/types';
+import { StackNavigationProp } from '@react-navigation/stack';
 
 interface ScrapbookMasonryProps {
   scrapbooks: DocumentData[] | undefined;
-  navigation: NativeStackScreenProps<RootStackParamList>;
+  navigation: StackNavigationProp<RootStackParamList, 'Scrapbook'>;
 }
 
 export default function ScrapbookMasonry({

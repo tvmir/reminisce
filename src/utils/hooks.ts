@@ -20,6 +20,7 @@ import { AppDispatch, RootState } from '../contexts/store';
 export const useAppDispatch: () => AppDispatch = useDispatch;
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 
+// React Query hooks
 export const keys = {
   user: (uid: string) => ['users', uid],
   following: (uid: string, followedUID: string) => [
@@ -28,7 +29,6 @@ export const keys = {
   ],
 };
 
-// React Query hooks
 export const useUserQuery = (
   uid: string,
   options = {}
