@@ -1,21 +1,29 @@
-// This file contains all the types used in the app
+import { DocumentData } from 'firebase/firestore';
 
-// React Navigation Types (will be updated as the app grows)
+// React Navigation Types
 export type RootStackParamList = {
   // Auth Screens
   Login: undefined;
   Signup: undefined;
-  // Main Screens
+  // Main Tab Screens
   Home: undefined;
   // Scrapbook Screens
-  Images: undefined;
-  Post: undefined;
-  Scrapbook: undefined;
+  Add: undefined;
+  Images: { image: string } | undefined;
+  Post: { images: string[] } | undefined;
+  Scrapbook: { item: DocumentData | undefined } | undefined;
+  FullView: { item: string[] | unknown } | undefined;
   // Profile Screens
   Profile: undefined;
-  EditProfile: undefined;
-  UsersProfile: undefined;
-  FullView: undefined;
+  EditProfile: {
+    field: {
+      name: string;
+      bio: string;
+      location: string;
+    };
+    value: DocumentData | CurrentUser | undefined;
+  };
+  UsersProfile: { user: DocumentData | undefined } | undefined;
 };
 
 export type BottomTabParamList = {

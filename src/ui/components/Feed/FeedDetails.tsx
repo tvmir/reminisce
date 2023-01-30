@@ -6,21 +6,46 @@ import {
   updateLikeCount,
 } from '../../../contexts/services/scrapbook';
 import { DocumentData } from 'firebase/firestore';
-import Octicons from 'react-native-vector-icons/Octicons';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import moment from 'moment';
-import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '../../../utils/types';
 
-export default function FeedDetails({ item }: DocumentData) {
-  const navigation = useNavigation();
+// Global time abbreviations
+moment.updateLocale('en', {
+  relativeTime: {
+    future: 'in %s',
+    past: '%s ago',
+    s: '1s',
+    ss: '%ss',
+    m: '1m',
+    mm: '%dm',
+    h: '1h',
+    hh: '%dh',
+    d: '1d',
+    dd: '%dd',
+    M: '1M',
+    MM: '%dM',
+    y: '1Y',
+    yy: '%dY',
+  },
+});
+
+interface FeedDetailsProps {
+  item: DocumentData | undefined;
+  navigation: StackNavigationProp<RootStackParamList, 'Home'>;
+}
+
+export default function FeedDetails({ item, navigation }: FeedDetailsProps) {
   const [isLiked, setIsLiked] = useState({
     liked: false,
-    counter: item.likes_count as number,
+    counter: item?.likes_count as number,
   });
   const currentUser = useAppSelector((state) => state.currentUser.currentUser);
-  const user = useUserQuery(item.uid).data;
+  const user = useUserQuery(item?.uid).data;
 
   useEffect(() => {
-    fetchLikes(item.id, currentUser?.uid).then((res) => {
+    fetchLikes(item?.id, currentUser?.uid).then((res) => {
       setIsLiked({
         ...isLiked,
         liked: res,
@@ -50,12 +75,10 @@ export default function FeedDetails({ item }: DocumentData) {
           <TouchableOpacity
             onPress={() => {
               if (user?.uid !== currentUser?.uid) {
-                // @ts-ignore
                 navigation.navigate('UsersProfile', {
                   user,
                 });
               } else {
-                // @ts-ignore
                 navigation.navigate('Profile');
               }
             }}
@@ -79,7 +102,7 @@ export default function FeedDetails({ item }: DocumentData) {
               adjustsFontSizeToFit
               style={{ color: 'white', fontWeight: 'bold', fontSize: 16 }}
             >
-              {item.name}
+              {item?.name}
             </Text>
             <Text
               numberOfLines={1}
@@ -103,7 +126,9 @@ export default function FeedDetails({ item }: DocumentData) {
                   opacity: 0.9,
                 }}
               >
-                {moment(item.createdAt.toDate()).fromNow(true)}
+                {moment(item?.createdAt?.toDate()).fromNow(true)
+                  ? moment(item?.createdAt?.toDate()).fromNow(true)
+                  : '1s'}
               </Text>
 
               <Text
@@ -129,7 +154,7 @@ export default function FeedDetails({ item }: DocumentData) {
                   width: '80%',
                 }}
               >
-                {item.location.name}
+                {item?.location.name}
               </Text>
             </View>
           </View>
@@ -138,35 +163,28 @@ export default function FeedDetails({ item }: DocumentData) {
         <View style={{ backgroundColor: '#fff' }}>
           <TouchableOpacity
             onPress={() =>
-              updateLikeCount(item.id, currentUser?.uid, isLiked, setIsLiked)
+              updateLikeCount(item?.id, currentUser?.uid, isLiked, setIsLiked)
             }
             activeOpacity={0.8}
             style={{
-              backgroundColor: isLiked.liked ? '#770573' : '#1E1E1E',
+              backgroundColor: isLiked.liked ? '#d20b3c' : '#1E1E1E',
               opacity: 0.9,
-              paddingLeft: 5,
-              paddingTop: 6,
-              borderRadius: 30,
+              paddingLeft: 7,
+              paddingTop: 4.5,
+              borderRadius: 50,
               position: 'absolute',
-              bottom: 35,
-              right: 8,
+              bottom: 30,
+              right: 5,
               width: 60,
               height: 30,
               flexDirection: 'row',
             }}
           >
-            <Octicons color={'#fff'} name="heart-fill" size={20} />
-            {/* <Text
-              style={{
-                color: 'white',
-                // fontSize: 12,
-                paddingHorizontal: 15,
-                paddingTop: 2,
-                fontWeight: '700',
-              }}
-            >
-              {isLiked.counter > 0 ? isLiked.counter : null}
-            </Text> */}
+            {isLiked.liked ? (
+              <AntDesign color={'#fff'} name="heart" size={22} />
+            ) : (
+              <AntDesign color={'#fff'} name="hearto" size={22} />
+            )}
           </TouchableOpacity>
         </View>
       </View>

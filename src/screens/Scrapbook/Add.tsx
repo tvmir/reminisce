@@ -11,14 +11,16 @@ import {
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { RootStackParamList } from '../../utils/types';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import * as ImagePicker from 'expo-image-picker';
 import * as MediaLibrary from 'expo-media-library';
 import Header from '../../ui/components/Extra/Header';
+import { StackNavigationProp } from '@react-navigation/stack';
 
-export default function Add({
-  navigation,
-}: NativeStackScreenProps<RootStackParamList>) {
+interface AddProps {
+  navigation: StackNavigationProp<RootStackParamList, 'Add'>;
+}
+
+export default function Add({ navigation }: AddProps) {
   const [image, setImage] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { width, height } = useWindowDimensions();
@@ -82,7 +84,7 @@ export default function Add({
   useEffect(() => {
     if (image) {
       // saveToCameraRoll(image);
-      navigation.push('Images', { image } as string | any);
+      navigation.push('Images', { image });
     }
   }, [image]);
 
@@ -127,8 +129,7 @@ export default function Add({
               <Button
                 title="Next"
                 onPress={() => {
-                  // saveToCameraRoll(image);
-                  navigation.push('Images', { image } as any);
+                  navigation.push('Images', { image });
                 }}
               />
             </View>

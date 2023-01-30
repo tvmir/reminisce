@@ -60,9 +60,7 @@ export default function Home() {
     dispatch(fetchCurrentUserScrapbooks(auth.currentUser?.uid));
   }, []);
 
-  const FillInComponent = () => {
-    return null;
-  };
+  const FillInComponent = () => null;
 
   return (
     <Tab.Navigator
@@ -162,21 +160,6 @@ export default function Home() {
           ),
         }}
       />
-
-      {/* <Tab.Screen
-        name="Profile"
-        component={ProfileStack}
-        options={{
-          headerShown: false,
-          tabBarIcon: ({ focused, color, size }) => (
-            <Feather
-              name={'user'}
-              color={focused ? '#0FEFFD' : color}
-              size={size}
-            />
-          ),
-        }}
-      /> */}
     </Tab.Navigator>
   );
 }

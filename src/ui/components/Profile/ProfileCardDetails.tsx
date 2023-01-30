@@ -4,8 +4,8 @@ import { SharedElement } from 'react-navigation-shared-element';
 import Entypo from 'react-native-vector-icons/Entypo';
 import * as Animatable from 'react-native-animatable';
 import { DocumentData } from 'firebase/firestore';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../utils/types';
+import { StackNavigationProp } from '@react-navigation/stack';
 
 // constants
 const { width } = Dimensions.get('window');
@@ -14,7 +14,10 @@ const CARD_HEIGHT = 170;
 
 interface ProfileCardDetailsProps {
   item: DocumentData | undefined;
-  navigation: NativeStackScreenProps<RootStackParamList>;
+  navigation: StackNavigationProp<
+    RootStackParamList,
+    'Profile' | 'UsersProfile'
+  >;
 }
 
 export default function ProfileCardDetails({
@@ -27,7 +30,6 @@ export default function ProfileCardDetails({
         flex: 1,
         flexDirection: 'row',
       }}
-      // @ts-ignore
       onPress={() => navigation.navigate('Scrapbook', { item })}
     >
       <View

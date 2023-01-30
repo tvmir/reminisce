@@ -1,63 +1,36 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import {
   View,
-  Animated,
-  Text,
   Image,
   ScrollView,
   TouchableWithoutFeedback,
 } from 'react-native';
 import { SharedElement } from 'react-navigation-shared-element';
-import ScrapbookDetails from './ScrapbookDetails';
+import ScrapbookInteractionsBar from './ScrapbookInteractionsBar';
 import MasonryList from '@react-native-seoul/masonry-list';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { DocumentData } from 'firebase/firestore';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../utils/types';
+import { StackNavigationProp } from '@react-navigation/stack';
+import ScrapbookDetails from './ScrapbookDetails';
 
-interface ScrapbookImageListProps {
+interface ScrapbookImagesProps {
   images: string[];
   id: string;
   item: DocumentData | undefined;
-  navigation: NativeStackScreenProps<RootStackParamList>;
+  navigation: StackNavigationProp<RootStackParamList, 'Scrapbook'>;
 }
 
-export default function ScrapbookImageList({
+export default function ScrapbookImages({
   images,
   id,
   item,
   navigation,
-}: ScrapbookImageListProps) {
-  const scrollY = useRef(new Animated.Value(0)).current;
-
+}: ScrapbookImagesProps) {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <View
-          style={{
-            justifyContent: 'space-between',
-            paddingHorizontal: 14,
-            paddingBottom: 8,
-            paddingTop: 18,
-          }}
-        >
-          <Text style={[{ fontSize: 32, fontWeight: 'bold', color: '#fff' }]}>
-            {item?.name}
-          </Text>
-
-          <Text style={[{ fontSize: 10, color: '#cdcdcd' }]}>
-            {item?.location.name || ''}
-          </Text>
-          <Text style={[{ fontSize: 14, color: '#ffffff', paddingTop: 10 }]}>
-            {item?.description}
-          </Text>
-          <Text style={[{ fontSize: 12, color: '#949494', paddingTop: 10 }]}>
-            {item?.tags
-              .map((tag: string) => `#${tag}`)
-              .join(' ')
-              .replace(/# /g, '#') || ''}
-          </Text>
-        </View>
+        <ScrapbookDetails item={item} />
         <MasonryList
           showsVerticalScrollIndicator={false}
           keyExtractor={(_, index) => index.toString()}
@@ -67,14 +40,12 @@ export default function ScrapbookImageList({
               {!i ? (
                 <View style={{ padding: 6 }}>
                   <TouchableWithoutFeedback
-                    // @ts-ignore
                     onPress={() => navigation.navigate('FullView', { item })}
                   >
                     <SharedElement id={`${id}.images`}>
                       <Image
                         style={{ height: 260, borderRadius: 16 }}
-                        // @ts-ignore
-                        source={{ uri: item }}
+                        source={{ uri: item } as any}
                       />
                     </SharedElement>
                   </TouchableWithoutFeedback>
@@ -82,7 +53,6 @@ export default function ScrapbookImageList({
               ) : (
                 <View style={{ padding: 6 }}>
                   <TouchableWithoutFeedback
-                    // @ts-ignore
                     onPress={() => navigation.navigate('FullView', { item })}
                   >
                     <SharedElement id={`${id}.imagesView`}>
@@ -92,8 +62,7 @@ export default function ScrapbookImageList({
                           height: i % 3 === 0 ? 160 : 230,
                           borderRadius: 16,
                         }}
-                        // @ts-ignore
-                        source={{ uri: item }}
+                        source={{ uri: item } as any}
                       />
                     </SharedElement>
                   </TouchableWithoutFeedback>
@@ -103,7 +72,7 @@ export default function ScrapbookImageList({
           )}
         />
       </ScrollView>
-      {<ScrapbookDetails item={item} scrollY={scrollY} />}
+      {<ScrapbookInteractionsBar item={item} />}
     </SafeAreaView>
   );
 }

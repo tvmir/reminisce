@@ -14,16 +14,18 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { fetchScrapbooks } from '../../contexts/slices/scrapbooks/scrapbooksSlice';
 import { useAppDispatch, useAppSelector } from '../../utils/hooks';
-import { useNavigation, useScrollToTop } from '@react-navigation/native';
+import { useScrollToTop } from '@react-navigation/native';
 import { fetchFollowingScrapbooks } from '../../contexts/services/scrapbook';
 import { SceneMap, TabView } from 'react-native-tab-view';
 import MainFeed from '../../ui/components/Feed/MainFeed';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { BottomTabParamList } from '../../utils/types';
+import { StackNavigationProp } from '@react-navigation/stack';
 
-export default function Feed({
-  navigation,
-}: NativeStackScreenProps<BottomTabParamList>) {
+interface FeedProps {
+  navigation: StackNavigationProp<BottomTabParamList, 'Feed'>;
+}
+
+export default function Feed({ navigation }: FeedProps) {
   const dispatch = useAppDispatch();
   const scrapbook = useAppSelector((state) => state.scrapbooks.scrapbooks);
   const [forYouScrapbooks, setForYouScrapbooks] = useState<
@@ -68,7 +70,8 @@ export default function Feed({
       decelerationRate={'normal'}
       keyExtractor={(item) => item.id}
       data={forYouScrapbooks}
-      renderItem={({ item, index }) => {
+      renderItem={({ item }) => {
+        // @ts-ignore
         return <MainFeed item={item} navigation={navigation} />;
       }}
     />
@@ -85,7 +88,8 @@ export default function Feed({
       decelerationRate={'normal'}
       keyExtractor={(item) => item.id}
       data={followingScrapbooks}
-      renderItem={({ item, index }) => {
+      renderItem={({ item }) => {
+        // @ts-ignore
         return <MainFeed item={item} navigation={navigation} />;
       }}
     />

@@ -1,14 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { View, Text, TouchableOpacity, Image, FlatList } from 'react-native';
 import { fetchUsersSearch } from '../../contexts/slices/users/searchUsersSlice';
 import { theme } from '../../ui/shared/theme';
 import { useAppDispatch, useAppSelector } from '../../utils/hooks';
 import { RootStackParamList } from '../../utils/types';
+import { StackNavigationProp } from '@react-navigation/stack';
 
-export default function SearchUsers({
-  navigation,
-}: NativeStackScreenProps<RootStackParamList>) {
+interface UserSearchProps {
+  navigation: StackNavigationProp<
+    RootStackParamList,
+    'Profile',
+    'UsersProfile'
+  >;
+}
+
+export default function SearchUsers({ navigation }: UserSearchProps) {
   const dispatch = useAppDispatch();
   const [input, setInput] = useState<string>('');
   const [search, setSearch] = useState<string>('');
@@ -43,7 +49,7 @@ export default function SearchUsers({
               if (item.uid !== currentUser?.uid) {
                 navigation.navigate('UsersProfile', {
                   user: item,
-                } as any);
+                });
               } else {
                 navigation.navigate('Profile');
               }

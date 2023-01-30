@@ -9,10 +9,12 @@ import {
 import { SharedElement } from 'react-navigation-shared-element';
 import FeedDetails from './FeedDetails';
 import { DocumentData } from 'firebase/firestore';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '../../../utils/types';
 
 interface MainFeedProps {
   item: DocumentData | undefined;
-  navigation: any;
+  navigation: StackNavigationProp<RootStackParamList, 'Home'>;
 }
 
 export default function MainFeed({ item, navigation }: MainFeedProps) {
@@ -42,7 +44,7 @@ export default function MainFeed({ item, navigation }: MainFeedProps) {
           </View>
         </TouchableWithoutFeedback>
       </SharedElement>
-      <FeedDetails item={item} />
+      <FeedDetails item={item} navigation={navigation} />
     </View>
   );
 }

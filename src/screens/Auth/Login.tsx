@@ -14,10 +14,13 @@ import { auth } from '../../api/firebase';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../utils/types';
 import { login } from '../../contexts/slices/users/currentUserSlice';
+import { StackNavigationProp } from '@react-navigation/stack';
 
-export default function Login({
-  navigation,
-}: NativeStackScreenProps<RootStackParamList>) {
+interface LoginProps {
+  navigation: StackNavigationProp<RootStackParamList, 'Login'>;
+}
+
+export default function Login({ navigation }: LoginProps) {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
 
@@ -58,7 +61,6 @@ export default function Login({
 
           <View style={{ alignItems: 'center', flex: 1, paddingTop: 30 }}>
             <View style={{ padding: 10, width: '99%' }}>
-              {/* <Text style={styles.text}>Email</Text> */}
               <TextInput
                 style={styles.input}
                 placeholderTextColor="#777777"
@@ -69,7 +71,6 @@ export default function Login({
                 onChangeText={setEmail}
               />
               <View>
-                {/* <Text style={styles.text}>Password</Text> */}
                 <TextInput
                   style={styles.input}
                   secureTextEntry
@@ -142,7 +143,6 @@ export default function Login({
           </View>
         </View>
       </TouchableWithoutFeedback>
-      {/* </ScrollView> */}
     </KeyboardAvoidingView>
   );
 }
