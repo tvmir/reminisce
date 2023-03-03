@@ -74,6 +74,7 @@ export const fetchUsersByID = async (
 ): Promise<DocumentData | undefined> => {
   const userRef = doc(db, 'users', uid!);
   const userDoc = await getDoc(userRef);
+
   if (userDoc.exists()) {
     return userDoc.data();
   } else {

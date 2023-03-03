@@ -74,13 +74,11 @@ export default function FeedDetails({ item, navigation }: FeedDetailsProps) {
         >
           <TouchableOpacity
             onPress={() => {
-              if (user?.uid !== currentUser?.uid) {
-                navigation.navigate('UsersProfile', {
-                  user,
-                });
-              } else {
-                navigation.navigate('Profile');
-              }
+              user?.uid !== currentUser?.uid
+                ? navigation.navigate('UsersProfile', {
+                    user,
+                  })
+                : navigation.navigate('Profile');
             }}
             activeOpacity={0.8}
           >

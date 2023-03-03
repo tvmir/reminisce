@@ -23,7 +23,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 // constants
 const { height } = Dimensions.get('window');
 const d = (1 + Math.sqrt(5)) / 2;
-const MIN_HEADER_HEIGHT = 64 + 5;
+const MIN_HEADER_HEIGHT = 69;
 const MAX_HEADER_HEIGHT = height * (1 - 1 / d);
 const HEADER_DELTA = MAX_HEADER_HEIGHT - MIN_HEADER_HEIGHT;
 
@@ -48,17 +48,57 @@ export default function ProfileDetails({
   const currentUser = useAppSelector((state) => state.currentUser.currentUser);
 
   const handleFollow = () => {
-    if (isFollowing) {
-      return (
+    isFollowing ? (
+      <TouchableOpacity
+        style={{
+          borderWidth: 0.5,
+          borderColor: '#10f0fe',
+          borderRadius: 20,
+          padding: 8,
+          paddingLeft: 25,
+          paddingRight: 25,
+          marginRight: 10,
+        }}
+        onPress={() => {
+          isFollowingMutation.mutate({
+            followedUID: user?.uid,
+            isFollowing,
+          });
+        }}
+        activeOpacity={0.8}
+      >
+        <Text style={{ color: theme.colors.primary, fontWeight: '500' }}>
+          Following
+        </Text>
+      </TouchableOpacity>
+    ) : (
+      <LinearGradient
+        colors={[
+          '#6b0169',
+          '#5a0158',
+          '#750273',
+          '#850283',
+          '#850283',
+          '#9a0398',
+        ]}
+        start={{ x: 0.0, y: 1.0 }}
+        end={{ x: 1.0, y: 1.0 }}
+        style={{
+          width: 110,
+          height: 32,
+          borderRadius: 20,
+          padding: 1,
+          right: 10,
+          overflow: 'hidden',
+        }}
+      >
         <TouchableOpacity
           style={{
-            borderWidth: 0.5,
-            borderColor: '#10f0fe',
+            flex: 1,
             borderRadius: 20,
-            padding: 8,
-            paddingLeft: 25,
-            paddingRight: 25,
-            marginRight: 10,
+            backgroundColor: theme.colors.background,
+            alignItems: 'center',
+            justifyContent: 'center',
           }}
           onPress={() => {
             isFollowingMutation.mutate({
@@ -66,57 +106,13 @@ export default function ProfileDetails({
               isFollowing,
             });
           }}
-          activeOpacity={0.8}
         >
           <Text style={{ color: theme.colors.primary, fontWeight: '500' }}>
-            Following
+            Follow
           </Text>
         </TouchableOpacity>
-      );
-    } else {
-      return (
-        <LinearGradient
-          colors={[
-            '#6b0169',
-            '#5a0158',
-            '#750273',
-            '#850283',
-            '#850283',
-            '#9a0398',
-          ]}
-          start={{ x: 0.0, y: 1.0 }}
-          end={{ x: 1.0, y: 1.0 }}
-          style={{
-            width: 110,
-            height: 32,
-            borderRadius: 20,
-            padding: 1,
-            right: 10,
-            overflow: 'hidden',
-          }}
-        >
-          <TouchableOpacity
-            style={{
-              flex: 1,
-              borderRadius: 20,
-              backgroundColor: theme.colors.background,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-            onPress={() => {
-              isFollowingMutation.mutate({
-                followedUID: user?.uid,
-                isFollowing,
-              });
-            }}
-          >
-            <Text style={{ color: theme.colors.primary, fontWeight: '500' }}>
-              Follow
-            </Text>
-          </TouchableOpacity>
-        </LinearGradient>
-      );
-    }
+      </LinearGradient>
+    );
   };
 
   const AnimatedImageBackground =

@@ -16,43 +16,32 @@ import {
   query,
   where,
 } from 'firebase/firestore';
-import { db, app } from '../../../api/firebase';
-
-// mockFirebase({
-//   database: {
-//     // @ts-ignore
-//     scrapbooks: [
-//       {
-//         id: '123',
-//         // uid: '1',
-//         name: 'test',
-//         description: 'test',
-//         location: { lat: 1, lng: 1 },
-//         images: ['test'],
-//         createdAt: 'test',
-//         likes_count: 0,
-//         comments_count: 0,
-//         tags: ['test'],
-//       },
-//       {
-//         id: '456',
-//         // uid: '2',
-//         name: 'test',
-//         description: 'test',
-//         location: { lat: 1, lng: 1 },
-//         images: ['test'],
-//         createdAt: 'test',
-//         likes_count: 0,
-//         comments_count: 0,
-//         tags: ['test'],
-//       },
-//     ],
-//   },
-// });
+import { db } from '../../../api/firebase';
 
 jest.mock('@react-native-async-storage/async-storage', () =>
   require('@react-native-async-storage/async-storage/jest/async-storage-mock')
 );
+
+mockFirebase({
+  database: {
+    users: [
+      { id: 'abc123', name: 'Homer Simpson' },
+      { id: 'abc456', name: 'Lisa Simpson' },
+    ],
+  },
+});
+
+afterEach(() => {
+  jest.restoreAllMocks();
+});
+
+test('testing stuff', async () => {
+  const userRef = collection(db, 'users');
+  const user = await getDocs(userRef).then((userDoc) => {
+    console.log(userDoc.docs.map((doc) => doc.data()));
+  });
+  expect(user).toBe('Homer Simpson');
+});
 
 // describe('Fetching scrapbooks in descending order', () => {
 //   it(`should return the latest scrapbook's name`, async () => {
@@ -64,40 +53,3 @@ jest.mock('@react-native-async-storage/async-storage', () =>
 //     expect(scrapbooks[0].name).toBe('test');
 //   });
 // });
-
-function maybeGetUsersInState(state: any) {
-  const q = query(collection(db, 'scrapbooks'), where('state', '==', state));
-
-  // if (state) {
-  //   q = where(query, 'state', '==', state);
-  // }
-
-  return getDocs(q);
-}
-
-describe('we can query', () => {
-  mockFirebase({
-    database: {
-      users: [
-        {
-          id: 'abc123',
-          name: 'Homer Simpson',
-          state: 'connecticut',
-        },
-        {
-          id: 'abc456',
-          name: 'Lisa Simpson',
-          state: 'alabama',
-        },
-      ],
-    },
-  });
-
-  test('query with state', async () => {
-    await maybeGetUsersInState('alabama');
-
-    // Assert that we call the correct Firestore methods
-    // expect(mockCollection).toHaveBeenCalledWith('users');
-    expect(mockWhere).toHaveBeenCalledWith('state', '==', 'alabama');
-  });
-});

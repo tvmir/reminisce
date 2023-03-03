@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAppDispatch, useAppSelector } from '../../utils/hooks';
-import { BottomTabParamList, RootStackParamList } from '../../utils/types';
+import { BottomTabParamList } from '../../utils/types';
 import Feather from 'react-native-vector-icons/Feather';
 import ScrapbookMasonry from '../../ui/components/Search/ScrapbookMasonry';
 import { fetchScrapbooks } from '../../contexts/slices/scrapbooks/scrapbooksSlice';

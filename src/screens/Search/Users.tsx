@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, Image, FlatList } from 'react-native';
-import { fetchUsersSearch } from '../../contexts/slices/users/searchUsersSlice';
 import { theme } from '../../ui/shared/theme';
 import { useAppDispatch, useAppSelector } from '../../utils/hooks';
 import { RootStackParamList } from '../../utils/types';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { fetchUsers } from '../../contexts/slices/users/usersSlice';
 
 interface UserSearchProps {
   navigation: StackNavigationProp<
@@ -28,7 +28,7 @@ export default function SearchUsers({ navigation }: UserSearchProps) {
   }, [input]);
 
   useEffect(() => {
-    dispatch(fetchUsersSearch());
+    dispatch(fetchUsers());
   }, []);
 
   return (
@@ -46,13 +46,11 @@ export default function SearchUsers({ navigation }: UserSearchProps) {
         renderItem={({ item }) => (
           <TouchableOpacity
             onPress={() => {
-              if (item.uid !== currentUser?.uid) {
-                navigation.navigate('UsersProfile', {
-                  user: item,
-                });
-              } else {
-                navigation.navigate('Profile');
-              }
+              item.uid !== currentUser?.uid
+                ? navigation.navigate('UsersProfile', {
+                    user: item,
+                  })
+                : navigation.navigate('Profile');
             }}
             style={{
               flex: 1,
