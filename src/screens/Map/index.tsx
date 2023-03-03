@@ -109,7 +109,7 @@ export default function Map() {
       <MapView
         ref={mapRef}
         provider={PROVIDER_GOOGLE}
-        customMapStyle={customMapTheme}
+        customMapStyle={mapNightTheme}
         initialRegion={{
           latitude: location?.coords.latitude as number,
           longitude: location?.coords.longitude as number,

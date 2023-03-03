@@ -5,6 +5,7 @@ import { useFonts } from 'expo-font';
 import { QueryClientProvider } from 'react-query';
 import { queryClient } from './api/client';
 import MainDrawer from './navigation/Drawer';
+import { ActionSheetProvider } from '@expo/react-native-action-sheet';
 
 export default function App() {
   // Loading custom fonts
@@ -14,10 +15,12 @@ export default function App() {
   if (!fontsLoaded) return null;
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <NavigationContainer theme={theme}>
-        <MainDrawer />
-      </NavigationContainer>
-    </QueryClientProvider>
+    <ActionSheetProvider>
+      <QueryClientProvider client={queryClient}>
+        <NavigationContainer theme={theme}>
+          <MainDrawer />
+        </NavigationContainer>
+      </QueryClientProvider>
+    </ActionSheetProvider>
   );
 }

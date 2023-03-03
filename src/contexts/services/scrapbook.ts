@@ -16,7 +16,12 @@ import {
   updateDoc,
   where,
 } from 'firebase/firestore';
-import { getDownloadURL } from 'firebase/storage';
+import {
+  deleteObject,
+  getDownloadURL,
+  getStorage,
+  ref,
+} from 'firebase/storage';
 import { auth, db } from '../../api/firebase';
 import { uploadImage } from './storage';
 import { fetchFollowingUsers } from './user';
@@ -38,6 +43,7 @@ export const uploadScrapbookImages = async (
     .catch((err) => {
       console.log('Error getting downloadURL:', err);
     });
+
   return downloadURL;
 };
 
@@ -75,6 +81,35 @@ export const writeScrapbook = async (
     });
 };
 
+export const deleteScrapbook = async (sid: string) => {
+  const scrapbookRef = doc(db, 'scrapbooks', sid);
+  const scrapbookDoc = await getDoc(scrapbookRef);
+
+  if (scrapbookDoc.exists()) {
+    const { images } = scrapbookDoc.data();
+    if (images !== null) {
+      const storage = getStorage();
+      const imagesRef = ref(storage, images);
+      const imagesPathRef = ref(storage, imagesRef.fullPath);
+
+      await deleteObject(imagesPathRef)
+        .then(async () => {
+          console.log('Images deleted successfully');
+          await deleteDoc(scrapbookRef)
+            .then(() => {
+              console.log('Scrapbook deleted successfully');
+            })
+            .catch((err) => {
+              console.log('Error deleting scrapbook:', err);
+            });
+        })
+        .catch((err) => {
+          console.log('Error deleting image:', err);
+        });
+    }
+  }
+};
+
 // Used for fetching the scrapbooks of the users that the current user is following
 export const fetchFollowingScrapbooks = async (
   uid: string = auth.currentUser?.uid!
@@ -95,6 +130,7 @@ export const fetchFollowingScrapbooks = async (
   const scrapbooks = scrapbooksSnapshot.docs.map((doc) => {
     return { id: doc.id, ...doc.data() };
   });
+
   return scrapbooks;
 };
 
@@ -214,10 +250,9 @@ export const fetchComments = async (
 export const updateCommentCount = async (sid: string): Promise<void> => {
   const commentsRef = doc(db, 'scrapbooks', sid);
   const commentsCount = await getDoc(commentsRef).then(
-    (doc) => doc.data()?.comments_count
+    (doc) => doc.data()?.comments_count + 1
   );
-  const newCommentCount = commentsCount + 1;
-  await updateDoc(commentsRef, { comments_count: newCommentCount });
+  await updateDoc(commentsRef, { comments_count: commentsCount });
 };
 
 // Detaching comments listener to prevent memory leaks and unnecessary calls to the database

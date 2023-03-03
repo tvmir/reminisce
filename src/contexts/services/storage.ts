@@ -15,7 +15,6 @@ export const uploadImage = async (
   const storageRef = ref(storage, path);
   const blob = await response.blob();
   const metadata = { contentType: 'image/jpeg' };
-  console.log('Storage PATH:', path);
 
   const uploadTask = uploadBytesResumable(storageRef, blob, metadata);
   return uploadTask;

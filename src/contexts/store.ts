@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import currentUserReducer from './slices/users/currentUserSlice';
 import userReducer from './slices/users/userSlice';
+import usersReducer from './slices/users/usersSlice';
 import usersSearchReducer from './slices/users/searchUsersSlice';
 import currentUserScrapbooksReducer from './slices/scrapbooks/currentUserScrapbooksSlice';
 import userScrapbooksReducer from './slices/scrapbooks/userScrapbooksSlice';
@@ -12,7 +13,8 @@ export const store = configureStore({
   reducer: {
     currentUser: currentUserReducer,
     user: userReducer,
-    users: usersSearchReducer,
+    users: usersReducer,
+    usersSearch: usersSearchReducer,
     currentUserScrapbooks: currentUserScrapbooksReducer,
     userScrapbooks: userScrapbooksReducer,
     scrapbooks: scrapbooksReducer,

@@ -1,11 +1,20 @@
 import React from 'react';
-import { View, Text, TouchableWithoutFeedback, Dimensions } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableWithoutFeedback,
+  Dimensions,
+  TouchableOpacity,
+} from 'react-native';
 import { SharedElement } from 'react-navigation-shared-element';
 import Entypo from 'react-native-vector-icons/Entypo';
 import * as Animatable from 'react-native-animatable';
 import { DocumentData } from 'firebase/firestore';
 import { RootStackParamList } from '../../../utils/types';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { useAppSelector } from '../../../utils/hooks';
+import { useActionSheet } from '@expo/react-native-action-sheet';
+import { deleteScrapbook } from '../../../contexts/services/scrapbook';
 
 // constants
 const { width } = Dimensions.get('window');
@@ -24,34 +33,64 @@ export default function ProfileCardDetails({
   item,
   navigation,
 }: ProfileCardDetailsProps) {
+  const { showActionSheetWithOptions } = useActionSheet();
+  const currentUser = useAppSelector((state) => state.currentUser.currentUser);
+
+  const currentUserMenu = (): void => {
+    const options = ['Delete', 'Edit', 'Cancel'];
+    const destructiveButtonIndex = 0;
+    const cancelButtonIndex = 2;
+
+    showActionSheetWithOptions(
+      {
+        options,
+        cancelButtonIndex,
+        destructiveButtonIndex,
+      },
+      (selectedIndex) => {
+        switch (selectedIndex) {
+          case 1:
+            alert('Edit');
+            break;
+
+          case destructiveButtonIndex:
+            deleteScrapbook(item?.id);
+            break;
+
+          case cancelButtonIndex:
+        }
+      }
+    );
+  };
+
   return (
-    <TouchableWithoutFeedback
+    <View
       style={{
-        flex: 1,
         flexDirection: 'row',
+        paddingBottom: 10,
       }}
-      onPress={() => navigation.navigate('Scrapbook', { item })}
     >
       <View
         style={{
-          flexDirection: 'row',
-          paddingBottom: 10,
+          left: 7,
+          paddingRight: 14,
         }}
       >
         <View
           style={{
-            left: 7,
-            paddingRight: 14,
+            width: CARD_WIDTH,
+            height: CARD_HEIGHT,
+            borderWidth: 0.5,
+            borderRadius: 16,
+            borderColor: '#121212',
           }}
         >
-          <View
+          <TouchableWithoutFeedback
             style={{
-              width: CARD_WIDTH,
-              height: CARD_HEIGHT,
-              borderWidth: 0.5,
-              borderRadius: 16,
-              borderColor: '#121212',
+              flex: 1,
+              flexDirection: 'row',
             }}
+            onPress={() => navigation.navigate('Scrapbook', { item })}
           >
             <SharedElement id={`${item?.id}.images`}>
               <View
@@ -77,38 +116,48 @@ export default function ProfileCardDetails({
                 />
               </View>
             </SharedElement>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'flex-start',
-                paddingHorizontal: 10,
-                paddingVertical: 8,
-              }}
-            >
-              <View style={{ flex: 1 }}>
-                <Text
-                  numberOfLines={1}
-                  style={{
-                    marginVertical: 4,
-                    fontSize: 14,
-                    fontWeight: 'bold',
-                    color: '#d3d6d9',
-                  }}
-                >
-                  {item?.name}
-                </Text>
-                <Text
-                  numberOfLines={1}
-                  style={{ fontSize: 12, color: '#8e8e8e' }}
-                >
-                  {item?.location.name}
-                </Text>
-              </View>
-              <Entypo name="dots-three-horizontal" size={12} color="#d3d6d9" />
+          </TouchableWithoutFeedback>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'flex-start',
+              paddingHorizontal: 10,
+              paddingVertical: 8,
+            }}
+          >
+            <View style={{ flex: 1 }}>
+              <Text
+                numberOfLines={1}
+                style={{
+                  marginVertical: 4,
+                  fontSize: 14,
+                  fontWeight: 'bold',
+                  color: '#d3d6d9',
+                }}
+              >
+                {item?.name}
+              </Text>
+              <Text
+                numberOfLines={1}
+                style={{ fontSize: 12, color: '#8e8e8e' }}
+              >
+                {item?.location.name}
+              </Text>
             </View>
+            {currentUser?.uid === item?.uid ? (
+              <TouchableOpacity onPress={currentUserMenu}>
+                <Entypo
+                  name="dots-three-horizontal"
+                  size={13}
+                  color="#d3d6d9"
+                />
+              </TouchableOpacity>
+            ) : (
+              <Entypo name="dots-three-horizontal" size={13} color="#d3d6d9" />
+            )}
           </View>
         </View>
       </View>
-    </TouchableWithoutFeedback>
+    </View>
   );
 }

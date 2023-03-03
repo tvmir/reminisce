@@ -5,7 +5,6 @@ import {
   getDocs,
   orderBy,
   query,
-  where,
 } from 'firebase/firestore';
 import { db } from '../../../api/firebase';
 import { RootState } from '../../store';
@@ -19,30 +18,22 @@ const initialState: UsersSearchData = {
 };
 
 // Used for search functionality
-export const fetchUsersSearch = createAsyncThunk(
-  'users/fetchUsersSearch',
-  async (user: string) => {
-    if (user === '') return [];
-    const usersRef = collection(db, 'users');
-    const q = query(
-      usersRef,
-      where('username', '>=', user),
-      where('username', '<=', user + '\uf8ff')
-    );
-    const usersQuerySnapshot = await getDocs(q);
-    let users = usersQuerySnapshot.docs.map((doc) => {
-      return { id: doc.id, ...doc.data() };
-    });
-    return users;
-  }
-);
+export const fetchUsers = createAsyncThunk('users/fetchUsers', async () => {
+  const usersRef = collection(db, 'users');
+  const q = query(usersRef, orderBy('createdAt', 'desc'));
+  const usersSnapshot = await getDocs(q);
+  let users = usersSnapshot.docs.map((doc) => {
+    return { id: doc.id, ...doc.data() };
+  });
+  return users;
+});
 
 export const usersSlice = createSlice({
   name: 'users',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(fetchUsersSearch.fulfilled, (state, action) => {
+    builder.addCase(fetchUsers.fulfilled, (state, action) => {
       state.users = action.payload;
     });
   },

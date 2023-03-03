@@ -69,7 +69,6 @@ export const signup = (
         location,
         followers_count,
         following_count,
-        // bio,
       }).then(() => {
         console.log('User created');
       });
