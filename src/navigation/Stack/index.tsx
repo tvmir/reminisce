@@ -17,9 +17,11 @@ import UsersProfile from '../../screens/Profile/UsersProfile';
 import Scrapbook from '../../screens/Scrapbook/';
 import { createSharedElementStackNavigator } from 'react-navigation-shared-element';
 import FullView from '../../ui/components/Scrapbook/FullView';
+
 import { CardStyleInterpolators } from '@react-navigation/stack';
 import Profile from '../../screens/Profile';
 import { RootStackParamList } from '../../utils/types';
+import CameraView from '../../screens/CameraView';
 
 // Creating the shared element stack navigator
 const Stack = createSharedElementStackNavigator<RootStackParamList>();
@@ -178,6 +180,26 @@ const AppScreens = () => (
       }}
       name="UsersProfile"
       component={UsersProfile}
+    />
+    <Stack.Screen
+      options={{
+        headerShown: false,
+        headerTitle: '',
+        headerStyle: {
+          backgroundColor: theme.colors.background,
+        },
+        headerShadowVisible: false,
+        headerBackTitleVisible: false,
+        cardStyleInterpolator: ({ current: { progress } }) => {
+          return {
+            cardStyle: {
+              opacity: progress,
+            },
+          };
+        },
+      }}
+      name="CameraView"
+      component={CameraView}
     />
   </Stack.Navigator>
 );

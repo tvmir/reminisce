@@ -11,7 +11,14 @@ import Animated, { call, useCode } from 'react-native-reanimated';
 import nearBy from '../../../assets/gray_i.png';
 // @ts-ignore
 import current from '../../../assets/curr_i.png';
-import { Dimensions, Image, Platform, View } from 'react-native';
+import {
+  Dimensions,
+  Image,
+  Platform,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {
   useAppDispatch,
   useAppSelector,
@@ -20,6 +27,9 @@ import {
 import MapCard from '../../ui/components/Map/MapCard';
 import { fetchScrapbooks } from '../../contexts/slices/scrapbooks/scrapbooksSlice';
 import { LocationObject } from 'expo-location';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '../../utils/types';
 
 // constants
 const nearByIndicator = Image.resolveAssetSource(nearBy).uri;
@@ -28,7 +38,11 @@ const { width } = Dimensions.get('window');
 const CARD_WIDTH = width * 0.65;
 const SPACING = width * 0.15;
 
-export default function Map() {
+interface MapProps {
+  navigation: StackNavigationProp<RootStackParamList, 'CameraView'>;
+}
+
+export default function Map({ navigation }: MapProps) {
   const [location, setLocation] = useState<LocationObject>();
   const mapRef = useRef<MapView>(null);
   const scrollRef = useRef<Animated.ScrollView>(null);
@@ -165,6 +179,28 @@ export default function Map() {
           );
         })}
       </MapView>
+      <TouchableOpacity
+        onPress={() => navigation.navigate('CameraView')}
+        activeOpacity={0.8}
+        style={{
+          position: 'absolute',
+          bottom: 160,
+          right: 20,
+          borderWidth: 1,
+          borderColor: '#1F1E1E',
+          borderRadius: 48,
+          height: 60,
+          width: 60,
+          backgroundColor: '#1F1E1E',
+        }}
+      >
+        <MaterialCommunityIcons
+          name="rotate-360"
+          size={36}
+          color="white"
+          style={{ position: 'absolute', top: 10, left: 10 }}
+        />
+      </TouchableOpacity>
       <MapCard
         user={user}
         scrapbooks={scrapbook}

@@ -81,7 +81,8 @@ export const writeScrapbook = async (
     });
 };
 
-export const deleteScrapbook = async (sid: string) => {
+// Deleting a scrapbook from the database and the images from Firebase Storage
+export const deleteScrapbook = async (sid: string): Promise<void> => {
   const scrapbookRef = doc(db, 'scrapbooks', sid);
   const scrapbookDoc = await getDoc(scrapbookRef);
 
@@ -109,6 +110,8 @@ export const deleteScrapbook = async (sid: string) => {
     }
   }
 };
+
+// Updating a scrapbook's details
 
 // Used for fetching the scrapbooks of the users that the current user is following
 export const fetchFollowingScrapbooks = async (
