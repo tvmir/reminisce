@@ -24,6 +24,7 @@ export type RootStackParamList = {
     value: DocumentData | CurrentUser | undefined;
   };
   UsersProfile: { user: DocumentData | undefined } | undefined;
+  CameraView: undefined;
 };
 
 export type BottomTabParamList = {

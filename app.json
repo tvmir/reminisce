@@ -29,6 +29,12 @@
           "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera",
           "savePhotosPermission": "Allow $(PRODUCT_NAME) to save photos."
         }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera."
+        }
       ]
     ],
     "android": {
