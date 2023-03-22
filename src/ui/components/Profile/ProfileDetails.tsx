@@ -47,74 +47,6 @@ export default function ProfileDetails({
   const isFollowingMutation = useFollowMutation();
   const currentUser = useAppSelector((state) => state.currentUser.currentUser);
 
-  const handleFollow = () => {
-    isFollowing ? (
-      <TouchableOpacity
-        style={{
-          borderWidth: 0.5,
-          borderColor: '#10f0fe',
-          borderRadius: 20,
-          padding: 8,
-          paddingLeft: 25,
-          paddingRight: 25,
-          marginRight: 10,
-        }}
-        onPress={() => {
-          isFollowingMutation.mutate({
-            followedUID: user?.uid,
-            isFollowing,
-          });
-        }}
-        activeOpacity={0.8}
-      >
-        <Text style={{ color: theme.colors.primary, fontWeight: '500' }}>
-          Following
-        </Text>
-      </TouchableOpacity>
-    ) : (
-      <LinearGradient
-        colors={[
-          '#6b0169',
-          '#5a0158',
-          '#750273',
-          '#850283',
-          '#850283',
-          '#9a0398',
-        ]}
-        start={{ x: 0.0, y: 1.0 }}
-        end={{ x: 1.0, y: 1.0 }}
-        style={{
-          width: 110,
-          height: 32,
-          borderRadius: 20,
-          padding: 1,
-          right: 10,
-          overflow: 'hidden',
-        }}
-      >
-        <TouchableOpacity
-          style={{
-            flex: 1,
-            borderRadius: 20,
-            backgroundColor: theme.colors.background,
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-          onPress={() => {
-            isFollowingMutation.mutate({
-              followedUID: user?.uid,
-              isFollowing,
-            });
-          }}
-        >
-          <Text style={{ color: theme.colors.primary, fontWeight: '500' }}>
-            Follow
-          </Text>
-        </TouchableOpacity>
-      </LinearGradient>
-    );
-  };
-
   const AnimatedImageBackground =
     Animated.createAnimatedComponent(ImageBackground);
 
@@ -295,7 +227,75 @@ export default function ProfileDetails({
                 Following
               </Text>
             </View>
-            {handleFollow()}
+            {isFollowing ? (
+              <TouchableOpacity
+                style={{
+                  borderWidth: 0.5,
+                  borderColor: '#10f0fe',
+                  borderRadius: 20,
+                  padding: 8,
+                  paddingLeft: 25,
+                  paddingRight: 25,
+                  marginRight: 10,
+                }}
+                onPress={() => {
+                  isFollowingMutation.mutate({
+                    followedUID: user?.uid,
+                    isFollowing,
+                  });
+                }}
+                activeOpacity={0.8}
+              >
+                <Text
+                  style={{ color: theme.colors.primary, fontWeight: '500' }}
+                >
+                  Following
+                </Text>
+              </TouchableOpacity>
+            ) : (
+              <LinearGradient
+                colors={[
+                  '#6b0169',
+                  '#5a0158',
+                  '#750273',
+                  '#850283',
+                  '#850283',
+                  '#9a0398',
+                ]}
+                start={{ x: 0.0, y: 1.0 }}
+                end={{ x: 1.0, y: 1.0 }}
+                style={{
+                  width: 110,
+                  height: 32,
+                  borderRadius: 20,
+                  padding: 1,
+                  right: 10,
+                  overflow: 'hidden',
+                }}
+              >
+                <TouchableOpacity
+                  style={{
+                    flex: 1,
+                    borderRadius: 20,
+                    backgroundColor: theme.colors.background,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                  onPress={() => {
+                    isFollowingMutation.mutate({
+                      followedUID: user?.uid,
+                      isFollowing,
+                    });
+                  }}
+                >
+                  <Text
+                    style={{ color: theme.colors.primary, fontWeight: '500' }}
+                  >
+                    Follow
+                  </Text>
+                </TouchableOpacity>
+              </LinearGradient>
+            )}
           </>
         )}
       </View>

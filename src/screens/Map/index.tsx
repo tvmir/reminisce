@@ -1,10 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-import {
-  mapNightTheme,
-  mapDarkTheme,
-  customMapTheme,
-} from '../../ui/shared/mapTheme';
+import { mapNightTheme } from '../../ui/shared/mapTheme';
 import * as Locaiton from 'expo-location';
 import Animated, { call, useCode } from 'react-native-reanimated';
 // @ts-ignore
@@ -15,7 +11,6 @@ import {
   Dimensions,
   Image,
   Platform,
-  Text,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -51,15 +46,6 @@ export default function Map({ navigation }: MapProps) {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(fetchScrapbooks());
-  }, []);
-
-  const user = scrapbook?.map((_, index: number) => {
-    return useUserQuery(scrapbook[index]?.uid).data;
-  });
-
-  // Getting the users' current location
-  useEffect(() => {
     (async () => {
       let { status } = await Locaiton.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
@@ -69,9 +55,16 @@ export default function Map({ navigation }: MapProps) {
 
       let currentLocation = await Locaiton.getCurrentPositionAsync({});
       setLocation(currentLocation);
-      // console.log(currentLocation);
     })();
+  }, [location]);
+
+  useEffect(() => {
+    dispatch(fetchScrapbooks());
   }, []);
+
+  const user = scrapbook?.map((_, index: number) => {
+    return useUserQuery(scrapbook[index]?.uid).data;
+  });
 
   // Getting the coordinates of the scrapbooks and setting them as markers
   const coordinates = scrapbook?.map((marker) => {
@@ -142,15 +135,14 @@ export default function Map({ navigation }: MapProps) {
               onPress={(sb) => onMarkerPress(sb)}
             >
               <Animated.View>
-                {/* TODO: Fix markers */}
-                {!index ? (
+                {index === 0 ? (
                   <Animated.Image
                     style={[
                       {
                         alignItems: 'center',
                         justifyContent: 'center',
-                        width: 30,
-                        height: 30,
+                        width: 25,
+                        height: 25,
                       },
                     ]}
                     resizeMode="cover"
@@ -164,8 +156,8 @@ export default function Map({ navigation }: MapProps) {
                       {
                         alignItems: 'center',
                         justifyContent: 'center',
-                        width: 30,
-                        height: 30,
+                        width: 25,
+                        height: 25,
                       },
                     ]}
                     resizeMode="cover"
@@ -206,6 +198,7 @@ export default function Map({ navigation }: MapProps) {
         scrapbooks={scrapbook}
         scrollX={scrollX}
         scrollRef={scrollRef}
+        navigation={navigation}
       />
     </View>
   );

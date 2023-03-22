@@ -7,7 +7,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 interface HeaderProps {
   title: string;
   navigation: any;
-  close: any;
+  close?: any;
   onSave?: any;
   text?: any;
 }

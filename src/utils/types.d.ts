@@ -25,6 +25,8 @@ export type RootStackParamList = {
   };
   UsersProfile: { user: DocumentData | undefined } | undefined;
   CameraView: undefined;
+  ChatMessages: { id: DocumentData | undefined } | undefined;
+  CreateChat: { user: DocumentData | undefined } | undefined;
 };
 
 export type BottomTabParamList = {
@@ -33,5 +35,5 @@ export type BottomTabParamList = {
   Search: undefined;
   AddFC: undefined;
   Map: undefined;
-  Notifications: undefined;
+  Messages: undefined;
 };
