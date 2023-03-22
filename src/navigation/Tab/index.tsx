@@ -5,18 +5,18 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Feather from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Search from '../../screens/Search';
-import Notifications from '../../screens/Notifications';
 import Feed from '../../screens/Feed';
 import { theme } from '../../ui/shared/theme';
 import { BottomTabParamList } from '../../utils/types';
-import { LogBox, Text, TouchableOpacity } from 'react-native';
-import { useAppDispatch } from '../../utils/hooks';
+import { LogBox, Text, TouchableOpacity, View } from 'react-native';
+import { useAppDispatch, useChat } from '../../utils/hooks';
 import Map from '../../screens/Map';
 import {
   createSharedElementStackNavigator,
   SharedElementSceneComponent,
 } from 'react-navigation-shared-element';
 import { auth } from '../../api/firebase';
+import Chat from '../../screens/Chat';
 
 const wrapInSharedElementStack = (
   Screen: SharedElementSceneComponent<any>,
@@ -37,10 +37,7 @@ const wrapInSharedElementStack = (
 const FeedStack = wrapInSharedElementStack(Feed, 'FeedStack');
 const SearchStack = wrapInSharedElementStack(Search, 'SearchStack');
 const MapStack = wrapInSharedElementStack(Map, 'MapStack');
-const NotificationsStack = wrapInSharedElementStack(
-  Notifications,
-  'NotificationsStack'
-);
+const ChatStack = wrapInSharedElementStack(Chat, 'ChatStack');
 
 // Creating the bottom tab navigator
 const Tab = createBottomTabNavigator<BottomTabParamList>();
@@ -61,6 +58,8 @@ export default function Home() {
   }, []);
 
   const FillInComponent = () => null;
+
+  useChat();
 
   return (
     <Tab.Navigator
@@ -133,13 +132,20 @@ export default function Home() {
         }}
       />
       <Tab.Screen
-        name="Notifications"
-        component={NotificationsStack}
+        name="Messages"
+        component={ChatStack}
         options={{
           headerShown: false,
+          headerBackground: () => (
+            <View
+              style={{
+                backgroundColor: theme.colors.background,
+              }}
+            ></View>
+          ),
           tabBarIcon: ({ focused, color, size }) => (
             <Ionicons
-              name={'ios-notifications-outline'}
+              name={'ios-chatbox-outline'}
               color={focused ? '#0FEFFD' : color}
               size={size}
             />

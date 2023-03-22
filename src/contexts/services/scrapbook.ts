@@ -318,3 +318,26 @@ export const detachRepliesListener = (): void => {
     repliesListener = null;
   }
 };
+
+// Getting the distance between the user and the scrapbook
+export const getDistance = (currLoc: any, scrapbookLoc: any) => {
+  let R = 3958.8;
+  let difflat =
+    scrapbookLoc.latitude * (Math.PI / 180) -
+    currLoc.latitude * (Math.PI / 180);
+  let difflng = (scrapbookLoc.longitude - currLoc.longitude) * (Math.PI / 180);
+
+  let dis =
+    2 *
+    R *
+    Math.asin(
+      Math.sqrt(
+        Math.sin(difflat / 2) * Math.sin(difflat / 2) +
+          Math.cos(currLoc.latitude * (Math.PI / 180)) *
+            Math.cos(scrapbookLoc.latitude * (Math.PI / 180)) *
+            Math.sin(difflng / 2) *
+            Math.sin(difflng / 2)
+      )
+    );
+  return dis;
+};
