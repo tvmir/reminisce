@@ -147,6 +147,7 @@ export const fetchLikes = async (
 ): Promise<boolean> => {
   const likesRef = doc(db, 'scrapbooks', sid);
   const likesDoc = await getDoc(doc(likesRef, 'likes', uid));
+
   return likesDoc.exists();
 };
 

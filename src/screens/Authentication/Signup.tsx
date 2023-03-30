@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import {
   Keyboard,
   KeyboardAvoidingView,
@@ -59,6 +58,7 @@ export default function Signup() {
                   keyboardAppearance="dark"
                   onChangeText={setName}
                   value={name}
+                  testID="signup-name"
                 />
                 <View>
                   <TextInput
@@ -69,6 +69,7 @@ export default function Signup() {
                     keyboardAppearance="dark"
                     onChangeText={setUsername}
                     value={username}
+                    testID="signup-username"
                   />
                 </View>
                 <View>
@@ -81,6 +82,7 @@ export default function Signup() {
                     keyboardAppearance="dark"
                     onChangeText={setEmail}
                     value={email}
+                    testID="signup-email"
                   />
                 </View>
                 <View>
@@ -94,6 +96,7 @@ export default function Signup() {
                     keyboardAppearance="dark"
                     onChangeText={setPassword}
                     value={password}
+                    testID="signup-password"
                   />
                 </View>
               </View>
@@ -119,6 +122,7 @@ export default function Signup() {
                     borderRadius: 48,
                     height: 50,
                   }}
+                  testID="signup-btn"
                 >
                   <Text
                     style={{

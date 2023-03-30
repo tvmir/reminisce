@@ -112,7 +112,7 @@ export default function Edit({ route, navigation }: EditProps) {
           onPress={Keyboard.dismiss}
           style={{ flex: 1 }}
         >
-          <View style={{ flex: 1 }}>
+          <View style={{ flex: 1 }} testID="update-profile-details">
             <Header
               title="Edit Profile"
               navigation={navigation}
@@ -132,6 +132,7 @@ export default function Edit({ route, navigation }: EditProps) {
                   justifyContent: 'center',
                 }}
                 onPress={editProfilePicture}
+                testID="edit-profile-picture"
               >
                 <Image
                   style={{ height: 120, width: 120, position: 'absolute' }}
@@ -148,6 +149,7 @@ export default function Edit({ route, navigation }: EditProps) {
                   autoCapitalize="none"
                   keyboardAppearance="dark"
                   onChangeText={setInputName}
+                  testID="edit-name"
                 />
                 <View>
                   <TextInput
@@ -160,6 +162,7 @@ export default function Edit({ route, navigation }: EditProps) {
                     maxLength={70}
                     keyboardAppearance="dark"
                     onChangeText={setInputBio}
+                    testID="edit-bio"
                   />
                   <Text
                     style={{

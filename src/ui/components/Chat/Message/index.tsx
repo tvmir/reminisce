@@ -16,12 +16,12 @@ export interface MessageProps {
 
 export default function Message({ route, navigation }: MessageProps) {
   const { cid } = route.params;
+  const { messages } = useMessage(cid);
   const [message, setMessage] = useState<string>('');
   const currentUser = useAppSelector((state) => state.currentUser.currentUser);
 
-  const { messages } = useMessage(cid);
-
-  const handleMessages = () => {
+  // Store messages in state and send to Firestore
+  const handleMessages = (): void => {
     if (message.length > 0) {
       setMessage('');
       writeMessage(cid, message);

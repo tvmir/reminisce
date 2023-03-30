@@ -10,7 +10,8 @@ import { auth } from '../../../api/firebase';
 export default function DrawerDetails(props: any) {
   const currentUser = useAppSelector((state) => state.currentUser.currentUser);
 
-  const signout = () => {
+  // Used to sign out of the app
+  const signout = (): void => {
     auth
       .signOut()
       .then(() => {
@@ -152,9 +153,7 @@ export default function DrawerDetails(props: any) {
               label={({ color }) => (
                 <Text style={{ color: '#ededed' }}>Settings</Text>
               )}
-              onPress={() => {
-                // props.navigation.navigate('Settings');
-              }}
+              onPress={() => {}}
             />
           </View>
         </View>

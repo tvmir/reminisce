@@ -48,8 +48,8 @@ export default function Images({ navigation, route }: ImagesProps) {
       return;
     }
 
+    // Launching the system library
     let result = await ImagePicker.launchImageLibraryAsync({
-      // Focus on handling images for now
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsMultipleSelection: true,
       selectionLimit: 10,
@@ -57,6 +57,8 @@ export default function Images({ navigation, route }: ImagesProps) {
       quality: 0,
     });
     setIsLoading(false);
+
+    // Get the selected images and add them to the state
     let results: string[] = [];
     result.assets?.forEach((asset) => results.push(asset.uri));
 
@@ -93,13 +95,11 @@ export default function Images({ navigation, route }: ImagesProps) {
       />
       <DraggableFlatList
         showsVerticalScrollIndicator={false}
-        // contentContainerStyle={{ height: height + 100 }}
         data={images}
         renderItem={({ item, drag, isActive }) => (
           <>
             <View style={{ marginTop: 20 }}>
               <TouchableOpacity
-                // style={{ paddingTop: 20 }}
                 activeOpacity={0.8}
                 onLongPress={drag}
                 disabled={isActive}

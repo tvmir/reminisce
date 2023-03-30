@@ -16,6 +16,7 @@ import { auth, db } from '../../api/firebase';
 //
 export const writeChat = async (members: string[]): Promise<void> => {
   const chatsRef = collection(db, 'chats');
+
   await addDoc(chatsRef, {
     members,
     recent_message: '',
@@ -30,6 +31,7 @@ export const writeMessage = async (
 ): Promise<void> => {
   const chatsRef = doc(db, 'chats', cid);
   const msgRef = collection(chatsRef, 'messages');
+
   await addDoc(msgRef, {
     uid: auth.currentUser?.uid,
     createdAt: serverTimestamp(),

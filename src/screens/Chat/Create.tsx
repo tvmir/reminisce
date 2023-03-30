@@ -18,47 +18,21 @@ import { MAPS_API_KEY } from '@env';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useAppDispatch, useAppSelector } from '../../utils/hooks';
 import { fetchUsers } from '../../contexts/slices/users/usersSlice';
-import { fetchScrapbooksSearch } from '../../contexts/slices/scrapbooks/searchScrapbooksSlice';
-import { fetchScrapbooks } from '../../contexts/slices/scrapbooks/scrapbooksSlice';
+import { DocumentData } from 'firebase/firestore';
 
-interface PostProps {
-  route: RouteProp<{ params: { images: string[] } }, 'params'>;
+interface CreateChatProps {
   navigation: StackNavigationProp<RootStackParamList, 'Post'>;
 }
 
-export default function Create({ route, navigation }: PostProps) {
+export default function Create({ navigation }: CreateChatProps) {
   const [name, setName] = useState<string>('');
+  const [members, setMembers] = useState<DocumentData[]>([]);
   const [location, setLocation] = useState<object>({});
-  const [tags, setTags] = useState<string[]>([]);
-  const [isEnabled, setIsEnabled] = useState(false);
-  const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
-
-  const scrapbooks = useAppSelector((state) => state.scrapbooks.scrapbooks);
-
   const dispatch = useAppDispatch();
-
   const users = useAppSelector((state) => state.users.users);
-  console.log(users?.map((user) => user.username));
-  const [isFocus, setIsFocus] = useState(false);
-  const [search, setSearch] = useState<string>('');
-  const [input, setInput] = useState<string>('');
-  const scrapbooksSearch = useAppSelector(
-    (state) => state.scrapbooksSearch.scrapbooks
-  );
-
-  useEffect(() => {
-    if (input !== search) {
-      setSearch(input);
-      dispatch(fetchScrapbooksSearch(input));
-    }
-  }, [input]);
 
   useEffect(() => {
     dispatch(fetchUsers());
-  }, []);
-
-  useEffect(() => {
-    dispatch(fetchScrapbooks());
   }, []);
 
   useEffect(() => {
@@ -88,20 +62,21 @@ export default function Create({ route, navigation }: PostProps) {
                   placeholderTextColor="#777777"
                   onChangeText={(text) => setName(text)}
                   keyboardAppearance="dark"
+                  testID="chat-name"
                 />
 
                 <TextInput
                   style={styles.input}
                   placeholder="Add members"
                   placeholderTextColor="#777777"
-                  onChangeText={(text) => setName(text)}
+                  onChangeText={(text) => setMembers(text.split(',') as any)}
                   keyboardAppearance="dark"
+                  testID="chat-members"
                 />
 
                 <GooglePlacesAutocomplete
-                  placeholder="Where at?"
+                  placeholder="Demographic"
                   minLength={2}
-                  // currentLocation={true}
                   keyboardShouldPersistTaps="handled"
                   listViewDisplayed={false}
                   nearbyPlacesAPI="GooglePlacesSearch"
@@ -153,14 +128,6 @@ export default function Create({ route, navigation }: PostProps) {
                     },
                   }}
                 />
-                <TextInput
-                  style={styles.input}
-                  placeholder="Tags (separate with commas and spaces)"
-                  placeholderTextColor="#777777"
-                  onChangeText={(text) => setTags(text.split(/(?:,| )+/))}
-                  keyboardAppearance="dark"
-                  autoCapitalize="none"
-                />
               </View>
             </View>
           </View>
@@ -205,48 +172,5 @@ const styles = StyleSheet.create({
   text: {
     color: '#fff',
     fontWeight: '500',
-  },
-  container: {
-    flex: 1,
-    backgroundColor: '#533483',
-    padding: 16,
-    justifyContent: 'center',
-    alignContent: 'center',
-  },
-  dropdown: {
-    height: 50,
-    borderColor: 'gray',
-    borderWidth: 0.5,
-    borderRadius: 8,
-    paddingHorizontal: 8,
-    marginBottom: 10,
-  },
-  icon: {
-    marginRight: 5,
-  },
-  label: {
-    position: 'absolute',
-    backgroundColor: 'white',
-    left: 22,
-    top: 8,
-    zIndex: 999,
-    paddingHorizontal: 8,
-    fontSize: 14,
-  },
-  placeholderStyle: {
-    fontSize: 16,
-    color: '#777777',
-  },
-  selectedTextStyle: {
-    fontSize: 16,
-  },
-  iconStyle: {
-    width: 20,
-    height: 20,
-    color: 'gray',
-  },
-  inputSearchStyle: {
-    height: 40,
-    fontSize: 16,
   },
 });

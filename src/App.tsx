@@ -8,7 +8,7 @@ import MainDrawer from './navigation/Drawer';
 import { ActionSheetProvider } from '@expo/react-native-action-sheet';
 
 export default function App() {
-  // Loading custom fonts
+  // Loading custom font
   const [fontsLoaded] = useFonts({
     Montserrat: require('../assets/fonts/Montserrat-Regular.ttf'),
   });

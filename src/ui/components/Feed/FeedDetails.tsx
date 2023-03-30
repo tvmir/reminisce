@@ -177,6 +177,7 @@ export default function FeedDetails({ item, navigation }: FeedDetailsProps) {
               height: 30,
               flexDirection: 'row',
             }}
+            testID="like-btn"
           >
             {isLiked.liked ? (
               <AntDesign color={'#fff'} name="heart" size={22} />

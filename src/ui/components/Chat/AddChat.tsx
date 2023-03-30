@@ -4,10 +4,12 @@ import { auth } from '../../../api/firebase';
 import { useUserQuery } from '../../../utils/hooks';
 import moment from 'moment';
 import { DocumentData } from 'firebase/firestore';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '../../../utils/types';
 
 interface ChatDetailsProps {
   item: DocumentData | undefined;
-  navigation: any;
+  navigation: StackNavigationProp<RootStackParamList, 'ChatMessages'>;
 }
 
 export default function AddChat({ item, navigation }: ChatDetailsProps) {
@@ -28,6 +30,7 @@ export default function AddChat({ item, navigation }: ChatDetailsProps) {
         }}
         onPress={() => navigation.navigate('ChatMessages', { cid: item?.id })}
         activeOpacity={0.8}
+        testID="open-chat"
       >
         <Image
           style={{

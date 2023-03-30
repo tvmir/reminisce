@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import Login from '../../screens/Auth/Login';
+import Login from '../../screens/Authentication/Login';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../../api/firebase';
 import { Provider } from 'react-redux';
@@ -9,8 +9,7 @@ import Images from '../../screens/Scrapbook/Images';
 import Post from '../../screens/Scrapbook/Post';
 import Add from '../../screens/Scrapbook/Add';
 import { store } from '../../contexts/store';
-import Loading from '../../ui/components/Extra/Loading';
-import Signup from '../../screens/Auth/Signup';
+import Signup from '../../screens/Authentication/Signup';
 import Edit from '../../screens/Profile/Edit';
 import Modal from '../../ui/components/Modal';
 import UsersProfile from '../../screens/Profile/UsersProfile';
@@ -28,7 +27,7 @@ import Create from '../../screens/Chat/Create';
 // Creating the shared element stack navigator
 const Stack = createSharedElementStackNavigator<RootStackParamList>();
 
-// Where all screens are except auth screens
+// Where all screens are found except for the auth screens
 const AppScreens = () => (
   <Stack.Navigator>
     <Stack.Screen
@@ -272,19 +271,9 @@ export default function MainStackNavigator() {
   return (
     <>
       {!isLoaded ? (
-        <>
-          <Loading />
-        </>
+        <></>
       ) : !isLoggedIn ? (
         <Stack.Navigator>
-          {/* <Stack.Screen
-            options={{
-              headerShown: false,
-              headerBackTitleVisible: false,
-            }}
-            name="Onboard"
-            component={Onboard}
-          /> */}
           <Stack.Screen
             options={{
               headerShown: false,

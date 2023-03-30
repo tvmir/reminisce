@@ -6,7 +6,6 @@ import { theme } from '../../shared/theme';
 import * as Animatable from 'react-native-animatable';
 import { useUserQuery } from '../../../utils/hooks';
 import { DocumentData } from 'firebase/firestore';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../utils/types';
 import { StackNavigationProp } from '@react-navigation/stack';
 

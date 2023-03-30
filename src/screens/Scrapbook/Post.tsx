@@ -88,6 +88,7 @@ export default function Post({ route, navigation }: PostProps) {
                   placeholderTextColor="#777777"
                   onChangeText={(text) => setName(text)}
                   keyboardAppearance="dark"
+                  testID="add-scrapbook-name"
                 />
                 <TextInput
                   style={styles.inputDesc}
@@ -96,6 +97,7 @@ export default function Post({ route, navigation }: PostProps) {
                   multiline={true}
                   onChangeText={(text) => setDescription(text)}
                   keyboardAppearance="dark"
+                  testID="add-scrapbook-description"
                 />
 
                 <GooglePlacesAutocomplete
@@ -131,12 +133,6 @@ export default function Post({ route, navigation }: PostProps) {
                       lat: details?.geometry.location.lat,
                       lng: details?.geometry.location.lng,
                     });
-
-                    // console.log({
-                    //   name: data.description,
-                    //   lat: details?.geometry.location.lat,
-                    //   lng: details?.geometry.location.lng,
-                    // });
                   }}
                   enablePoweredByContainer={false}
                   textInputProps={{
@@ -166,6 +162,7 @@ export default function Post({ route, navigation }: PostProps) {
                   onChangeText={(text) => setTags(text.split(/(?:,| )+/))}
                   keyboardAppearance="dark"
                   autoCapitalize="none"
+                  testID="add-scrapbook-tags"
                 />
               </View>
             </View>

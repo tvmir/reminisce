@@ -38,12 +38,12 @@ export default function MapCard({
 
   useEffect(() => {
     (async () => {
+      // Getting the user's location
       let { status } = await Locaiton.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
         console.log('Permission to access location was denied');
         return;
       }
-
       let currentLocation = await Locaiton.getCurrentPositionAsync({});
       setLocation(currentLocation);
     })();
@@ -95,7 +95,7 @@ export default function MapCard({
       }}
     >
       {scrapbooks?.map((item: DocumentData, index: number) => (
-        <>
+        <View style={{ flex: 1 }} key={index}>
           <TouchableOpacity
             key={index}
             activeOpacity={0.9}
@@ -112,6 +112,7 @@ export default function MapCard({
               overflow: 'hidden',
               flexDirection: 'row',
             }}
+            testID="open-scrapbook"
           >
             <SharedElement
               style={{ flex: 3, opacity: 0.9 }}
@@ -163,10 +164,8 @@ export default function MapCard({
               </Text>
             </View>
           </TouchableOpacity>
-        </>
+        </View>
       ))}
     </Animated.ScrollView>
   );
 }
-
-// getDistance(currCoordinates, coordinates![0]) * 1609.344

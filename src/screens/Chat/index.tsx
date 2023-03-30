@@ -45,6 +45,7 @@ export default function Chat({ navigation }: ChatProps) {
             alignItems: 'center',
             paddingHorizontal: 5,
           }}
+          testID="create-chat"
         >
           <Feather name="plus" size={24} color="white" />
         </TouchableOpacity>

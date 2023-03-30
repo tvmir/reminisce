@@ -48,6 +48,7 @@ export default function Tabs({ user, scrapbooks, navigation }: TabsProps) {
           color: '#5a5a5a',
           fontSize: 12,
         }}
+        testID="about"
       >
         Joined {moment(user?.createdAt).format('MMM Do YYYY')}
       </Text>

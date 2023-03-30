@@ -20,7 +20,6 @@ export default function Header({
   text,
 }: HeaderProps) {
   const insets = useSafeAreaInsets();
-  // const navigation = useNavigation();
   return (
     <View style={[styles.container, { marginTop: insets.top }]}>
       {onSave ? (
