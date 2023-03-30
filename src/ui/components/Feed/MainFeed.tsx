@@ -19,20 +19,18 @@ interface MainFeedProps {
 
 export default function MainFeed({ item, navigation }: MainFeedProps) {
   const bottomTabBarHeight = useBottomTabBarHeight();
-  // const bg = index % 2 === 0 ? '#c06262' : '#3d8c96';
   return (
     <View style={{ flex: 1 }}>
       <SharedElement id={`${item?.id}.images`}>
         <TouchableWithoutFeedback
           onPress={() => navigation.navigate('Scrapbook', { item })}
+          testID="expand-scrapbook"
         >
           <View
             style={{
               flex: 1,
               backgroundColor: '#272727',
               height:
-                // 1.665 for iPhone XS
-                // 1.6335 for iPhone 13 Pro
                 Dimensions.get('window').height / 1.665 + bottomTabBarHeight,
               borderRadius: 16,
             }}

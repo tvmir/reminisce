@@ -46,13 +46,13 @@ export default function Map({ navigation }: MapProps) {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
+    // Getting the user's current location
     (async () => {
       let { status } = await Locaiton.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
         console.log('Permission to access location was denied');
         return;
       }
-
       let currentLocation = await Locaiton.getCurrentPositionAsync({});
       setLocation(currentLocation);
     })();
@@ -62,6 +62,7 @@ export default function Map({ navigation }: MapProps) {
     dispatch(fetchScrapbooks());
   }, []);
 
+  // Getting the user data from the scrapbook
   const user = scrapbook?.map((_, index: number) => {
     return useUserQuery(scrapbook[index]?.uid).data;
   });
@@ -185,6 +186,7 @@ export default function Map({ navigation }: MapProps) {
           width: 60,
           backgroundColor: '#1F1E1E',
         }}
+        testID="ar-360"
       >
         <MaterialCommunityIcons
           name="rotate-360"

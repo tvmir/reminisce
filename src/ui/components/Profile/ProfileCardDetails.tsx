@@ -36,6 +36,7 @@ export default function ProfileCardDetails({
   const { showActionSheetWithOptions } = useActionSheet();
   const currentUser = useAppSelector((state) => state.currentUser.currentUser);
 
+  // Options for deleting or editing a scrapbook
   const currentUserMenu = (): void => {
     const options = ['Delete', 'Edit', 'Cancel'];
     const destructiveButtonIndex = 0;

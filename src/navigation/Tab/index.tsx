@@ -8,7 +8,7 @@ import Search from '../../screens/Search';
 import Feed from '../../screens/Feed';
 import { theme } from '../../ui/shared/theme';
 import { BottomTabParamList } from '../../utils/types';
-import { LogBox, Text, TouchableOpacity, View } from 'react-native';
+import { LogBox, View } from 'react-native';
 import { useAppDispatch, useChat } from '../../utils/hooks';
 import Map from '../../screens/Map';
 import {

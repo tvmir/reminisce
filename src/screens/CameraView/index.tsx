@@ -21,6 +21,7 @@ interface CameraViewProps {
   navigation: StackNavigationProp<RootStackParamList, 'CameraView'>;
 }
 
+// Constants
 const { width } = Dimensions.get('window');
 const CARD_WIDTH = width * 0.65;
 
@@ -28,22 +29,23 @@ export default function CameraView({ navigation }: CameraViewProps) {
   const [type, setType] = useState<CameraType>(CameraType.back);
   const cameraRef = useRef<Camera>(null);
   const [permission, requestPermission] = Camera.useCameraPermissions();
+  const [location, setLocation] = useState<LocationObject>();
 
+  // Getting the scrapbooks from the store
   const scrapbook = useAppSelector((state) => state.scrapbooks.scrapbooks);
+  // Getting the user data from the scrapbook
   const user = scrapbook?.map((_, index: number) => {
     return useUserQuery(scrapbook[index]?.uid).data;
   });
 
-  const [location, setLocation] = useState<LocationObject>();
-
   useEffect(() => {
+    // Getting the user's current location
     (async () => {
       let { status } = await Locaiton.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
         console.log('Permission to access location was denied');
         return;
       }
-
       let currentLocation = await Locaiton.getCurrentPositionAsync({});
       setLocation(currentLocation);
     })();
@@ -248,7 +250,8 @@ export default function CameraView({ navigation }: CameraViewProps) {
                   }}
                 >
                   {location !== undefined
-                    ? (
+                    ? // Calculating the distance between the user and the scrapbook and converting it to km
+                      (
                         getDistance(currCoordinates, coordinates![0]) * 1.609344
                       ).toFixed(2)
                     : 'Loading...'}{' '}

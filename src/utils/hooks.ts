@@ -32,6 +32,7 @@ export const keys = {
   ],
 };
 
+// Custom hook to get a user by their ID
 export const useUserQuery = (
   uid: string,
   options = {}
@@ -39,6 +40,7 @@ export const useUserQuery = (
   return useQuery(keys.user(uid), () => fetchUsersByID(uid), options);
 };
 
+// Custom hook to get a user's following status
 export const useFollowingQuery = (
   uid: string,
   followedUID: string,
@@ -51,6 +53,7 @@ export const useFollowingQuery = (
   );
 };
 
+// Custom hook to update a user's following status
 export const useFollowMutation = (
   options = {}
 ): UseMutationResult<void, unknown, FollowCount, void> => {
@@ -92,6 +95,7 @@ export const useChat = () => {
   }, [currentUser, handleChange]);
 };
 
+// Custom hooks to get all messages from a chat
 export const useMessage = (cid: string) => {
   const dispatch = useAppDispatch();
   const currentUser = useAppSelector((state) => state.currentUser.currentUser);

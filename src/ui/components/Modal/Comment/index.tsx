@@ -24,6 +24,7 @@ export default function Comment({ item }: CommentProps) {
     return () => detachCommentsListener();
   }, []);
 
+  // Store comments in state and sends them to Firestore directly
   const handleComments = () => {
     if (comment.length > 0) {
       setComment('');

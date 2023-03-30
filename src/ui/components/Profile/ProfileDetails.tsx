@@ -197,6 +197,7 @@ export default function ProfileDetails({
                   value: currentUser,
                 })
               }
+              testID="edit-profile-btn"
               activeOpacity={0.8}
             >
               <Text style={{ color: theme.colors.primary, fontWeight: '500' }}>

@@ -59,6 +59,7 @@ export default function Feed({ navigation }: FeedProps) {
     });
   }, [refreshing]);
 
+  // Component for showcasing recommended scrapbooks
   const ForYou = () => (
     <FlatList
       ref={forYouRef}
@@ -77,6 +78,7 @@ export default function Feed({ navigation }: FeedProps) {
     />
   );
 
+  // Component for showcasing scrapbooks from users you follow
   const Following = () => (
     <FlatList
       ref={followingRef}
@@ -88,6 +90,7 @@ export default function Feed({ navigation }: FeedProps) {
       decelerationRate={'normal'}
       keyExtractor={(item) => item.id}
       data={followingScrapbooks}
+      testID="following"
       renderItem={({ item }) => {
         // @ts-ignore
         return <MainFeed item={item} navigation={navigation} />;
@@ -95,6 +98,7 @@ export default function Feed({ navigation }: FeedProps) {
     />
   );
 
+  // Component for showcasing an empty following feed
   const EmptyFollowing = () => (
     <ScrollView
       style={{ flex: 1 }}
@@ -178,6 +182,7 @@ export default function Feed({ navigation }: FeedProps) {
                     props.jumpTo(route.key);
                   }}
                   style={styles.tabItem}
+                  testID={route.title}
                 >
                   <Text
                     style={[
@@ -208,6 +213,7 @@ export default function Feed({ navigation }: FeedProps) {
           height: 30,
           borderRadius: 15,
         }}
+        testID="open-drawer"
       >
         <Image
           source={

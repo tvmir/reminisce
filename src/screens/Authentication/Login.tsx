@@ -11,7 +11,6 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { auth } from '../../api/firebase';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../utils/types';
 import { login } from '../../contexts/slices/users/currentUserSlice';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -24,6 +23,7 @@ export default function Login({ navigation }: LoginProps) {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
 
+  // Check if user is logged in
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -84,18 +84,6 @@ export default function Login({ navigation }: LoginProps) {
               </View>
             </View>
 
-            {/* <Text
-              style={{
-                position: 'absolute',
-                top: 165,
-                right: 31,
-                color: '#10f0fe',
-                fontSize: 12,
-              }}
-            >
-              Forgot Passoword?
-            </Text> */}
-
             <View style={{ paddingTop: 20, padding: 10, width: '99%' }}>
               <TouchableOpacity
                 onPress={() => login(email, password)}
@@ -107,6 +95,7 @@ export default function Login({ navigation }: LoginProps) {
                   borderRadius: 48,
                   height: 50,
                 }}
+                testID="login-btn"
               >
                 <Text
                   style={{
@@ -136,6 +125,7 @@ export default function Login({ navigation }: LoginProps) {
               <Text
                 style={{ fontSize: 12, color: '#10f0fe', paddingLeft: 5 }}
                 onPress={() => navigation.push('Signup')}
+                testID="login-to-signup"
               >
                 Sign Up
               </Text>

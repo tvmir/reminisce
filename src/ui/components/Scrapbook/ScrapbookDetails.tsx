@@ -27,10 +27,13 @@ export default function ScrapbookDetails({ item }: ScrapbookDetailsProps) {
         {item?.description}
       </Text>
       <Text style={[{ fontSize: 12, color: '#949494', paddingTop: 10 }]}>
-        {item?.tags
-          .map((tag: string) => `#${tag}`)
-          .join(' ')
-          .replace(/# /g, '#') || ''}
+        {
+          // Making the tags neater
+          item?.tags
+            .map((tag: string) => `#${tag}`)
+            .join(' ')
+            .replace(/# /g, '#') || ''
+        }
       </Text>
     </View>
   );

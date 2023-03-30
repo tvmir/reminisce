@@ -25,7 +25,8 @@ export type RootStackParamList = {
   };
   UsersProfile: { user: DocumentData | undefined } | undefined;
   CameraView: undefined;
-  ChatMessages: { id: DocumentData | undefined } | undefined;
+  // Chat Screens
+  ChatMessages: { cid: DocumentData | undefined } | undefined;
   CreateChat: { user: DocumentData | undefined } | undefined;
 };
 

@@ -70,6 +70,7 @@ export default function Add({ navigation }: AddProps) {
       return;
     }
 
+    // Launching the camera and tweaking its quality
     let result = await ImagePicker.launchCameraAsync({
       quality: 0.2,
       allowsMultipleSelection: true,
@@ -119,12 +120,14 @@ export default function Add({ navigation }: AddProps) {
                 onPress={() => navigation.push('Images')}
                 color="white"
                 size={38}
+                testID="open-library"
               />
               <Ionicons
                 name="camera-outline"
                 onPress={useCamera}
                 color="white"
                 size={38}
+                testID="open-camera"
               />
               <Button
                 title="Next"

@@ -6,7 +6,6 @@ const theme: Theme = {
   colors: {
     primary: '#EDEDED',
     background: '#000',
-    // TODO: Update these colors to match the app's color scheme
     card: '#1C1C1C',
     text: '#EDEDED',
     border: '#EDEDED',
